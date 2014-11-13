@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>Comprehensive Enrichment Analysis Interactive Results Browser</title>
+  <link rel="stylesheet" href="webComponents/SlickGrid/slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="webComponents/SlickGrid/css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="webComponents/gridstyle.css" type="text/css"/>
+
+	<style>
+	img {
+		vertical-align:middle;
+	}
+	/* unvisited link */
+a, a:link {
+    color: #2288cc;
+	cursor: pointer; cursor: hand;
+		text-decoration:none;
+}
+/* visited link */
+a:visited {
+    color: #2288cc;
+	text-decoration:none;
+}
+
+/* mouse over link */
+a:hover {
+    color: #2288cc;
+	text-decoration:underline;
+}
+/* selected link */
+a:active {
+    color: #FF00FF;
+}
+
+.smaller {
+font-size:8px;
+}
+table { 
+    border-spacing: 20px 0px;
+	border-collapse: separate;
+	border:1px solid black;
+}
+td { 
+    padding: 2px;
+	vertical-align:top;
+}
+body {
+  background: white;
+  padding: 0;
+  margin: 8px;
+}
+
+h2 {
+  font-size: 10pt;
+  border-bottom: 1px dotted gray;
+margin-bottom:0px;
+}
+
+.maindiv {
+	float:left;
+	padding:2px;
+	text-align:center;
+	border:0px dashed #ccc;
+	width:300px;
+
+}
+.centerdiv {
+	clear:left;
+	padding:0px;
+	margin:0 auto;
+	border:0px dashed #ccc;
+	width:300px;
+
+}
+.columndiv {
+	padding:0px 16px;
+	display: inline-block;
+}
+</style>
+
+</head>
+<body>
+<script src="webComponents/SlickGrid/lib/jquery-1.7.min.js"></script>
+	<script src="webComponents/SlickGrid/lib/jquery.event.drag-2.2.js"></script>
+	<script src="webComponents/SlickGrid/slick.core.js"></script>
+	<script src="webComponents/SlickGrid/slick.grid.js"></script>
+	<script src="webComponents/d3.min.js"></script>
+<script>
+	var myFileName = "allEnrich_downReg/allEnrichments.txt";
+
+function loadGrid(myFileName) {
+	if (myFileName == '[Select an enrichment]' || myFileName == '') {
+		myFileName = document.getElementById("notes").innerHTML;
+	}
+	if (myFileName == '[Select an enrichment]' || myFileName == '') { 
+		return(false);
+	}
+	
+document.getElementById("notes").innerHTML = "<img src='webComponents/ajax-loader.gif'>";
+document.getElementById("downloadlink").href = myFileName;
+ d3.tsv(myFileName, function(data) {
+<!--alert(myFileName+"loaded");-->
+document.getElementById("notes").innerHTML = myFileName;
+	data=data.slice(1,5000);
+<!--	alert(JSON.stringify(data));-->
+	restrictDb = $('#selectDB option:selected').val();
+<!--	alert(restrictDb);-->
+	if (restrictDb != "") {
+		data = data.filter( function(pt){return (pt.db == restrictDb);} );
+	}
+
+  var grid2;
+  var columns = [
+    {id: "userSet", name: "Clust", field: "userSet", sortable: true, width: 45},
+    {id: "dbSet", name: "dbSet", field: "dbSet", sortable: true, width: 45, formatter: linkFormatter = function ( row, cell, value, columnDef, dataContext ) {
+			if (dataContext['db'] == "DHS") {
+            return '<a href="http://dnase.genome.duke.edu/clusterDetail.php?clusterID=' + dataContext['dbSet'] + '">' + value + '</a>'; }
+			else { return dataContext['dbSet']; }
+}
+     },
+    {id: "description", name: "description", field: "description", width: 325},
+    {id: "db", name: "db", field: "db", sortable: true, width:55, cssClass:"smaller"},
+    {id: "pValueLog", name: "-Log(pVal)", field: "pValueLog", sortable: true},
+	{id: "logOdds", name: "logOdds", field: "logOdds", sortable: true},
+{id: "support", name: "support", field: "support", sortable: true, width: 45},
+{id: "rnkPV", name: "rank PV", field: "rnkPV", sortable: true},
+{id: "rnkLO", name: "rank LO", field: "rnkLO", sortable: true},
+{id: "rnkSup", name: "rank Support", field: "rnkSup", sortable: true},
+{id: "maxRank", name: "maxRank", field: "maxRnk", sortable: true},
+{id: "meanRank", name: "meanRank", field: "meanRnk", sortable: true},
+{id: "b", name: "b", field: "b", sortable: true, width: 45},
+{id: "c", name: "c", field: "c", sortable: true, width: 45},
+{id: "d", name: "d", field: "d", sortable: true, width: 45},
+  ];
+  var options = {
+    enableCellNavigation: false,
+    enableColumnReorder: false,
+	editable: false,
+    enableAddRow: false,
+    enableCellNavigation: false,
+	multiColumnSort: true,
+	autoHeight: false
+  };
+
+	grid2 = new Slick.Grid("#myGrid2", data, columns, options);
+	grid2.autosizeColumns()
+	grid2.onSort.subscribe(function (e, args) {
+      var cols = args.sortCols;
+<!--			alert(cols[0].sortCol.field);-->
+      data.sort(function (dataRow1, dataRow2) {
+        for (var i = 0, l = cols.length; i < l; i++) {
+          var field = cols[i].sortCol.field;
+          var sign = cols[i].sortAsc ? 1 : -1;
+          var value1 = parseFloat(dataRow1[field]), value2 = parseFloat(dataRow2[field]);
+			if (isNaN(dataRow1[field])) {
+				var value1 = (dataRow1[field]), value2 = (dataRow2[field]);
+			}
+          var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+          if (result != 0) {
+            return result;
+          }
+        }
+        return 0;
+      });
+      grid2.invalidate();
+      grid2.render();
+    });
+   });
+}
+
+</script>
+<div id="links" style="float:left">
+<h2>Enrichment results</h2>
+<div class="maindiv" >
+<a onClick="loadGrid('allEnrichments.txt')">LOAD DATA<br>
+</td>
+</div>
+
+<div class="maindiv" >
+<div style="margin:20px;font-size:14pt">Viewing experiment:<br><span id="notes">[Select an enrichment]</span><br><a href="" id="downloadlink">Download Raw Data</a>
+</div>
+Restrict to selected database: <select id="selectDB" onChange="loadGrid('')">
+<option value="" selected>All Databases</option>
+<option value="DHS">DHS</option>
+<option value="MSIG">MSIG</option>
+<option value="ENCODE">ENCODE</option>
+<option value="CISTROME">CISTROME</option>
+</select>
+</div>
+
+<div id="myGrid2" style="width:1200px; height:600px;"></div>
+
+	
+</body>
+</html>

@@ -1,0 +1,26 @@
+LOLA: Location Overlap Analysis
+
+LOLA is an R package providing functions for testing overlap of a set of genomic regions with public and custom databases.
+
+Please see the R documentation for more details.
+
+################################################################################
+#HOW TO INSTALL
+#install the development version directly from github with devtools
+
+require(devtools)
+install_github("sheffien/LOLA") #public
+
+#to install a local copy:
+packageFolder = "~/Rncs/LOLA";
+install.packages(packageFolder, repos=NULL)
+
+################################################################################
+#HOW TO RUN
+
+library(LOLA)
+?LOLA
+
+vignettes forthcoming.
+
+
