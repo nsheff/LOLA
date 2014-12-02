@@ -1,16 +1,22 @@
 #######################################################################
+#Install and load LOLA
+#######################################################################
+install_github("sheffien/simpleCache") 
+install_github("sheffien/LOLA", "YOUR_USERNAME", auth_token="YOUR PAT") 
+library(LOLA)
+
+#######################################################################
 #Populate global directory variables
 #######################################################################
-#You must set these directory paths to match the project
-#directory on your system!
+#Now we need to establish the connection to the shared region database.
+#You must set these directory paths to match the project directory on your system! If you're on the Bock lab server, these settings will work as is.
 #Nathan's Shared Repository
 options(SHARE.DIR="/fhgfs/groups/lab_bock/nsheffield/share/")
 source(paste0(getOption("SHARE.DIR"), "initDefault.R"))
 
 #Now, source the utilities you will need:
-utility("funcCache.R")
-utility("funcEnrichment.R")
-utility("funcGenomeLocations.R")
+#utility("funcEnrichment.R")
+#utility("funcGenomeLocations.R")
 
 #This code works for two different kinds of enrichments:
 #1. Locations: You give sets of genome coordinates, I look for overlaps in public datasets (right now, Encode, Cistrome, and Nathan's DNase Hypersensitivity DB).

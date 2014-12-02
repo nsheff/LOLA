@@ -46,11 +46,9 @@ readEncodeTFBSannotationHg19 = function(shareDir=getOption("SHARE.DATA.DIR")) {
 #where shared information downloaded from ENCODE is stored.
 
 #' @export
+#' @import rtracklayer
+#' @import stringr
 readEncodeTFBSannotation = function(encodeTFBSdir, shareDir=getOption("SHARE.DATA.DIR")) {
-	library(data.table)
-	library(stringr)
-	library(rtracklayer)
-
 	#Load the files.txt file from ENCODE that annotates the
 	#ChIP-seq experiments
 	encodeTFBSannotation = fread(paste0(shareDir, encodeTFBSdir, "files.txt"), header=FALSE)

@@ -6,4 +6,7 @@ Author: Nathan Sheffield <http://www.nathansheffield.com>
 Depends:
     GenomicRanges,
     IRanges,
-    simpleCache
+    simpleCache,
+	data.table,
+	stringr, 
+	rtracklayer
