@@ -9,7 +9,9 @@ Please see the R documentation for more details.
 #install the development version directly from github with devtools
 
 require(devtools)
-install_github("sheffien/LOLA") # for a public repo
+
+#LOLA will rely on this public R package I wrote:
+install_github("sheffien/simpleCache") # for a public repo
 
 #for a private repo:
 install_github("sheffien/LOLA", "YOUR_USERNAME", auth_token="YOUR PAT") #private
