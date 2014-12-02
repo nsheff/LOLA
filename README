@@ -20,6 +20,8 @@ install_github("sheffien/LOLA", "YOUR_USERNAME", auth_token="YOUR PAT") #private
 
 #to install a local copy:
 packageFolder = "~/Rncs/LOLA";
+library(roxygen2)
+roxygenize(packageFolder)
 install.packages(packageFolder, repos=NULL)
 
 ################################################################################
@@ -27,7 +29,7 @@ install.packages(packageFolder, repos=NULL)
 
 library(LOLA)
 ?LOLA
-
+q
 Now take a look at examples.R for some examples. Vignettes forthcoming.
 
 

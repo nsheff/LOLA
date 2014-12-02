@@ -14,7 +14,7 @@ library(LOLA)
 options(SHARE.DIR="/fhgfs/groups/lab_bock/nsheffield/share/")
 source(paste0(getOption("SHARE.DIR"), "initDefault.R"))
 
-#Now, source the utilities you will need:
+#In the past, I would source these utilities. Now, this is deprecated as these functions are part of the LOLA package.
 #utility("funcEnrichment.R")
 #utility("funcGenomeLocations.R")
 
@@ -34,6 +34,11 @@ loadLocationEnrichmentDatabases()
 
 userSets =		 	#GRangesList object
 userUniverse = 		#GRanges object
+
+#example data here:
+userSets = import(paste0(getOption("SHARE.DIR"), "data/atac_example.bed"))
+userUniverse =userSets
+
 
 #To do a comprehensive location enrichment (using all 3 databases)
 #First, you can check to see if your universe is appropriate:

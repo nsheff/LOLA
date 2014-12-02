@@ -7,6 +7,6 @@ Depends:
     GenomicRanges,
     IRanges,
     simpleCache,
-	data.table,
-	stringr, 
-	rtracklayer
+    data.table,
+    stringr,
+    rtracklayer

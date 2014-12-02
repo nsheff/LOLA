@@ -382,7 +382,7 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 	userSets =	lapplyAlias(userSets, function(x) { fo = findOverlaps(x, userUniverse); x = userUniverse[unique(subjectHits(fo))]; } )
 	return(userSets);
 }
-0
+
 
 #' @export
 checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = FALSE) {
