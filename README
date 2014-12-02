@@ -9,7 +9,12 @@ Please see the R documentation for more details.
 #install the development version directly from github with devtools
 
 require(devtools)
-install_github("sheffien/LOLA") #public
+install_github("sheffien/LOLA") # for a public repo
+
+#for a private repo:
+install_github("sheffien/LOLA", "YOUR_USERNAME", auth_token="YOUR PAT") #private
+#Create your PAT (personal access token) here: https://github.com/settings/applications
+
 
 #to install a local copy:
 packageFolder = "~/Rncs/LOLA";
@@ -21,6 +26,6 @@ install.packages(packageFolder, repos=NULL)
 library(LOLA)
 ?LOLA
 
-vignettes forthcoming.
+Now take a look at examples.R for some examples. Vignettes forthcoming.
 
 

@@ -13,7 +13,6 @@ NULL
 #TODO:
 #move all package documentation to roxygen format.
 
-
 ######################################################################
 # Enrichment Utility Functions
 ######################################################################
@@ -22,62 +21,6 @@ NULL
 # By Nathan Sheffield, CeMM, 2014
 library(reshape2)
 library(data.table)
-
-# Helper loader functions to just load up all the data, if you want
-# to do a comprehensive analysis.
-#' @export
-loadAllEnrichmentDatabases = function() {
-	loadLocationEnrichmentDatabases();
-	loadCategoryEnrichmentDatabases();
-}
-#' @export
-loadLocationEnrichmentDatabases = function() {
-	#encode
-	encodeTFBSannotation <<- readEncodeTFBSannotationHg19(shareDir=getOption("SHARE.DATA.DIR"));
-	simpleCache("encodeGRL", "encodeGRL = readEncodeTFBS(encodeTFBSannotation);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	encodeTFBSannotation = appendAnnotations(encodeTFBSannotation, encodeGRL, "hg19")
-	encodeTFBSannotation <<- appendAnnotations(encodeTFBSannotation, encodeGRL, "hg19")
-	#cistrome
-	cistromeAnnotation <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
-	simpleCache("cistromeGRL", "cistromeGRL = readCistrome(cistromeAnnotation);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	cistromeAnnotation <<- appendAnnotations(cistromeAnnotation, cistromeGRL, "hg19")
-	#dnase hypersensitivity
-	dhsAnnotation <<- readDhsAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
-	simpleCache("dhsGRL", "dhsGRL = readDhs()", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	dhsAnnotation <<- appendAnnotations(dhsAnnotation, dhsGRL, "hg19")
-
-	message("Loaded databases: cistrome, encode, dhs.");
-}
-
-#' @export
-loadCategoryEnrichmentDatabases = function() {
-	#msigdb
-	simpleCache("mSigList", "mSigList = readMSigDB(SHARE.RDATA.DIR)", cacheDir=getOption("SHARE.RCACHE.DIR")); 
-	mSig <<- mSigList$mSig
-	mSigAnnotation <<- mSigList$mSigAnnotation
-	message("Loaded databases: mSig.");
-}
-
-#' @export
-loadLocationEnrichmentMm9 = function() {
-	encodeTFBSannotationMm9 <<- readEncodeTFBSannotationMm9(shareDir=getOption("SHARE.DATA.DIR"));
-	simpleCache("encodeGRLmm9", "encodeGRLmm9 = readEncodeTFBS(encodeTFBSannotationMm9);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	cistromeAnnotationMm9 <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"), restrictToSpecies="Mouse");
-	simpleCache("cistromeGRLmm9", "cistromeGRLmm9 = readCistrome(cistromeAnnotationMm9);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-}
-
-#' @export
-loadLocationEnrichmentMm10 = function() {
-	encodeTFBSannotationMm10 <<- readEncodeTFBSannotationMm10(shareDir=getOption("SHARE.DATA.DIR"));
-	simpleCache("encodeGRLmm10", "encodeGRLmm10 = readEncodeTFBS(encodeTFBSannotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	cistromeAnnotationMm10 <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"), restrictToSpecies="Mouse");
-	simpleCache("cistromeGRLmm10", "cistromeGRLmm10 = readCistrome(cistromeAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"));
-	bockAnnotationMm10 <<- readRegionAnnotation(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/", loadEnvir=globalenv());
-	simpleCache("bockGRLmm10", "bockGRLmm10 = readRegionDb(bockAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
-	bockAnnotationMm10 <<- appendAnnotations(bockAnnotationMm10, bockGRLmm10, "mm10")
-}
-
-
 
 #helper functions
 #' @export
@@ -411,23 +354,6 @@ namesToNumbers = function(namedDB) {
 }
 
 
-######################################################################
-# HELPER FUNCTIONS 
-######################################################################
-
-#two helper functions
-#' @export
-countOverlapsAny = function(subj, quer, cores=1) {
-	setLapplyAlias(cores)
-	l = unlist(lapplyAlias(subj, function(x) { sum(overlapsAny(x, quer)) } ))
-	return(l);
-}
-
-#' @export
-countOverlapsAnyRev = function(subj, quer) {
-	countOverlapsAny(quer, subj);
-}
-
 
 ######################################################################
 # ENRICHMENT - Actual workhorse enrichment calculation functions
@@ -649,109 +575,6 @@ enrichmentCategoryCalc = function(userSets, userUniverse, annotationDT, testSets
 
 
 
-
-
-
-######################################################################
-# POST-ENRICHMENT - Functions for processing enrichment results
-######################################################################
-
-#this function, given a single row from an enrichment table calculation, it will find the set of overlaps between the user set and the test set. You can then use these, for example, to get fasta sequences for those regions.
-#' @export
-extractEnrichmentOverlaps = function(locResult, userSets) {
-	print(locResult);
-	dbGRL = switch(locResult[, db], 
-		"ENCODE" = encodeGRL,
-		"CISTROME" = cistromeGRL,
-		"DHS" = dhsGRL)
-	message(length(dbGRL));
-	userSet = userSets[[as.character(locResult[,userSet])]]
-	dbSet = locResult[1,dbSet]
-	if (any(!is.null(names(dbGRL)))) { #convert dbset named into number
-		dbSet = match(dbSet, names(dbGRL)); 
-	}
-	userSet[queryHits(findOverlaps(userSet,dbGRL[[dbSet]]))]
-}
-
-#efficiently split a data.table
-#' @export
-splitDataTable = function(DT, splitFactor) {
-	split(1:nrow(DT), DT[, get(splitFactor)])
-}
-
-
-
-#Given a data table and a factor variable to split on,
-#efficiently divides the table and then writes the different splits
-#to separate files, named with filePrepend and numbered according
-#to split.
-#@returns number of splits written
-#' @export
-writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="", orderColumn=NULL) {
-	saveScipenSetting = getOption("scipen"); 
-	options(scipen = 4); #use scientific notation for pvalues.
-	if (is.null(orderColumn)) {
-		orderColumn = colnames(DT)[1];	#default order by first col.
-	}
-	length(
-lapply( split(1:nrow(DT), DT[, get(splitFactor)]), 
-		function(x) {
-			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".txt");
-			if (file.exists(fileName)) {
-				message("Overwriting ", fileName , "...");
-			} else {
-				message(fileName);
-			}
-			write.table(DT[x,][order(get(orderColumn)),], file=fileName, quote=FALSE, row.names=FALSE, sep="\t"); 
-		}
-	)
-	);
-	options(scipen = saveScipenSetting);
-}
-
-
-#Function for writing output all at once: combinedResults is an table 
-#generated by "locationEnrichment()".# or by rbinding category and location results.
-#Writes all enrichments to a single file, and also spits out the same data
-#divided into groups based on userSets, and Databases, just for convenience.
-#disable this with an option.
-#' @export
-writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplits=TRUE) {
-	if (outFolder == "" | is.null(outFolder)) {
-		outFolder = "";
-	} else if (substr(outFolder, nchar(outFolder), nchar(outFolder)) != "/") {
-		outFolder = paste0(outFolder, "/");
-	}
-
-	dir.create(outFolder, showWarnings=FALSE);
-	if (includeSplits) {
-		if (combinedResults[,length(unique(userSet))] > 1) {
-			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="userSet", filePrepend=paste0(outFolder, "userSet_"));
-		}
-		if (combinedResults[,length(unique(db))] > 1) {
-			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="db", filePrepend=paste0(outFolder, "db_"));
-		}
-	}
-	if (file.exists(paste0(outFolder, "allEnrichments.txt")))
-		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...");
-	write.table(combinedResults[order(pValueLog,decreasing=TRUE),], file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE, sep="\t");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Deprecated function
 
 getTopEnrichedHits = function(sigvals, n, annotationTable=NULL) {
@@ -761,15 +584,6 @@ getTopEnrichedHits = function(sigvals, n, annotationTable=NULL) {
 	}
 		return (cbind(category=topn, pval=sigvals[topn],annotationTable[topn]) )
 }
-
-
-
-
-
-
-
-
-
 
 
 #Unit Set Enrichment
@@ -788,73 +602,6 @@ getTopEnrichedHits = function(sigvals, n, annotationTable=NULL) {
 
 #Both of these sets should first be restricted to the "universe"
 
-
-
-#DEPRECATED FUNCTION, SPECIFIC TO ENCODE. 
-#I RE-WROTE THIS FUNCTION TO ENABLE IT TO WORK WITH ANY DATABASE, 
-#SUCH AS CISTROME.
-# Using the ENCODE TFBS annotations:
-
-#encodeTFBSannotation = readEncodeTFBSannotation(cacheDir);
-#encodeGRL = simpleCache("encodeGRL", "encodeGRL = readEncodeTFBS(encodeTFBSannotation);", cacheDir=SHARE.RDATA.DIR);
-#r = countOverlaps(encodeGRL, mygr)
-
-
-#function that calculates encode overlap
-#gRangesList should be a list of GRanges objects,
-#which are, for example, the PROMOTERS of the gene sets you are interested in
-#enrichmentEncodeTFBS = function(gRangesSetsList, userUniverse, mc.cores=1) {
-#	encodeTFBSannotation = readEncodeTFBSannotation(cacheDir);
-#	if (is.function(simpleCache)) {
-#		encodeGRL = simpleCache("encodeGRL", "encodeGRL = readEncodeTFBS(encodeTFBSannotation);", cacheDir=SHARE.RDATA.DIR);
-#	} else {
-#		message("Loading ENCODE data...");
-#		encodeGRL = readEncodeTFBS(encodeTFBSannotation);
-#	}
-
-#	if(mc.cores > 1) { #multicore for this? could take a while...
-#		library(multicore)
-#		lapplyAlias = mclapply;
-#	} else {
-#		lapplyAlias = lapply;
-#	}
-#	encodeGRL.length = lapplyAlias(encodeGRL, length, mc.cores=6);
-#	message("Calculating unit set overlaps...");
-#	geneSetDatabaseOverlap =lapplyAlias( as.list(gRangesSetsList), countOverlapsRev, encodeGRL, mc.cores=6);
-
-#	olmat = do.call(cbind, geneSetDatabaseOverlap); 
-#	#turn results into an overlap matrix. It is
-#	#database sets (rows) by test sets (columns), scoring the number of overlap.
-
-#	#To make a significance test for each of these comparisons, we need to consider the total number in each dimension...
-
-#	message("Calculating universe set overlaps...");
-#	gRangesSetsList.length = sapply(gRangesSetsList, length);
-#	#univPromOverlaps =countOverlaps(userUniverse, encodeGRL);
-#	encOverlaps =countOverlaps(encodeGRL,userUniverse);
-
-#	universeLength = length(userUniverse);
-
-#	scoreTable = data.table(melt(t(olmat)))
-#	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "expID", "support"))
-
-#	message("Calculating Fisher scores...");
-#	scoreTable[,c("b", "c", "d"):=list(b=encOverlaps[expID]-support, c=gRangesSetsList.length[userSet]-support, d=universeLength-encOverlaps[expID])]
-#	scoreTable[,c("pValue", "logOdds") := fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value", "estimate")], by=list(userSet,expID)]
-#	scoreTable
-
-#	message("Ranking results...");
-#	scoreTable[, rankSupport:=rank(-support, ties.method="min"), by=userSet]
-#	scoreTable[, rankPValue:=rank(pValue, ties.method="min"), by=userSet]
-#	scoreTable[, rankLogOdds:=rank(-logOdds, ties.method="min"), by=userSet]
-#	scoreTable[, maxRank:=max(c(rankSupport, rankPValue, rankLogOdds)), by=list(userSet,expID)]
-#	scoreTable[, meanRank:=signif(mean(c(rankSupport, rankPValue, rankLogOdds)), 4), by=list(userSet,expID)]
-
-#	#append description column
-#	setkey(scoreTable, "expID")
-#	scoreTable[encodeTFBSannotation[, list(description=paste0(c("ENCODE", cell, treatment, antibody), collapse=" ")),by=expID], description:=description]
-#	scoreTable
-#}
 
 
 
