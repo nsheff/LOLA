@@ -9,18 +9,18 @@
 #' @export
 #' @examples
 #' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
-loadRegionDB = function(dbLocation, filePattern="") {
+loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 	regionAnno = readRegionAnnotation(dbLocation, filePattern);
-	regionGRL = readRegionGRL(dbLocation, regionAnno);
+	regionGRL = readRegionGRL(dbLocation, regionAnno, limit=limit);
 	return(nlist(dbLocation, regionAnno, regionGRL));
 }
-
+#refreshPackage("LOLA");loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
 #' Given a folder containing region collections in subfolders, this function
 #' will either read the annotation file if one exists, or create a generic
 #' annotation file.
 #' 
 #' @export
-readRegionAnnotation = function(dbLocation, filePattern = "") {
+readRegionAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE) {
 	if (is.null(shareDir)) {
 		message("You must set global option SHARE.DATA.DIR with setSharedCacheDir(), or specify a shareDir parameter directly to readBeds().");
 		return(NA);
@@ -42,25 +42,35 @@ readRegionAnnotation = function(dbLocation, filePattern = "") {
 		#look for index file
 		indexFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0index")
 		if (file.exists(indexFile)) {
-			indexDT = fread(paste0(dbLocation, collection, "0index"));
-			setcolnames(indexDT, lc(colnames(indexDT)));
-			indexDT = indexDT[,annotationColNames] #subset
+			message("\tIn '", collection, "', found index file:", indexFile);
+			indexDT = fread(indexFile);
+			setnames(indexDT, tolower(colnames(indexDT)));
+			missCols = setdiff(annotationColNames, colnames(indexDT));
+			for (col in missCols) indexDT[, col:=NA, with=F];
+			indexDT = indexDT[,annotationColNames, with=FALSE] #subset
+
 		} else {
+			message("\tIn '", collection, "', no index file.");
 			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames));
-			setkey(indexDT, "filename")
 		}
+		setkey(indexDT, "filename")
 		#look for size file
 		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0sizes")
-		if (file.exists(sizeFile)) {
+		if (file.exists(sizeFile) & !refreshSizes) {
 			groupSizes = fread(sizeFile)
-			#setkey(groupSizes, filename);
-			collectionAnnoDT[groupSizes, size:=size]
-		} else {
+			collectionAnnoDT[,size:=-1]
+			setkey(groupSizes, "filename");
+			groupSizes[, size_int:=as.double(size)]
+			collectionAnnoDT[groupSizes, size:=size_int]
+		}
+		if (any(collectionAnnoDT[,size] < 0)) {
 			message("Collection: ", collection, ". Creating size file...")
 			collectionAnnoDT[,size:=countFileLines(paste0(dbLocation, "/", collection, "/", filename)), by=filename]
 			write.table(collectionAnnoDT[,list(filename,size)], file=sizeFile, quote=FALSE, row.names=FALSE, sep="\t")
 		}
+
 	collectionAnnoDT = indexDT[collectionAnnoDT]
+#	collectionAnnoDT = collectionAnnoDT[indexDT]
 	annoDT = rbind(annoDT, collectionAnnoDT);
 	} #end loop through collections
 
@@ -102,11 +112,13 @@ getRegionGroupSizes = function(dbLocation, annoDT) {
 readRegionGRL = function(dbLocation, annoDT, limit=NULL) {
 	grl = GRangesList()
 	dbLocation = enforceTrailingSlash(dbLocation);
-	filesToRead = annoDT[,list(fullFilename=paste0(dbLocation, enforceTrailingSlash(collection), filename)), by=filename]$fullFilename
+	filesToRead = annoDT[,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), filename)), by=filename]$fullFilename
 
 	if (is.null(limit)) {
 		limit = length(filesToRead);
-	}	
+	}	else {
+		message("limit files: ", limit);
+	}
 	for (i in 1:limit) {
 		message(i, ": ", filesToRead[i]);
 		filename = filesToRead[i]

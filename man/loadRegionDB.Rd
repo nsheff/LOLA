@@ -4,7 +4,12 @@
 \title{Helper function to annotate and load a regionDB, a folder with
 subfolder collections of regions.}
 \usage{
-loadRegionDB(dbLocation, filePattern = "")
+loadRegionDB(dbLocation, filePattern = "", limit = NULL)
+}
+\arguments{
+\item{dbLocation}{folder where your regionDB is stored.}
+
+\item{filePattern}{passed to list.files; you can use this to select only certain file names in your folders.}
 }
 \description{
 Helper function to annotate and load a regionDB, a folder with
