@@ -1,9 +1,6 @@
 ######################################################################
 # Generic Region DB Loading  Functions
 ######################################################################
-#For a folder of bed files with or without an annotation file;
-#Example use:
-
 #' Helper function to annotate and load a regionDB, a folder with
 #' subfolder collections of regions.
 #' 
