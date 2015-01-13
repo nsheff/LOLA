@@ -59,9 +59,10 @@ You can (optionally) annotate your regions by putting a file named `0index` into
 
 Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for the above structure, a 0index may look like this:
 
-filename	|source	|antibody
-file1.bed	|K562		|GATA2 
-file3.bed	|K562		|CTCF
+filename	 |source	|antibody
+----------|-------|--------
+file1.bed	|K562		 |GATA2 
+file3.bed	|K562		 |CTCF
 
 
 
