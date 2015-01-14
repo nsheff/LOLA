@@ -40,8 +40,7 @@ LOLA comes with a core database that includes encode transcription factor bindin
 --------------------------------------------------------------------------------
 ### Building a custom database
 
-LOLA provides functions that can read your bed files, building a custom database. Start by creating collections of bed files: a collection is just a folder with a bunch of bed files in it. For example, you may find a paper that produced 100 data sets you're interested in testing for overlap with your data. To make a collection for the paper, create a folder, name it after the paper, and then put the 100 bed files into the folder. Drop this collection into a parent database folder that holds all your collections, and you're good to go!@
-
+LOLA provides functions that can read your bed files, building a custom database. Start by creating collections of bed files: a collection is just a folder with a bunch of bed files in it. For example, you may find a paper that produced 100 data sets you're interested in testing for overlap with your data. To make a collection for the paper, create a folder, name it after the paper, and then put the 100 bed files into the folder. Drop this collection into a parent database folder that holds all your collections, and you're good to go!
 
 ##### Guidelines for collections
 
@@ -84,13 +83,19 @@ Your folder hierarchy looks something like this:
       * file2.bed
       * file3.bed
     * collection2
-    * collection 3
+      * bed files...
+    * collection3
+      * bed files...
 
-Then simply pass the regionDB/hg19 folder (the parent folder containing your collections) to loadRegionDB() and it will automatically read and annotate your region collections.
+Then simply pass the `regionDB/hg19` folder (the parent folder containing your collections) to `loadRegionDB()` and it will automatically read and annotate your region collections.
 
 ##### Tips
 * Your files really just need the first 3 columns to be chr, start, and end -- no need to follow exact bed specifications.
 
-* Any file starting with a 0 will be ignored by LOLA.
+* You don't have to annotate each file in a collection in the same way, but it's helpful. Just put in whatever you have and LOLA will default to file name for files you don't annotate better.
+
+* You could create your initial `0index` file by executing `ls > 0index` in a collection folder. Now, add a first line containing `filename`, open in spreadsheet software, and start annotating!
+
+* Any file starting with a `0` will be ignored by LOLA. So don't name your bed files like this!
 
 * On first load of a collection, LOLA will automatically produce a file called `0sizes` containing the size of each set.
