@@ -10,7 +10,7 @@ getRegionGroupSizes(DT, bedDir, shareDir = getOption("SHARE.DATA.DIR"))
 \arguments{
 \item{dbLocation}{folder of regiondB}
 
-\item{annoDT}{the result of readRegionAnnotation();}
+\item{annoDT}{the result of readRegionSetAnnotation();}
 }
 \description{
 Given a region annotation object, this function either reads its sizes

@@ -5,11 +5,6 @@
 \usage{
 loadAllEnrichmentDatabases()
 }
-\arguments{
-\item{bamFile}{Input file in bam format}
-
-\item{bigWigOut}{Produce a smoothed output density file in bigwig format}
-}
 \description{
 Helper loader functions to just load up all the data, if you want
 to do a comprehensive analysis.

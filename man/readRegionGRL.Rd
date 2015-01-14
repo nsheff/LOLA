@@ -9,7 +9,7 @@ readRegionGRL(dbLocation, annoDT, limit = NULL)
 \arguments{
 \item{dbLocation}{folder of regiondB}
 
-\item{annoDT}{output of readRegionAnnotation().}
+\item{annoDT}{output of readRegionSetAnnotation().}
 
 \item{limit}{for testing purposes, you could limit the number of files read. NULL for no limit (default).}
 }

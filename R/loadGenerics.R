@@ -115,23 +115,23 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 #' @param dbLocation	folder of regiondB
 #' @param annoDT 	the result of readRegionSetAnnotation();
 #' @export
-getRegionGroupSizes = function(dbLocation, annoDT) {
-	dbLocation = enforceTrailingSlash(dbLocation);
-	collections = annoDT[,unique(collection)]
-	for (collection in collections) {
-		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0sizes")
-		if (file.exists(sizeFile)) {
-			groupSizes = fread(sizeFile)
-			#setkey(groupSizes, filename);
-			annoDT[groupSizes, size:=size]
-		} else {
-			message("Collection: ", collection, ". Creating size file...")
-			annoDT[,size:=countFileLines(paste0(dbLocation, "/", collection, "/", filename)), by=filename]
-			write.table(annoDT[,list(filename,size)], file=sizeFile, quote=FALSE, row.names=FALSE, sep="\t")
-		}
-	}
-	annoDT
-}
+#getRegionSetGroupSizes = function(dbLocation, annoDT) {
+#	dbLocation = enforceTrailingSlash(dbLocation);
+#	collections = annoDT[,unique(collection)]
+#	for (collection in collections) {
+#		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0sizes")
+#		if (file.exists(sizeFile)) {
+#			groupSizes = fread(sizeFile)
+#			#setkey(groupSizes, filename);
+#			annoDT[groupSizes, size:=size]
+#		} else {
+#			message("Collection: ", collection, ". Creating size file...")
+#			annoDT[,size:=countFileLines(paste0(dbLocation, "/", collection, "/", filename)), by=filename]
+#			write.table(annoDT[,list(filename,size)], file=sizeFile, quote=FALSE, row.names=FALSE, sep="\t")
+#		}
+#	}
+#	annoDT
+#}
 
 #' This function takes a region annotation object and reads in the regions,
 #' returning a GRangesList object of the regions.
