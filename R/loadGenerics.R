@@ -10,21 +10,48 @@
 #' @examples
 #' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
 loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
-	regionAnno = readRegionAnnotation(dbLocation, filePattern);
+	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	regionGRL = readRegionGRL(dbLocation, regionAnno, limit=limit);
-	return(nlist(dbLocation, regionAnno, regionGRL));
+	collectionAnno = readCollectionAnnotation(dbLocation);
+	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
-#refreshPackage("LOLA");loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
+
+#'@export
+readCollectionAnnotation = function(dbLocation) {
+	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
+	message("Found collections: ", paste(collections, collapse=", "));
+	annoDT = data.table();
+	collectionColNames = c("collector", "date", "source", "description")
+	collectionsDT = data.table()
+	for (collection in collections) {
+		collectionFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0collection")
+		if (file.exists(collectionFile)) {
+			message("\tIn '", collection, "', found collection annotation file:", collectionFile);
+			collectionDT = fread(collectionFile);
+			setnames(collectionDT, tolower(colnames(collectionDT)));
+			missCols = setdiff(collectionColNames, colnames(collectionDT));
+			for (col in missCols) collectionDT[, col:=NA, with=F];
+			collectionDT = collectionDT[,collectionColNames, with=FALSE] #subset
+
+		} else {
+			message("\tIn '", collection, "', no collection file.");
+			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = F), collectionColNames));
+		}
+		collectionDT[,collectionname:=collection]
+		collectionsDT = rbind(collectionsDT, collectionDT);
+	}
+	setkey(collectionsDT, "collectionname")
+	setcolorder(collectionsDT, c("collectionname", collectionColNames));
+	collectionsDT
+}
+
+#
 #' Given a folder containing region collections in subfolders, this function
 #' will either read the annotation file if one exists, or create a generic
 #' annotation file.
 #' 
 #' @export
-readRegionAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE) {
-	if (is.null(shareDir)) {
-		message("You must set global option SHARE.DATA.DIR with setSharedCacheDir(), or specify a shareDir parameter directly to readBeds().");
-		return(NA);
-	}
+readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE) {
 	#Build a data.table annotating the beds.
 	#Should give collections
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
@@ -36,6 +63,10 @@ readRegionAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE
 		files = list.files(paste0(dbLocation,"/",collection), filePattern)
 		#eliminate special annotation files
 		files = files [ -grep("^0", files)]
+		if (length(files) <1) { 
+			message("\tIn '", collection, "', no files found");
+			next;
+		}
 		collectionAnnoDT = data.table(collection=collection, filename=files); #preserve new ones
 		setkey(collectionAnnoDT, "filename")
 
@@ -82,7 +113,7 @@ readRegionAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE
 #' file.
 #"
 #' @param dbLocation	folder of regiondB
-#' @param annoDT 	the result of readRegionAnnotation();
+#' @param annoDT 	the result of readRegionSetAnnotation();
 #' @export
 getRegionGroupSizes = function(dbLocation, annoDT) {
 	dbLocation = enforceTrailingSlash(dbLocation);
@@ -106,7 +137,7 @@ getRegionGroupSizes = function(dbLocation, annoDT) {
 #' returning a GRangesList object of the regions.
 #' 
 #' @param dbLocation	folder of regiondB
-#' @param annoDT	output of readRegionAnnotation().
+#' @param annoDT	output of readRegionSetAnnotation().
 #' @param limit	for testing purposes, you could limit the number of files read. NULL for no limit (default).
 #' @export
 readRegionGRL = function(dbLocation, annoDT, limit=NULL) {

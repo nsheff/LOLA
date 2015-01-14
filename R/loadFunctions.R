@@ -7,8 +7,6 @@
 #' Helper loader functions to just load up all the data, if you want
 #' to do a comprehensive analysis.
 #'
-#' @param bamFile	Input file in bam format
-#' @param bigWigOut	Produce a smoothed output density file in bigwig format 
 #' @examples
 #' loadAllEnrichmentDatabases();
 #' @export
@@ -16,6 +14,9 @@ loadAllEnrichmentDatabases = function() {
 	loadLocationEnrichmentDatabases();
 	loadCategoryEnrichmentDatabases();
 }
+
+#' Loads all location databases. Just a helper function that calls the others.
+#' use loadLocationEnrichmentMm10() for mouse.
 #' @export
 loadLocationEnrichmentDatabases = function() {
 	#encode

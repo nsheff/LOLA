@@ -89,8 +89,6 @@ regionset2.bed|K562		|CTCF
 
 The `0` in `0index` and `0collection` simply makes this file sort at the top of the list so you can find it easily. These files are put inside the collection folder so that a collection is a self-contained entity that can be easily moved.
 
-##### Annotating collections
-
 ##### Example custom database
 
 Your folder hierarchy looks something like this:
