@@ -50,9 +50,25 @@ LOLA provides functions that can read your bed files, building a custom database
 
 * Name your bed files something short and informative. If you provide no additional annotation information (see below), this (along with the collection name) will be the only way to identify the region set. No need to put the collection name into the bed name.
 
-##### Annotating regions
+##### Annotating collections
 
-You should annotate your regions by putting a file named `0index` into each collection folder. This is not required, but suggested. This file should be a TSV file with a header line including at least a column called `filename`, which points to files in that collection folder. You can then add additional annotation columns; LOLA will recognize and use these column names:
+You should annotate your collections by putting a file named `0collection` into each collection folder. This file should be a 2-line TSV file with a header line including these columns:
+
+* collector (your name)
+* date (time you produced the collection)
+* source (paper or website where you got the data)
+* description (free form field for details)
+
+Example file: 
+
+collector		|date		|source		|description
+---------------------|-------------|--------------------|-----------
+John Doe		|2015-01-03	|Ziller et al.(2014) | Methylation data downloaded from the Ziller paper, files renamed and curated manually.
+
+
+##### Annotating region sets
+
+You should annotate your region sets by putting a file named `0index` into each collection folder. This is not required, but suggested. This file should be a TSV file with a header line including at least a column called `filename`, which points to files in that collection folder. You can then add additional annotation columns; LOLA will recognize and use these column names:
 
 * filename (must match files in the collection exactly)
 * description
@@ -62,14 +78,18 @@ You should annotate your regions by putting a file named `0index` into each coll
 * treatment
 * data-source (for publication author, database, etc.)
 
-Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for the above structure, a `0index` file may look like this:
+Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for esxample, a `0index` file may look like this:
 
 filename	|source	|antibody
 --------------|-------------|--------
-file1.bed	|K562		|GATA2 
-file3.bed	|K562		|CTCF
+regionset1.bed|K562		|GATA2 
+regionset2.bed|K562		|CTCF
 
-The `0` in `0index` simply makes this file sort at the top of the list so you can find it easily. It's located inside the collection folder so that a collection is a self-contained entity that can be easily moved.
+
+
+The `0` in `0index` and `0collection` simply makes this file sort at the top of the list so you can find it easily. These files are put inside the collection folder so that a collection is a self-contained entity that can be easily moved.
+
+##### Annotating collections
 
 ##### Example custom database
 
@@ -78,13 +98,17 @@ Your folder hierarchy looks something like this:
 * regionDB
   * hg19
     * collection1
+      * 0collection
       * 0index
-      * file1.bed
-      * file2.bed
-      * file3.bed
+      * regionset1.bed
+      * regionset2.bed
+      * regionset3.bed
     * collection2
+      * 0collection
+      * 0index
       * bed files...
     * collection3
+      * 0collection
       * bed files...
 
 Then simply pass the `regionDB/hg19` folder (the parent folder containing your collections) to `loadRegionDB()` and it will automatically read and annotate your region collections.
