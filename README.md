@@ -99,3 +99,5 @@ Then simply pass the `regionDB/hg19` folder (the parent folder containing your c
 * Any file starting with a `0` will be ignored by LOLA. So don't name your bed files like this!
 
 * On first load of a collection, LOLA will automatically produce a file called `0sizes` containing the size of each set.
+
+* Make sure all files in a collection, and all collections in parent folder, use the same reference genome!
