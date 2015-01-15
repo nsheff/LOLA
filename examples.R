@@ -2,7 +2,7 @@
 #Install and load LOLA
 #######################################################################
 install_github("sheffien/simpleCache") 
-install_github("sheffien/LOLA", "YOUR_USERNAME", auth_token="YOUR PAT") 
+install_github("sheffien/LOLA") 
 library(LOLA)
 
 #######################################################################
@@ -50,6 +50,22 @@ locResults[order(pValue),][1:30,]
 
 #Output your results:
 writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
+
+
+
+
+#New, Generic collection system:
+
+regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19", limit=10)
+regionDB
+
+
+
+
+
+
+
+
 
 
 #######################################################################
