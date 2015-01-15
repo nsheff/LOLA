@@ -50,3 +50,53 @@ listToGRangesList = function(lst) {
 	}
 	return(lst);
 }
+
+######################################################################
+#Two utility functions for converting data.tables into GRanges objects
+#genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId");
+dtToGrInternal = function(DT, chr, start, end=NULL, str=NULL, name=NULL,metaCols=NULL) {
+	if (is.null(end)) {
+		end = start;
+	}
+	if (is.null(str)) {
+			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), str="*")
+	} else {
+	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), str=DT[[`str`]])
+	}
+	if (! is.null(name)) {
+		names(gr) = DT[[`name`]];
+	} else {
+		names(gr) = 1:length(gr);
+	}
+	if(! is.null(metaCols)) {
+		for(x in metaCols) {
+			elementMetadata(gr)[[`x`]]=DT[[`x`]]
+		}
+	}
+	gr;
+}
+
+dtToGr = function(DT, chr="chr", start="start", end=NULL, strand=NULL, name=NULL, splitFactor=NULL, metaCols=NULL) {
+	if(is.null(splitFactor)) {
+		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols));
+	}
+	if ( length(splitFactor) == 1 ) { 
+		if( splitFactor %in% colnames(DT) ) {
+			splitFactor = DT[, get(splitFactor)];
+		}
+	}
+	lapply(split(1:nrow(DT), splitFactor), 
+			function(x) { 
+				dtToGrInternal(DT[x,], chr, start, end, strand, name,metaCols)
+			}
+		)
+
+
+}
+
+#If you want to use the GenomicRanges countOverlaps function, but you want to do it in an lapply, that will work... but you can only do it in one direction. If you want to lapply on the opposite argument, you can't do it (because countOverlaps is not symmetric: it depends on which argument comes first). If you want to do an lapply, but countOverlaps with the query as the second argument instead of the first, you can use this function to simply reverse the order of the arguments.
+#This is used in the enrichment calculations (originally from the EWS project; 2014, CeMM).
+countOverlapsRev = function(query, subject) {
+	return(countOverlaps(subject, query));
+}
+

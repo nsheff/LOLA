@@ -137,7 +137,7 @@ readRegionGRL = function(dbLocation, annoDT, limit=NULL) {
 				grl[[i]] = tfbsgr;
 				TRUE
 			},
-			error = function(e) { message(i, " ERR:", filename); return(FALSE); } )
+			error = function(e) { message(i, " ERR:", filename); print(e); return(FALSE); } )
 			if (!success) { grl[[i]] = GRanges(); }
 		} else {
 			message("Skipping (file not found):", filename);

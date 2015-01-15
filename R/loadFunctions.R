@@ -58,7 +58,7 @@ loadLocationEnrichmentMm10 = function() {
 	encodeTFBSannotationMm10 <<- readEncodeTFBSannotationMm10(shareDir=getOption("SHARE.DATA.DIR"));
 	simpleCache("encodeGRLmm10", "encodeGRLmm10 = readEncodeTFBS(encodeTFBSannotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
 	cistromeAnnotationMm10 <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"), restrictToSpecies="Mouse");
-	simpleCache("cistromeGRLmm10", "cistromeGRLmm10 = readCistrome(cistromeAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"));
+	simpleCache("cistromeGRLmm10", "cistromeGRLmm10 = readCistrome(cistromeAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
 	bockAnnotationMm10 <<- readRegionAnnotation(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/");
 	simpleCache("bockGRLmm10", "bockGRLmm10 = readRegionDb(bockAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
 	bockAnnotationMm10 <<- appendAnnotations(bockAnnotationMm10, bockGRLmm10, "mm10")

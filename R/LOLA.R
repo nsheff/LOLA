@@ -357,8 +357,21 @@ namesToNumbers = function(namedDB) {
 # ENRICHMENT - Actual workhorse enrichment calculation functions
 ######################################################################
 
-# convenience function for doing all the location enrichment functions
-# in one fell swoop.
+
+#' Convenience function for doing all the location enrichment functions
+#' in one fell swoop.
+#' designed to use new generic scripts.
+locationEnrichmentRegionDB = function(userSets, userUniverse, regionDB, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
+	# TO DO 
+}
+
+#' old mouse db
+locationEnrichmentMm10 = function(userSets, userUniverse, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
+	bockResults = enrichmentLocationCalc(userSets, userUniverse, 	bockAnnotationMm10, bockGRLmm10, dbTitle="BOCK", cores=cores, redefineUserSets=redefineUserSets)
+}
+
+#' Convenience function for doing all the location enrichment functions
+#' in one fell swoop.
 #' @export
 locationEnrichment = function(userSets, userUniverse, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
 	if (checkUniverse & !redefineUserSets) {
@@ -372,7 +385,7 @@ locationEnrichment = function(userSets, userUniverse, checkUniverse=FALSE, cores
 }
 
 
-#this function will take the user sets, overlap with the universe, and redefine the user sets as the set of regions in the user universe that overlap at least one region in user sets. this makes for a more appropriate statistical enrichment comparison, as the user sets are actually exactly the same regions found in the universe; otherwise, you can get some weird artifacts from the many-to-many relationship between user set regions and universe regions.
+#' this function will take the user sets, overlap with the universe, and redefine the user sets as the set of regions in the user universe that overlap at least one region in user sets. this makes for a more appropriate statistical enrichment comparison, as the user sets are actually exactly the same regions found in the universe; otherwise, you can get some weird artifacts from the many-to-many relationship between user set regions and universe regions.
 #' @export
 redefineUserSets = function(userSets, userUniverse, cores=1) {
 	setLapplyAlias(cores);
