@@ -4,7 +4,9 @@
 #' LOLA!
 #' 
 #' @references \url{http://github.com/sheffield}
-## @import simpleCache
+#' @import simpleCache
+#' @import data.table
+#' @importFrom reshape2 melt
 #' @docType package
 #' @name LOLA
 #' @author Nathan Sheffield

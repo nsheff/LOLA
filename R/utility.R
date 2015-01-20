@@ -1,6 +1,14 @@
 ################################################################################
-# UTILITY - Small helper functions used in the package.
+# UTILITY FUNCTIONS
 ################################################################################
+# These are functions copied over from my repository of utilities used
+# by this package. They are repeated here simply for portability, so this
+# package can be deployed on systems without access to my utilities. 
+# Any changes should probably be backported to the primary functions rather 
+# than in these convenience duplications.
+#
+# These functions should probably remain interior to the package (not exported)
+#
 #' setSharedDataDir
 #' Sets global variable specifying the default data directory.
 #' 

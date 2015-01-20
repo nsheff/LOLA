@@ -10,3 +10,5 @@ Depends:
     data.table,
     stringr,
     rtracklayer
+Imports:
+	reshape2
