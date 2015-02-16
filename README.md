@@ -32,7 +32,7 @@ library(LOLA)
 ?LOLA
 ```
 
-Now take a look at examples.R for some examples. Vignettes are forthcoming.
+Now take a look at `examples.R` for some examples. Vignettes are forthcoming.
 
 --------------------------------------------------------------------------------
 ### LOLA Core
