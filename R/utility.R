@@ -118,4 +118,19 @@ countFileLines = function(filename) {
 
 
 
+#To make multicore a possibility but not required, I use an lapply alias which can point at either the base lapply (for no multicore), or it can load library(multicore) and then point to mclapply, and set the options for the number of cores (which is what mclapply uses).
+setLapplyAlias = function(cores) {
+	if(cores > 1) { #use multicore?
+		library(parallel)
+		options(mc.cores=cores);
+		lapplyAlias <<- mclapply;
+	} else {
+		lapplyAlias <<- lapply;
+		options(mc.cores=1); #reset cores option.
+	}
+}
+
+
+
+
 
