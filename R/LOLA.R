@@ -277,7 +277,7 @@ calcCpGPercentForDb = function(grl, genomeBuild, cacheDir=getOption("SHARE.RCACH
 		grlName = deparse(substitute(grl));
 	}
 	var = paste0(grlName, "_", genomeBuild, "_cpg");
-	tic();simpleCache(var, "getCpGPercent(grl, genomeBuild=genomeBuild)", buildEnvir=list(grl=grl, genomeBuild=genomeBuild), cacheDir=cacheDir);toc();
+	simpleCache(var, "getCpGPercent(grl, genomeBuild=genomeBuild)", buildEnvir=list(grl=grl, genomeBuild=genomeBuild), cacheDir=cacheDir);
 	return(get(var));
 }
 #anno=bockAnnotationMm10
