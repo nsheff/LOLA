@@ -80,9 +80,9 @@ You should annotate your region sets by putting a file named `0index` into each 
 * treatment
 * data-source (for publication author, database, etc.)
 
-Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for esxample, a `0index` file may look like this:
+Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for example, a `0index` file may look like this:
 
-filename	|source	|antibody
+filename	|cell-type	|antibody
 --------------|-------------|--------
 regionset1.bed|K562		|GATA2 
 regionset2.bed|K562		|CTCF
@@ -115,6 +115,7 @@ Then simply pass the `regionDB/hg19` folder (the parent folder containing your c
 
 ##### Tips
 * Your files really just need the first 3 columns to be chr, start, and end -- no need to follow exact bed specifications.
+* Your files don't _have_ to end with `.bed` -- just make sure they are text files. Right now there's no gzip file reading, but this may change in the future.
 
 * You don't have to annotate each file in a collection in the same way, but it's helpful. Just put in whatever you have and LOLA will default to file name for files you don't annotate better.
 
@@ -125,3 +126,4 @@ Then simply pass the `regionDB/hg19` folder (the parent folder containing your c
 * On first load of a collection, LOLA will automatically produce a file called `0sizes` containing the size of each set.
 
 * Make sure all files in a collection, and all collections in parent folder, use the same reference genome!
+
