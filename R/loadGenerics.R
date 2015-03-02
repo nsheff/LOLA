@@ -62,12 +62,15 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 	for (collection in collections) {
 		files = list.files(paste0(dbLocation,"/",collection), filePattern)
 		#eliminate special annotation files
-		files = files [ -grep("^0", files)]
+		specialFileInd = grep("^0", files)
+		if (length(specialFileInd) > 0) {
+			files = files [ -specialFileInd]
+		}
 		if (length(files) <1) { 
-			message("\tIn '", collection, "', no files found");
+			message("\tIn '", collection, "', no files found.");
 			next;
 		}
-		collectionAnnoDT = data.table(collection=collection, filename=files); #preserve new ones
+		collectionAnnoDT = data.table(collection=collection, filename=files, size=-1); #preserve new ones
 		setkey(collectionAnnoDT, "filename")
 
 		#look for index file
@@ -76,20 +79,21 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 			message("\tIn '", collection, "', found index file:", indexFile);
 			indexDT = fread(indexFile);
 			setnames(indexDT, tolower(colnames(indexDT)));
+		} else {
+			message("\tIn '", collection, "', no index file. Found ", length(files), " files to load with defaults (filename only)");
+#			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames));
+			indexDT= data.table(filename=files)
+		}
 			missCols = setdiff(annotationColNames, colnames(indexDT));
 			for (col in missCols) indexDT[, col:=NA, with=F];
 			indexDT = indexDT[,annotationColNames, with=FALSE] #subset
 
-		} else {
-			message("\tIn '", collection, "', no index file.");
-			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames));
-		}
 		setkey(indexDT, "filename")
 		#look for size file
 		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0sizes")
 		if (file.exists(sizeFile) & !refreshSizes) {
 			groupSizes = fread(sizeFile)
-			collectionAnnoDT[,size:=-1]
+			#collectionAnnoDT[,size:=-1]
 			setkey(groupSizes, "filename");
 			groupSizes[, size_int:=as.double(size)]
 			collectionAnnoDT[groupSizes, size:=size_int]
@@ -127,6 +131,7 @@ readRegionGRL = function(dbLocation, annoDT, limit=NULL) {
 	}	else {
 		message("limit files: ", limit);
 	}
+	message("Reading ", length(filesToRead), " files...")
 	for (i in 1:limit) {
 		message(i, ": ", filesToRead[i]);
 		filename = filesToRead[i]

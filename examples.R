@@ -12,7 +12,7 @@ library(LOLA)
 #You must set these directory paths to match the project directory on your system! If you're on the Bock lab server, these settings will work as is.
 #Nathan's Shared Repository
 options(SHARE.DIR="/fhgfs/groups/lab_bock/nsheffield/share/")
-source(paste0(getOption("SHARE.DIR"), "initDefault.R"))
+#source(paste0(getOption("SHARE.DIR"), "initDefault.R"))
 
 #In the past, I would source these utilities. Now, this is deprecated as these functions are part of the LOLA package.
 #utility("funcEnrichment.R")
@@ -57,10 +57,11 @@ writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=
 #New, Generic collection system:
 
 regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19", limit=10)
+regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
 regionDB
 
-
-
+locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB);
+locResults
 
 
 

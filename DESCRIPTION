@@ -11,4 +11,4 @@ Depends:
     stringr,
     rtracklayer
 Imports:
-	reshape2
+    reshape2
