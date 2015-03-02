@@ -63,7 +63,7 @@ regionDB
 locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB);
 locResults
 
-
+writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
 
 
 

@@ -74,8 +74,8 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplit
 		if (combinedResults[,length(unique(userSet))] > 1) {
 			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="userSet", filePrepend=paste0(outFolder, "userSet_"));
 		}
-		if (combinedResults[,length(unique(db))] > 1) {
-			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="db", filePrepend=paste0(outFolder, "db_"));
+		if (combinedResults[,length(unique(collection))] > 1) {
+			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="collection", filePrepend=paste0(outFolder, "col_"));
 		}
 	}
 	if (file.exists(paste0(outFolder, "allEnrichments.txt")))

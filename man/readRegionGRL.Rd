@@ -4,7 +4,7 @@
 \title{This function takes a region annotation object and reads in the regions,
 returning a GRangesList object of the regions.}
 \usage{
-readRegionGRL(dbLocation, annoDT, limit = NULL)
+readRegionGRL(dbLocation, annoDT, useCache = TRUE, limit = NULL)
 }
 \arguments{
 \item{dbLocation}{folder of regiondB}

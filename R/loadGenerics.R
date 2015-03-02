@@ -11,16 +11,16 @@
 #' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
 loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
-	regionGRL = readRegionGRL(dbLocation, regionAnno, limit=limit);
 	collectionAnno = readCollectionAnnotation(dbLocation);
+	regionGRL = readRegionGRL(dbLocation, regionAnno, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
 
 #'@export
 readCollectionAnnotation = function(dbLocation) {
+	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Found collections: ", paste(collections, collapse=", "));
-	annoDT = data.table();
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
 	for (collection in collections) {
@@ -57,7 +57,7 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Found collections: ", paste(collections, collapse=", "));
 	annoDT = data.table();
-	annotationColNames = c("filename", "description", "source", "antibody", "treatment")
+	annotationColNames = c("filename", "cell-type", "description", "tissue", "data-source", "antibody", "treatment")
 
 	for (collection in collections) {
 		files = list.files(paste0(dbLocation,"/",collection), filePattern)
@@ -78,6 +78,7 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 		if (file.exists(indexFile)) {
 			message("\tIn '", collection, "', found index file:", indexFile);
 			indexDT = fread(indexFile);
+			indexDT[,filename:=as.character(filename)]
 			setnames(indexDT, tolower(colnames(indexDT)));
 		} else {
 			message("\tIn '", collection, "', no index file. Found ", length(files), " files to load with defaults (filename only)");
@@ -121,11 +122,26 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 #' @param annoDT	output of readRegionSetAnnotation().
 #' @param limit	for testing purposes, you could limit the number of files read. NULL for no limit (default).
 #' @export
-readRegionGRL = function(dbLocation, annoDT, limit=NULL) {
+readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
 	dbLocation = enforceTrailingSlash(dbLocation);
-	filesToRead = annoDT[,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), filename)), by=filename]$fullFilename
+	
+	for (iCol in unique(annoDT$collection)) {
+	message(iCol);
+	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), filename)), by=filename]$fullFilename
+	if (useCache) {
+	simpleCache(iCol, "readCollection(filesToRead)", cacheDir=dbLocation, buildEnvir=nlist(filesToRead))
+	} else {
+	readCollection(filesToRead, limit);
+	}
+	grl = c(grl, get(iCol))
+	}
+	return(grl)
+}
 
+#' @export
+readCollection = function(filesToRead, limit=NULL) {
+	grl = GRangesList()
 	if (is.null(limit)) {
 		limit = length(filesToRead);
 	}	else {

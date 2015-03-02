@@ -32,7 +32,35 @@ library(LOLA)
 ?LOLA
 ```
 
-Now take a look at `examples.R` for some examples. Vignettes are forthcoming.
+For a quick example, load up some data into a GRanges object and test for enrichment.
+
+1. Load the region database:
+
+```
+regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
+regionDB
+```
+
+2. Load your region sets of interest:
+```
+userSets = import(paste0(getOption("SHARE.DIR"), "data/atac_example.bed"))
+userUniverse =userSets
+```
+
+3. Calculate enrichments:
+```
+locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB);
+locResults
+```
+
+4. Write out results:
+
+```
+writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
+```
+
+
+Now take a look at `examples.R` for some more examples. Vignettes are forthcoming.
 
 --------------------------------------------------------------------------------
 ### LOLA Core
@@ -127,3 +155,4 @@ Then simply pass the `regionDB/hg19` folder (the parent folder containing your c
 
 * Make sure all files in a collection, and all collections in parent folder, use the same reference genome!
 
+* If you have a single file with different collections (like a segmentation), you can use a function `splitFileIntoCollection()` to divide it into separate bed files so LOLA can understand it.
