@@ -13,7 +13,7 @@ splitFileIntoCollection = function(filename, splitCol) {
 	nDT = names(sDT);
 	for (i in 1:length(sGR)) {
 		message(nDT[[i]]);
-		write.tsv(sDT[[1]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))
+		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))
 	}		
 }
 
