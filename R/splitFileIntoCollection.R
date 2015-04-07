@@ -9,9 +9,9 @@ splitFileIntoCollection = function(filename, splitCol) {
 	DT = fread(paste0(filename))
 	collectionFolder = paste0(dirname(filename), "/", basename(filename), "_collection")
 	dir.create(collectionFolder);
-	sDT = splitDataTable(DT, splitCol)
+	sDT = splitDataTable(DT, splitFactor=get("splitCol"))
 	nDT = names(sDT);
-	for (i in 1:length(sGR)) {
+	for (i in 1:length(sDT)) {
 		message(nDT[[i]]);
 		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))
 	}		

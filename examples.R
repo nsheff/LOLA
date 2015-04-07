@@ -1,6 +1,7 @@
 #######################################################################
 #Install and load LOLA
 #######################################################################
+library(devtools)
 install_github("sheffien/simpleCache") 
 install_github("sheffien/LOLA") 
 library(LOLA)

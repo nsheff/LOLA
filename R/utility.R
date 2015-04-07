@@ -13,6 +13,7 @@
 #' Sets global variable specifying the default data directory.
 #' 
 #' @export
+#' @param sharedDataDir	directory where the shared data is stored.
 setSharedDataDir = function(sharedDataDir) {
 	options(SHARE.DATA.DIR=sharedDataDir); 
 }
@@ -131,6 +132,43 @@ setLapplyAlias = function(cores) {
 }
 
 
+#check for, and fix, trailing slash. if necessary
+enforceTrailingSlash = function(folder) {
+	enforceEdgeCharacter(folder, appendChar="/");
+}
+enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
+	if (string=="" | is.null(string)) {
+		return(string);
+	}
+	if(!is.null(appendChar)) {
+		if (substr(string,nchar(string), nchar(string)) != appendChar) { # +1 ?
+			string = paste0(string, appendChar);
+			}
+	}
+	if (!is.null(prependChar)) {
+		if (substr(string,1,1) != prependChar) { # +1 ?
+			string = paste0(prependChar, string);
+		}
+	}
+	return(string);
+}
 
 
+#' Nathan's magical named list function.
+#' This function is a drop-in replacement for the base list() function,
+#' which automatically names your list according to the names of the 
+#' variables used to construct it.
+#' It seemlessly handles lists with some names and others absent,
+#' not overwriting specified names while naming any unnamed parameters.
+#' Took me awhile to figure this out.
+nlist = function(...) {
+ 	fcall = match.call(expand.dots=FALSE)
+	l = list(...);
+	if(!is.null(names(list(...)))) { 
+		names(l)[names(l) == ""] = fcall[[2]][names(l) == ""]
+	} else {	
+		names(l) = fcall[[2]];
+	}
+	return(l)
+}
 

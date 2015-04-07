@@ -7,8 +7,6 @@
 #' Helper loader functions to just load up all the data, if you want
 #' to do a comprehensive analysis.
 #'
-#' @examples
-#' loadAllEnrichmentDatabases();
 #' @export
 loadAllEnrichmentDatabases = function() {
 	loadLocationEnrichmentDatabases();

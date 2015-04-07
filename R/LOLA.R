@@ -6,6 +6,8 @@
 #' @references \url{http://github.com/sheffield}
 #' @import simpleCache
 #' @import data.table
+#' @import rtracklayer
+#' @import stringr
 #' @importFrom reshape2 melt
 #' @docType package
 #' @name LOLA
@@ -21,21 +23,25 @@ NULL
 # These are helper functions for calculating enrichment of
 # Gene sets or location clusters.
 # By Nathan Sheffield, CeMM, 2014
-library(reshape2)
-library(data.table)
-
 #helper functions
+
+#' Deprecated function
 #' @export
+#' @param shareDir	Directory for shared data.
 readEncodeTFBSannotationMm9 = function(shareDir=getOption("SHARE.DATA.DIR")) {
 	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBSmm9/");
 }
 
+#' Deprecated function
 #' @export
+#' @param shareDir	Directory for shared data.
 readEncodeTFBSannotationMm10 = function(shareDir=getOption("SHARE.DATA.DIR")) {
 	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBSmm10/");
 }
 
+#' Deprecated function
 #' @export
+#' @param shareDir	Directory for shared data.
 readEncodeTFBSannotationHg19 = function(shareDir=getOption("SHARE.DATA.DIR")) {
 	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBS/");
 }
@@ -47,9 +53,8 @@ readEncodeTFBSannotationHg19 = function(shareDir=getOption("SHARE.DATA.DIR")) {
 #These functions require a connection to SHARE.DATA.DIR, a directory
 #where shared information downloaded from ENCODE is stored.
 
+#' Deprecated function
 #' @export
-#' @import rtracklayer
-#' @import stringr
 readEncodeTFBSannotation = function(encodeTFBSdir, shareDir=getOption("SHARE.DATA.DIR")) {
 	#Load the files.txt file from ENCODE that annotates the
 	#ChIP-seq experiments
@@ -111,9 +116,6 @@ readEncodeTFBS = function(encodeTFBSannotation, shareDir=getOption("SHARE.DATA.D
 #Load up annotation table for encode TFBS experiments.
 #' @export
 readCistromeAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), cistromeDir="cistrome/", restrictToSpecies="Human") {
-	library(data.table)
-	library(stringr)
-	library(rtracklayer)
 	message("CISTROME: restricting dataset to ", restrictToSpecies);
 	#Load the files.txt file from ENCODE that annotates the
 	#ChIP-seq experiments
@@ -325,11 +327,10 @@ appendAnnotations = function(anno, grl, genomeBuild) {
 
 #' @export
 readMSigDB = function(shareDir=getOption("SHARE.DATA.DIR")) {
-	library(stringr)
 	#Slurp by line:
 	mSig_in = readLines(paste0(shareDir, "MSigDB/msigdb.v4.0.symbols.gmt"));
 	#Split on tab:
-	mSig = sapply(mSig_in, str_split, "\t")
+	mSig = sapply(mSig_in, stringr::str_split, "\t")
 	#First entry in each line is a gene set identifier.
 	names(mSig) = 1:length(mSig);
 	geneSetNames = sapply(mSig, "[[", 1)

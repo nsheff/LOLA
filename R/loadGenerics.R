@@ -6,6 +6,7 @@
 #' 
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param filePattern	passed to list.files; you can use this to select only certain file names in your folders.
+#' @param limit	You can limit the number of regions for testing. Default: NULL (no limit)
 #' @export
 #' @examples
 #' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
@@ -16,7 +17,9 @@ loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
 
-#'@export
+#' Read collection annotation
+#' @export
+#' @param dbLocation	Location of the database
 readCollectionAnnotation = function(dbLocation) {
 	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)

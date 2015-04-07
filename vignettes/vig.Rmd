@@ -1,0 +1,11 @@
+%\VignetteEngine{knitr::knitr}
+
+
+```{r chunkLabel}
+# R code
+```
+
+
+sample_input = load("inst/extdata/sample_input.Rdata")
+
+
