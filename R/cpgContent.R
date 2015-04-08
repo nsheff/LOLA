@@ -1,0 +1,70 @@
+######################################################################
+# For any DB, calculate cpg content.
+######################################################################
+# A series of functions to calculate CpG content of a region set DB.
+#
+# These functions are not an integral part of LOLA, but were used by
+# an earlier project that required knowing the mean CpG content of
+# each region set in the LOLA database (in the single cell DNA 
+# methylation project, I used this value in the linear models)
+# I'll leave these in here for now, but they should probably become
+# a separate thing shortly (move to RGenomeUtils?)
+
+
+#This is a fantastic example of a function that caches a result the right way (april 29, 2014). I'm very proud.
+#keep in mind: the name of grl is KEY!! it has to be constant.
+#grl can be passed in either as a GRL (GRangesList) object, or as a character vector name of a GRL object; 
+# then I just convert in this function to grl/grlName depending on whatever you passed in. 
+# This is what lets me use the deparse/substitute method to get the name from the appendAnnotation function.
+# this function should just be called with appendAnnotation, (it caches things). 
+# For a random GRL, use getCpGPercent directly in the dna methylation module. that's where the actual work is being done.
+#' @export
+calcCpGPercentForDb = function(grl, genomeBuild, cacheDir=getOption("SHARE.RCACHE.DIR")) {
+	if(is.character(grl)) { 
+		grlName = grl;
+		grl = get(grlName);
+	} else {
+		grlName = deparse(substitute(grl));
+	}
+	var = paste0(grlName, "_", genomeBuild, "_cpg");
+	simpleCache(var, "getCpGPercent(grl, genomeBuild=genomeBuild)", buildEnvir=list(grl=grl, genomeBuild=genomeBuild), cacheDir=cacheDir);
+	return(get(var));
+}
+#anno=bockAnnotationMm10
+#grl=bockGRLmm10
+#' @export
+appendAnnotations = function(anno, grl, genomeBuild) {
+	var = deparse(substitute(grl))
+	anno[,cpg:=calcCpGPercentForDb(var, genomeBuild)]
+	return(anno);
+}
+#version for huge grls, splits them.
+#appendAnnotations = function(anno, grl, genomeBuild) {
+#	var = deparse(substitute(grl))
+#	if ( sum(as.numeric(sum(width(encodeGRL))))
+
+#	if ( anno[,sum(size)]  > 5e6 ) { #separate out huge ones.
+#		nrow(anno)
+#		splitSize = ceiling( nrow(anno) / (anno[,sum(size)] %/% 5e6) )
+#		s = 1;
+#		end = s + splitSize
+#		i=0;
+#		while (s <= nrow(anno)) {
+#			i = i+1;
+#			message("Split ", i);
+#			currentSplit = seq(from = s, to = end);
+#			print(currentSplit);
+#			s = end+1;
+#			end = min(s+splitSize, nrow(anno));
+#			var_update = paste0(var, "_split", i);
+#			message("Size: ", anno[currentSplit,sum(size)])
+#			message(var_update);
+#			assign(var_update, grl[currentSplit], env=.GlobalEnv)
+#			anno[currentSplit,cpg:=calcCpGPercentForDb(var_update, genomeBuild)]
+#		}
+#	} else {
+#		anno[,cpg:=calcCpGPercentForDb(var, genomeBuild)]
+#	}
+#	return(anno);
+#}
+

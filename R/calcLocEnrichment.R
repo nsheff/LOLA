@@ -1,7 +1,23 @@
 # A fork of enrichmentLocationCalc() that can use generics.
 # regionDB now is a smarter object, with regions and annotation in one!
+######################################################################
+# ENRICHMENT - Actual workhorse enrichment calculation functions
+######################################################################
+
+
+#' Workhorse function that calculates overlaps between userSets,
+#' and then uses a fisher's exact test rank them by significance
+#' of the overlap.
+#' 
+#' @param userSets		Regions of interest
+#' @param userUniverse	Regions tested for inclusion in userSets
+#' @param cores	Number of processors	
+#' @param regionDB	Region DB to check for overlap, from loadRegionDB()
+#' @param dbTitle	deprecated parameter	
+#' @param redefineUserSets	run redefineUserSets() on your userSets?
+#'
 #' @export
-enrichmentLocationCalcGen = function(userSets, userUniverse, regionDB, dbTitle="encode", cores=1, redefineUserSets=FALSE) {
+calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle", cores=1, redefineUserSets=FALSE) {
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
 	annotationDT[, dbSet := 1:nrow(annotationDT)]

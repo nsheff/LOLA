@@ -9,6 +9,8 @@
 #
 # These functions should probably remain interior to the package (not exported)
 #
+
+
 #' setSharedDataDir
 #' Sets global variable specifying the default data directory.
 #' 
@@ -17,6 +19,7 @@
 setSharedDataDir = function(sharedDataDir) {
 	options(SHARE.DATA.DIR=sharedDataDir); 
 }
+
 
 countOverlapsAny = function(subj, quer, cores=1) {
 	setLapplyAlias(cores)
@@ -37,7 +40,8 @@ replaceFileExtension = function(filename, extension) {
 
 
 
-#' Just a reverser. Reverses the order of arguments and passes them untouched to countOverlapsAny -- so you can use it with lapply.
+#' Just a reverser. Reverses the order of arguments and passes them 
+#' untouched to countOverlapsAny -- so you can use it with lapply.
 countOverlapsAnyRev = function(subj, quer) {
 	countOverlapsAny(quer, subj);
 }

@@ -1,0 +1,423 @@
+# Old functions from before generic databases.
+
+######################################################################
+# Enrichment Utility Functions
+######################################################################
+# These are helper functions for calculating enrichment of
+# Gene sets or location clusters.
+# By Nathan Sheffield, CeMM, 2014
+#helper functions
+
+#' Deprecated function
+#' @export
+#' @param shareDir	Directory for shared data.
+readEncodeTFBSannotationMm9 = function(shareDir=getOption("SHARE.DATA.DIR")) {
+	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBSmm9/");
+}
+
+#' Deprecated function
+#' @export
+#' @param shareDir	Directory for shared data.
+readEncodeTFBSannotationMm10 = function(shareDir=getOption("SHARE.DATA.DIR")) {
+	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBSmm10/");
+}
+
+#' Deprecated function
+#' @export
+#' @param shareDir	Directory for shared data.
+readEncodeTFBSannotationHg19 = function(shareDir=getOption("SHARE.DATA.DIR")) {
+	readEncodeTFBSannotation(encodeTFBSdir = "encodeTFBS/");
+}
+
+
+#' Convenience function for doing all the location enrichment functions
+#' in one fell swoop.
+#' @export
+locationEnrichment = function(userSets, userUniverse, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
+	if (checkUniverse & !redefineUserSets) {
+		checkUniverseAppropriateness(userSets, userUniverse, cores);
+	}
+	cistromeResults = enrichmentLocationCalc(userSets, userUniverse, cistromeAnnotation, cistromeGRL, dbTitle="CISTROME", cores=cores, redefineUserSets=redefineUserSets)
+	encodeResults = enrichmentLocationCalc(userSets, userUniverse, encodeTFBSannotation, encodeGRL, dbTitle="ENCODE", cores=cores, redefineUserSets=redefineUserSets)
+	dhsResults = enrichmentLocationCalc(userSets, userUniverse, dhsAnnotation, dhsGRL, dbTitle="DHS", cores=cores, redefineUserSets=redefineUserSets)
+	combinedResults = rbind(cistromeResults, encodeResults, dhsResults)
+	return(combinedResults[order(pValueLog, decreasing=TRUE),]);
+}
+
+
+#' old mouse db
+locationEnrichmentMm10 = function(userSets, userUniverse, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
+	bockResults = enrichmentLocationCalc(userSets, userUniverse, 	bockAnnotationMm10, bockGRLmm10, dbTitle="BOCK", cores=cores, redefineUserSets=redefineUserSets)
+}
+
+
+######################################################################
+# ENCODE Transcription Factor Binding Site Functions
+######################################################################
+#These functions require a connection to SHARE.DATA.DIR, a directory
+#where shared information downloaded from ENCODE is stored.
+
+#' Deprecated function
+#' @export
+readEncodeTFBSannotation = function(encodeTFBSdir, shareDir=getOption("SHARE.DATA.DIR")) {
+	#Load the files.txt file from ENCODE that annotates the
+	#ChIP-seq experiments
+	encodeTFBSannotation = fread(paste0(shareDir, encodeTFBSdir, "files.txt"), header=FALSE)
+
+	#Parse the annotation into data.table format
+	setnames(encodeTFBSannotation, "V1", "filename")
+	ct = str_match(encodeTFBSannotation$V2, "cell=(.*?);")[, 2]
+	tr = str_match(encodeTFBSannotation$V2, "treatment=(.*?);")[, 2]
+	ab = str_match(encodeTFBSannotation$V2, "antibody=(.*?);")[, 2]
+	encodeTFBSannotation[, V2:=NULL]
+	encodeTFBSannotation[, cell:=ct]
+	encodeTFBSannotation[, treatment:=tr]
+	encodeTFBSannotation[, antibody:=ab]
+	encodeTFBSannotation[, filename:=sub(".gz", "", filename)]
+	encodeTFBSannotation[, filename:=paste0(encodeTFBSdir, "narrowPeak/", filename)]
+	encodeTFBSannotation[, expID:=1:nrow(encodeTFBSannotation)] #set index variable
+	setkey(encodeTFBSannotation, "expID");
+	encodeTFBSannotation = getEncodeGroupSizes(encodeTFBSannotation, encodeTFBSdir);
+	return(encodeTFBSannotation);
+}
+
+#' @export
+getEncodeGroupSizes = function(encodeTFBSannotation, encodeTFBSdir, shareDir=getOption("SHARE.DATA.DIR")) {
+	if (file.exists(paste0(shareDir, encodeTFBSdir, "groupSizes.txt"))) {
+		groupSizes = fread(paste0(shareDir, encodeTFBSdir, "groupSizes.txt"))
+		encodeTFBSannotation[groupSizes, size:=size]
+	} else {
+		encodeTFBSannotation[,size:=countFileLines(paste0(shareDir, filename)), by=expID]
+		message("Recalculating and caching group sizes...");
+		write.table(encodeTFBSannotation[,list(expID,size)], file=paste0(shareDir, encodeTFBSdir, "groupSizes.txt"), quote=FALSE, row.names=FALSE)
+	}
+	encodeTFBSannotation
+}
+
+#Load ENCODE TFBS ChIP-seq experiments into a GRangesList object.
+#' @export
+readEncodeTFBS = function(encodeTFBSannotation, shareDir=getOption("SHARE.DATA.DIR")) {
+	grl = GRangesList()
+	for (i in 1:nrow(encodeTFBSannotation)) {
+		message(encodeTFBSannotation[i,]);
+		filename = paste0(shareDir, "",encodeTFBSannotation$filename[[i]]);
+		if (file.exists(filename)) {
+			DT = fread(paste0(shareDir, "",encodeTFBSannotation$filename[[i]]))
+			tfbsgr = dtToGr(DT, "V1", "V2", "V3", NULL, NULL);
+			grl[[i]] = tfbsgr;
+		} else {
+			message("Skipping (file not found):", filename);
+			grl[[i]] = GRanges();
+		}
+	}
+	return(grl);
+}
+
+######################################################################
+# CISTROME Transcription Factor Binding Site Functions
+######################################################################
+
+#Load up annotation table for encode TFBS experiments.
+#' @export
+readCistromeAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), cistromeDir="cistrome/", restrictToSpecies="Human") {
+	message("CISTROME: restricting dataset to ", restrictToSpecies);
+	#Load the files.txt file from ENCODE that annotates the
+	#ChIP-seq experiments
+	dataCistrome = fread(paste0(shareDir, cistromeDir, "annotationsCistrome.txt"), header=TRUE)
+	#Parse the annotation into data.table format
+	setnames(dataCistrome, c("species", "cell", "tissue", "antibody", "treatment", "filename"))
+	dataCistrome[, filename:=paste0(cistromeDir, "CistromeBeds/", filename)]
+
+	dataEpigenome = fread(paste0(shareDir, cistromeDir, "annotationsEpigenome.txt"), header=TRUE)
+	setnames(dataEpigenome, c("species", "cell", "tissue", "antibody", "treatment", "filename"))
+	dataEpigenome[, filename:=paste0(cistromeDir, "EpigenomeBeds/", filename)]
+	cistromeAnnotation = rbind(dataCistrome, dataEpigenome)
+	
+	cistromeAnnotation[,expID:=1:nrow(cistromeAnnotation)] #set index variable
+	setkey(cistromeAnnotation, "expID");
+
+	cistromeAnnotation = getCistromeGroupSizes(cistromeAnnotation, cistromeDir)
+	cistromeAnnotation = cistromeAnnotation[species %in% restrictToSpecies,]
+	return(cistromeAnnotation);
+}
+
+#' @export
+getCistromeGroupSizes = function(cistromeAnnotation, cistromeDir="cistrome/", shareDir=getOption("SHARE.DATA.DIR")) {
+	if (file.exists(paste0(shareDir, cistromeDir, "groupSizes.txt"))) {
+		groupSizes = fread(paste0(shareDir, cistromeDir, "groupSizes.txt"))
+		cistromeAnnotation[groupSizes, size:=size]
+	} else {
+		cistromeAnnotation[,size:=countFileLines(paste0(shareDir, filename, ".notrack")), by=expID]
+		write.table(cistromeAnnotation[,list(expID,size)], file=paste0(shareDir, cistromeDir, "groupSizes.txt"), quote=FALSE, row.names=FALSE)
+	}
+	cistromeAnnotation
+}
+
+#' @export
+readCistrome = function(cistromeAnnotation, shareDir=getOption("SHARE.DATA.DIR")) {
+	grl = GRangesList()
+	for (i in 1:nrow(cistromeAnnotation)) {
+		message(cistromeAnnotation[i,]);
+		filename = paste0(shareDir, cistromeAnnotation$filename[[i]]);
+		if (file.exists(filename)) {
+			DT = fread(paste0(filename, ".notrack"))
+			tfbsgr = dtToGr(DT, "V1", "V2", "V3", NULL, NULL);
+			grl[[i]] = tfbsgr;
+		} else {
+			message("Skipping (file not found):", filename);
+			grl[[i]] = GRanges();
+		}
+	}
+	return(grl);
+}
+
+######################################################################
+# DHS Enrichment Functions
+######################################################################
+
+#need to add this into the annotation matrix:
+#fread(paste0(getOption("SHARE.DATA.DIR"), "DNase/TableS05-overlapSummary.txt"))
+
+#' @export
+readDhsAnnotation = function(shareDir=getOption("SHARE.DATA.DIR")) {
+	dhsDefault = data.table(clusterID=1:2500);
+	setkey(dhsDefault, "clusterID")
+	dhsAnno = fread(paste0(shareDir, "DNase/TableS04-cluster-to-openCellTypes.txt"))
+	dhsAnnoManual = fread(paste0(shareDir, "DNase/clusterLabels.txt"), header=TRUE)
+	dhsAnnotation = dhsAnno[,list(cell=paste0(unique(openTissue), collapse=";"), treatment="", antibody=""), by=clusterID]
+	setkey(dhsAnnoManual, "clusterID")
+	setkey(dhsAnnotation, "clusterID")
+	dhsMerged = merge(dhsDefault, dhsAnnotation, all=TRUE)
+	dhsMerged[is.na(cell), cell:="Weak"]
+	dhsMerged = merge(dhsMerged, dhsAnnoManual, all=TRUE)
+	dhsMerged[!is.na(label), cell:=label]
+	dhsAnnotation = dhsMerged
+	dhsSizes = fread(paste0(shareDir, "DNase/clusterSizes.txt"))
+	setkey(dhsSizes, "refined_cluster");
+
+#	dhsAnnotation[dhsSizes, size:=N]
+	dhsSizes[dhsAnnotation,]
+	dhsAnnotation = dhsAnnotation[dhsSizes,]
+
+	setnames(dhsAnnotation, "N", "size")
+	setnames(dhsAnnotation, "clusterID", "expID")
+	return(dhsAnnotation);
+}
+
+#' @export
+readDhs = function(shareDir=getOption("SHARE.DATA.DIR")) {
+	message("Loading DNase database...");
+	dhsClust = fread(paste0(shareDir, "DNase/TableS03-dhs-to-cluster.txt"))
+	dhsClustgr = dtToGr(dhsClust, "chr", "start", "stop", NULL, NULL)
+	#groupSizes = dhsClust[,.N, by=refined_cluster]
+	#write.table(groupSizes, file="groupSizes.txt", quote=FALSE, row.names=FALSE)
+	dhsClustList = split(dhsClustgr, dhsClust$refined_cluster)
+	dhsClustList
+}
+
+######################################################################
+# Generic Region DB Loading  Functions
+######################################################################
+#Used right now for BockDB (Mouse) 
+#For a folder of bed files that has no annotation file;
+#Example use:
+# customAnno = readRegionAnnotation(bedDir="regionDB/diffMeth/")
+# customGRL = readRegionDb(customAnno)
+
+#' @export
+readRegionAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/") { 
+	DT = data.table(filename=list.files(paste0(shareDir,bedDir), "*.bed"))
+	DT[, cell:=replaceFileExtension(filename, "")]
+	DT[, filename:=paste0(bedDir, filename)]
+	DT[, treatment:=""]
+	DT[, antibody:=""]
+	DT[,expID:=1:nrow(DT)]
+	setkey(DT, "expID");
+	DT = getRegionGroupSizes(DT, bedDir);
+	DT
+}
+
+#' @export
+getRegionGroupSizes = function(DT, bedDir, shareDir=getOption("SHARE.DATA.DIR")) {
+	if (file.exists(paste0(shareDir, bedDir, "groupSizes.txt"))) {
+		groupSizes = fread(paste0(shareDir, bedDir, "groupSizes.txt"))
+		DT[groupSizes, size:=size]
+	} else {
+		DT[,size:=countFileLines(paste0(shareDir, filename)), by=expID]
+		write.table(DT[,list(expID,size)], file=paste0(shareDir, bedDir, "groupSizes.txt"), quote=FALSE, row.names=FALSE)
+	}
+	DT
+}
+
+#' @export
+readRegionDb = function(genericAnnotation, shareDir=getOption("SHARE.DATA.DIR")) {
+	grl = GRangesList()
+	for (i in 1:nrow(genericAnnotation)) {
+		message(genericAnnotation[i,]);
+		filename = paste0(shareDir, genericAnnotation$filename[[i]]);
+		if (file.exists(filename)) {
+			DT = fread(paste0(filename))
+			tfbsgr = dtToGr(DT, colnames(DT)[1], colnames(DT)[2], colnames(DT)[3], NULL, NULL);
+			grl[[i]] = tfbsgr;
+		} else {
+			message("Skipping (file not found):", filename);
+			grl[[i]] = GRanges();
+		}
+	}
+	return(grl);
+}
+
+
+######################################################################
+# LOADING - Functions for loading enrichment databases
+######################################################################
+
+#' Loads All Enrichment Databases.
+#'
+#' Helper loader functions to just load up all the data, if you want
+#' to do a comprehensive analysis.
+#'
+#' @export
+loadAllEnrichmentDatabases = function() {
+	loadLocationEnrichmentDatabases();
+	loadCategoryEnrichmentDatabases();
+}
+
+#' Loads all location databases. Just a helper function that calls the others.
+#' use loadLocationEnrichmentMm10() for mouse.
+#' @export
+loadLocationEnrichmentDatabases = function() {
+	#encode
+	encodeTFBSannotation <<- readEncodeTFBSannotationHg19(shareDir=getOption("SHARE.DATA.DIR"));
+	simpleCache("encodeGRL", "encodeGRL = readEncodeTFBS(encodeTFBSannotation);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	encodeTFBSannotation = appendAnnotations(encodeTFBSannotation, encodeGRL, "hg19")
+	encodeTFBSannotation <<- appendAnnotations(encodeTFBSannotation, encodeGRL, "hg19")
+	#cistrome
+	cistromeAnnotation <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
+	simpleCache("cistromeGRL", "cistromeGRL = readCistrome(cistromeAnnotation);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	cistromeAnnotation <<- appendAnnotations(cistromeAnnotation, cistromeGRL, "hg19")
+	#dnase hypersensitivity
+	dhsAnnotation <<- readDhsAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
+	simpleCache("dhsGRL", "dhsGRL = readDhs()", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	dhsAnnotation <<- appendAnnotations(dhsAnnotation, dhsGRL, "hg19")
+
+	message("Loaded databases: cistrome, encode, dhs.");
+}
+
+#' @export
+loadCategoryEnrichmentDatabases = function() {
+	#msigdb
+	simpleCache("mSigList", "mSigList = readMSigDB(SHARE.RDATA.DIR)", cacheDir=getOption("SHARE.RCACHE.DIR")); 
+	mSig <<- mSigList$mSig
+	mSigAnnotation <<- mSigList$mSigAnnotation
+	message("Loaded databases: mSig.");
+}
+
+#' @export
+loadLocationEnrichmentMm9 = function() {
+	encodeTFBSannotationMm9 <<- readEncodeTFBSannotationMm9(shareDir=getOption("SHARE.DATA.DIR"));
+	simpleCache("encodeGRLmm9", "encodeGRLmm9 = readEncodeTFBS(encodeTFBSannotationMm9);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	cistromeAnnotationMm9 <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"), restrictToSpecies="Mouse");
+	simpleCache("cistromeGRLmm9", "cistromeGRLmm9 = readCistrome(cistromeAnnotationMm9);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+}
+
+#' @export
+loadLocationEnrichmentMm10 = function() {
+	encodeTFBSannotationMm10 <<- readEncodeTFBSannotationMm10(shareDir=getOption("SHARE.DATA.DIR"));
+	simpleCache("encodeGRLmm10", "encodeGRLmm10 = readEncodeTFBS(encodeTFBSannotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	cistromeAnnotationMm10 <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"), restrictToSpecies="Mouse");
+	simpleCache("cistromeGRLmm10", "cistromeGRLmm10 = readCistrome(cistromeAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	bockAnnotationMm10 <<- readRegionAnnotation(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/");
+	simpleCache("bockGRLmm10", "bockGRLmm10 = readRegionDb(bockAnnotationMm10);", cacheDir=getOption("SHARE.RCACHE.DIR"), loadEnvir=globalenv());
+	bockAnnotationMm10 <<- appendAnnotations(bockAnnotationMm10, bockGRLmm10, "mm10")
+}
+
+
+
+
+# Deprecated function
+
+getTopEnrichedHits = function(sigvals, n, annotationTable=NULL) {
+	topn = order(sigvals)[1:n]
+	if (is.null(annotationTable)) {
+		return(	data.table(cbind(dbGeneSet=topn, pval=sigvals[topn])) )
+	}
+		return (cbind(category=topn, pval=sigvals[topn],annotationTable[topn]) )
+}
+
+
+######################################################################
+# ENRICHMENT - Actual workhorse enrichment calculation functions
+######################################################################
+
+#' @export
+enrichmentLocationCalcPrev = function(userSets, userUniverse, annotationDT, testSetsGRL, dbTitle="encode", cores=1, redefineUserSets=FALSE) {
+	### Data sanity checks ###
+	#Confirm we received GRangesList objects, convert from list if possible.
+	userSets = listToGRangesList(userSets);
+	testSetsGRL = listToGRangesList(testSetsGRL);
+	setLapplyAlias(cores);
+	
+	if (any(is.null(names(testSetsGRL)))) {
+		names(testSetsGRL) = 1:length(testSetsGRL);
+	}
+
+	if (redefineUserSets) { #redefine user sets in terms of universe?
+		userSets =	redefineUserSets(userSets, userUniverse, cores=cores);
+		userSets = listToGRangesList(userSets);
+	}
+	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
+	
+	if (! any( isDisjoint( userSets) ) ) {
+		message("You have non-disjoint userSets.");
+	}
+
+	### Construct significance tests ###
+	message("[", dbTitle, "] Calculating unit set overlaps...");
+	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL);
+	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
+
+	olmat = do.call(cbind, geneSetDatabaseOverlap); 
+	#turn results into an overlap matrix. It is
+	#database sets (rows) by test sets (columns), scoring the number of overlap.
+
+	message("[", dbTitle, "] Calculating universe set overlaps...");
+	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse) #faster #returns number of items in userUniverse.
+	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse) #returns number of items in test set
+	universeLength = length(userUniverse);
+
+	scoreTable = data.table(melt(t(olmat)))
+	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
+	message("[", dbTitle, "] Calculating Fisher scores...");
+	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet, names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
+	scoreTable[,d:=universeLength-support-b-c]
+	if( scoreTable[,any(b<0)] ) { #inappropriate universe.
+		print(scoreTable[which(b<0),]);
+		warning("[", dbTitle, "] Negative b entry in table. This means either: 1) Your user sets contain items outside your universe; or 2) your universe has a region that overlaps multiple user set regions, interfering with the universe set overlap calculation.");
+		return(scoreTable);
+		#sum(countOverlaps(testSetsGRL[[12]], userUniverse) > 0)
+		#sum(countOverlaps(userUniverse, testSetsGRL[[12]]) > 0)
+	}
+	if( scoreTable[,any(c<0)] ) {
+		warning("[", dbTitle, "] Negative c entry in table. Bug with userSetsLength; this should not happen.");
+		return(scoreTable);
+	}
+	scoreTable[,c("pValueLog", "logOdds") := fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value", "estimate")], by=list(userSet,dbSet)]
+	scoreTable[, pValueLog:=-log(pValueLog)]
+	### Finalize and Rank results ###
+	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
+	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
+	scoreTable[, rnkLO:=rank(-logOdds, ties.method="min"), by=userSet]
+	scoreTable[, maxRnk:=max(c(rnkSup, rnkPV, rnkLO)), by=list(userSet,dbSet)]
+	scoreTable[, meanRnk:=signif(mean(c(rnkSup, rnkPV, rnkLO)), 3), by=list(userSet,dbSet)]
+	scoreTable
+
+	#append description column
+	setkeyv(scoreTable, "dbSet")
+	scoreTable[annotationDT[, list(description=paste0(c(cell, treatment, antibody), collapse=" ")),by=key(annotationDT)], description:=description]
+	scoreTable[,db:=dbTitle]
+	setcolorder(scoreTable, c("userSet", "dbSet", "description", "db", "pValueLog", "logOdds", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d"));
+	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
+	scoreTable[order(pValueLog),]
+}
+

@@ -1,12 +1,15 @@
 ######################################################################
 # Generic Region DB Loading  Functions
 ######################################################################
+
+
 #' Helper function to annotate and load a regionDB, a folder with
 #' subfolder collections of regions.
 #' 
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param filePattern	passed to list.files; you can use this to select only certain file names in your folders.
 #' @param limit	You can limit the number of regions for testing. Default: NULL (no limit)
+#'
 #' @export
 #' @examples
 #' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
@@ -18,8 +21,10 @@ loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 }
 
 #' Read collection annotation
-#' @export
+#'
 #' @param dbLocation	Location of the database
+#'
+#' @export
 readCollectionAnnotation = function(dbLocation) {
 	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
@@ -52,6 +57,10 @@ readCollectionAnnotation = function(dbLocation) {
 #' Given a folder containing region collections in subfolders, this function
 #' will either read the annotation file if one exists, or create a generic
 #' annotation file.
+
+#' @param dbLocation	folder where your regionDB is stored.
+#' @param filePattern	passed to list.files; you can use this to select only certain file names in your folders.
+#' @param refreshSizes	should I recreate the sizes files documenting how many regions (lines) are in each region set?
 #' 
 #' @export
 readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE) {
@@ -123,7 +132,9 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 #' 
 #' @param dbLocation	folder of regiondB
 #' @param annoDT	output of readRegionSetAnnotation().
-#' @param limit	for testing purposes, you could limit the number of files read. NULL for no limit (default).
+#' @param useCache	uses simpleCache to cache and load the results
+#' @param limit	for testing purposes, limit the number of files read. NULL for no limit (default).
+#'
 #' @export
 readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
@@ -142,6 +153,13 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	return(grl)
 }
 
+#' Given a bunch of region set files, read in all those flat (bed) files and create a
+#' GRangesList object holding all the region sets. This function is used by readRegionGRL
+#' to process annotation objects.
+#'
+#' @param filesToRead	a vector containing bed files
+#' @param limit	for testing purposes, limit the number of files read. NULL for no limit (default).
+#'
 #' @export
 readCollection = function(filesToRead, limit=NULL) {
 	grl = GRangesList()
