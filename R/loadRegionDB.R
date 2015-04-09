@@ -12,7 +12,8 @@
 #'
 #' @export
 #' @examples
-#' regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' regionDB = loadRegionDB(dbLocation= dbPath)
 loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	collectionAnno = readCollectionAnnotation(dbLocation);

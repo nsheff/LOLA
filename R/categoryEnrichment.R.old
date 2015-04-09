@@ -3,6 +3,7 @@
 # MSigDB Enrichment Functions
 ######################################################################
 
+#' Loads MSigDB database for category enrichments
 #'
 #' @export
 readMSigDB = function(shareDir=getOption("SHARE.DATA.DIR")) {

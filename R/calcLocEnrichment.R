@@ -18,6 +18,9 @@
 #'
 #' @export
 calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle", cores=1, redefineUserSets=FALSE) {
+	# Silence R CMD check Notes:
+	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
+	logOdds=maxRnk=meanRnk=dbSet=NULL
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
 	annotationDT[, dbSet := 1:nrow(annotationDT)]
@@ -86,7 +89,11 @@ calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle"
 	setkeyv(scoreTable, "dbSet")
 	scoreTable = scoreTable[annotationDT]
 	#scoreTable[,db:=dbTitle]
-	setcolorder(scoreTable, c("userSet", "dbSet", "description",  "pValueLog", "logOdds", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "filename", "source", "antibody", "treatment", "collection", "size"));
+
+	orderedCols = c("userSet", "dbSet", "description",  "pValueLog", "logOdds", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "filename")
+	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
+
+	setcolorder(scoreTable,  c(orderedCols, unorderedCols));
 	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
-	scoreTable[order(pValueLog),]
+	scoreTable[order(pValueLog, decreasing=TRUE),]
 }

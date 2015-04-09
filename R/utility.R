@@ -42,6 +42,9 @@ replaceFileExtension = function(filename, extension) {
 
 #' Just a reverser. Reverses the order of arguments and passes them 
 #' untouched to countOverlapsAny -- so you can use it with lapply.
+#'
+#' @param subj Subject
+#' @param quer Query
 countOverlapsAnyRev = function(subj, quer) {
 	countOverlapsAny(quer, subj);
 }
@@ -67,14 +70,14 @@ listToGRangesList = function(lst) {
 ######################################################################
 #Two utility functions for converting data.tables into GRanges objects
 #genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId");
-dtToGrInternal = function(DT, chr, start, end=NULL, str=NULL, name=NULL,metaCols=NULL) {
+dtToGrInternal = function(DT, chr, start, end=NULL, strand=NULL, name=NULL,metaCols=NULL) {
 	if (is.null(end)) {
 		end = start;
 	}
 	if (is.null(str)) {
-			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), str="*")
+			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand="*")
 	} else {
-	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), str=DT[[`str`]])
+	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`str`]])
 	}
 	if (! is.null(name)) {
 		names(gr) = DT[[`name`]];
@@ -122,18 +125,43 @@ countFileLines = function(filename) {
 }
 
 
+#' Function to sample regions from a GRangesList object, in specified proportion
+#'
+#' @param GRL	GRangesList from which to sample
+#' @param prop	vector with same length as GRL, of values between 0-1, proportion of the list to select
+#' 
+#' @export
+sampleGRL = function(GRL, prop) {
+	sampleGRanges = function(GR, prop) { 
+		GR[sample(length(GR), floor(length(GR) * prop))]	
+	}
+	mapply(sampleGRanges, GRL, prop)
+}
 
-#To make multicore a possibility but not required, I use an lapply alias which can point at either the base lapply (for no multicore), or it can load library(multicore) and then point to mclapply, and set the options for the number of cores (which is what mclapply uses).
+
+#' To make multicore a possibility but not required, I use an lapply alias
+#' which can point at either the base lapply (for no multicore), or it 
+#' can load library(parallel) and then point to mclapply, 
+#' and set the options for the number of cores (what mclapply uses).
+#'
+#' @param cores	Number of cpus
+#' @export
 setLapplyAlias = function(cores) {
 	if(cores > 1) { #use multicore?
-		library(parallel)
-		options(mc.cores=cores);
-		lapplyAlias <<- mclapply;
+		if (requireNamespace("parallel", quietly = TRUE)) {
+	      		options(mc.cores=cores);
+			lapplyAlias <<- parallel::mclapply;
+   		} else {
+     			warning("You don't have package parallel installed. Setting cores to 1.")
+			lapplyAlias <<- lapply;
+			options(mc.cores=1); #reset cores option.
+  		}
 	} else {
 		lapplyAlias <<- lapply;
 		options(mc.cores=1); #reset cores option.
 	}
 }
+
 
 
 #check for, and fix, trailing slash. if necessary
@@ -165,6 +193,8 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 #' It seemlessly handles lists with some names and others absent,
 #' not overwriting specified names while naming any unnamed parameters.
 #' Took me awhile to figure this out.
+#'
+#' @param ...	arguments passed to list()
 nlist = function(...) {
  	fcall = match.call(expand.dots=FALSE)
 	l = list(...);

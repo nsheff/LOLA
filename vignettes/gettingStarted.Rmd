@@ -1,0 +1,30 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Getting Started}
+You need 3 things to run a LOL analysis:
+
+1. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
+2. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
+3. regionDB: A database of region sets to test for enrichment of overlap
+
+
+Let's load an example dataset:
+
+```{r Load a regionDB}
+library("LOLA")
+dbPath = system.file("extdata", "hg19", package="LOLA")
+regionDB = loadRegionDB(dbLocation= dbPath)
+```
+
+Load up some sample data
+
+```{r Load sample user sets and universe}
+data("sample_input", package="LOLA")
+data("sample_universe", package="LOLA")
+```
+
+Run the enrichment calculation:
+
+```{r Run the calculation}
+calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
+```
+

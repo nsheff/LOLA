@@ -1,4 +1,5 @@
 # PACKAGE DOCUMENTATION
+# All packages listed as Imported or Depends must show up here with @import.
 #' Provides functions for genome location overlap analysis.
 #'
 #' Run, Lola!
@@ -12,6 +13,8 @@
 #' @import data.table
 #' @import rtracklayer
 #' @import stringr
+#' @import GenomicRanges
+#' @import IRanges
 #' @importFrom reshape2 melt
 NULL
 
@@ -47,13 +50,6 @@ NULL
 ######################################################################
 # Prep functions
 ######################################################################
-
-#' Convenience function for doing all the location enrichment functions
-#' in one fell swoop.
-#' designed to use new generic scripts.
-locationEnrichmentRegionDB = function(userSets, userUniverse, regionDB, checkUniverse=FALSE, cores=4, redefineUserSets=TRUE) {
-	# TO DO 
-}
 
 #' this function will take the user sets, overlap with the universe, 
 #' and redefine the user sets as the set of regions in the user 

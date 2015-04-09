@@ -4,26 +4,27 @@
 
 #' Given a single row from an enrichment table calculation, 
 #' finds the set of overlaps between the user set and the test set. 
-#' You can then use these, for example, to get fasta sequences for those regions.
+#' You can then use these, for example, to get sequences for those regions.
 #' 
 #' @param	locResult	results from enrichmentCalc function
 #' @param 	userSets	user sets object you passed to the enrichmentCalc function
+#' @param	regionDB	region database used
 #' 
 #' @export
-extractEnrichmentOverlaps = function(locResult, userSets) {
+extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
 	print(locResult);
-	dbGRL = switch(locResult[, db], 
-		"ENCODE" = encodeGRL,
-		"CISTROME" = cistromeGRL,
-		"DHS" = dhsGRL)
-	message(length(dbGRL));
-	userSet = userSets[[as.character(locResult[,userSet])]]
-	dbSet = locResult[1,dbSet]
-	if (any(!is.null(names(dbGRL)))) { #convert dbset named into number
-		dbSet = match(dbSet, names(dbGRL)); 
-	}
-	userSet[queryHits(findOverlaps(userSet,dbGRL[[dbSet]]))]
+	userSets = listToGRangesList(userSets);
+	regionGRLID = which(regionDB$regionAnno$filename %in% locResult$filename & regionDB$regionAnno$collection %in% locResult$collection)
+
+	userSet = userSets[[locResult[,userSet]]]#as.character(
+	userSet[queryHits(findOverlaps(userSet,regionDB$regionGRL[[regionGRLID]]))]
 }
+
+#locResult = res[2,]
+#locResult
+#regionDB$regionAnno[filename %in% locResult$filename & collection %in% locResult$collection]
+#regionGRLID = which(regionDB$regionAnno$filename %in% locResult$filename & regionDB$regionAnno$collection %in% locResult$collection)
+
 
 #' Efficiently splits a data.table
 #'
