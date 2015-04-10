@@ -18,4 +18,8 @@ This function will take a single large bed file that is annotated
 with a column grouping different sets of similar regions,
 and split it into separate files for use with the LOLA collection format.
 }
+\examples{
+combFile = system.file("extdata", "examples/combined_regions.bed", package="LOLA")
+splitFileIntoCollection(combFile, 4)
+}
 

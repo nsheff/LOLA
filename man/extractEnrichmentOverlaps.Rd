@@ -9,11 +9,11 @@ You can then use these, for example, to get sequences for those regions.}
 extractEnrichmentOverlaps(locResult, userSets, regionDB)
 }
 \arguments{
-\item{locResult}{results from enrichmentCalc function}
+\item{locResult}{Results from enrichmentCalc function}
 
-\item{userSets}{user sets object you passed to the enrichmentCalc function}
+\item{userSets}{User sets passed to the enrichmentCalc function}
 
-\item{regionDB}{region database used}
+\item{regionDB}{Region database used}
 }
 \description{
 Given a single row from an enrichment table calculation,

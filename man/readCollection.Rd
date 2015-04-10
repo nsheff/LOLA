@@ -18,4 +18,9 @@ Given a bunch of region set files, read in all those flat (bed) files and create
 GRangesList object holding all the region sets. This function is used by readRegionGRL
 to process annotation objects.
 }
+\examples{
+files = list.files(system.file("extdata", "hg19/ucsc_example",
+	 package="LOLA"), pattern="*.bed")
+regionAnno = readCollection(files)
+}
 

@@ -14,10 +14,16 @@ readRegionGRL(dbLocation, annoDT, useCache = TRUE, limit = NULL)
 
 \item{useCache}{uses simpleCache to cache and load the results}
 
-\item{limit}{for testing purposes, limit the number of files read. NULL for no limit (default).}
+\item{limit}{for testing purposes, limit the nmber of files read.
+    NULL for no limit (default).}
 }
 \description{
 This function takes a region annotation object and reads in the regions,
 returning a GRangesList object of the regions.
+}
+\examples{
+dbPath = system.file("extdata", "hg19", package="LOLA")
+regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
+regionGRL = readRegionGRL(dbLocation= dbPath, regionAnno, useCache=FALSE)
 }
 

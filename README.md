@@ -1,9 +1,9 @@
 LOLA: Location Overlap Analysis
 -------------------------------
 
-LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. This README provides a package overview, installation instructions, and use cases. For detailed documentation of functions and additional examples, please see the R documentation.
+LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. This README provides a package overview, motivation, and installation instructions. For detailed documentation of functions and additional examples, please see the R documentation.
 
-**Disclaimer:** At the moment, LOLA is only deployable in the computational environment at CeMM because it relies on hand-curated databases I created there. I am working to package it up to make it useful for other researchers. You may be able get it to work with custom databases as is, but it will become more user friendly shortly.
+LOLA is deployable anywhere, using generic custom bed-file database.
 
 --------------------------------------------------------------------------------
 ### Installing LOLA

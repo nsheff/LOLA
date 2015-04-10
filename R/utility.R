@@ -67,6 +67,15 @@ listToGRangesList = function(lst) {
 	return(lst);
 }
 
+
+#' Wrapper of write.table that provides defaults to write a
+#' simple .tsv file. Passes additional arguments to write.table
+#' 
+#' @param ... Additional arguments passed to write.table
+write.tsv = function(...) {
+	write.table(..., sep="\t", row.names=FALSE, quote=FALSE);
+}
+
 ######################################################################
 #Two utility functions for converting data.tables into GRanges objects
 #genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId");
@@ -74,10 +83,10 @@ dtToGrInternal = function(DT, chr, start, end=NULL, strand=NULL, name=NULL,metaC
 	if (is.null(end)) {
 		end = start;
 	}
-	if (is.null(str)) {
+	if (is.null(strand)) {
 			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand="*")
 	} else {
-	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`str`]])
+	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`strand`]])
 	}
 	if (! is.null(name)) {
 		names(gr) = DT[[`name`]];
@@ -146,6 +155,9 @@ sampleGRL = function(GRL, prop) {
 #'
 #' @param cores	Number of cpus
 #' @export
+#' @examples
+#' setLapplyAlias(4)
+#' setLapplyAlias(1)
 setLapplyAlias = function(cores) {
 	if(cores > 1) { #use multicore?
 		if (requireNamespace("parallel", quietly = TRUE)) {

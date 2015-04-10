@@ -18,4 +18,8 @@ which can point at either the base lapply (for no multicore), or it
 can load library(parallel) and then point to mclapply,
 and set the options for the number of cores (what mclapply uses).
 }
+\examples{
+setLapplyAlias(4)
+setLapplyAlias(1)
+}
 

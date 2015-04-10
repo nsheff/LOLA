@@ -12,4 +12,8 @@ readCollectionAnnotation(dbLocation)
 \description{
 Read collection annotation
 }
+\examples{
+dbPath = system.file("extdata", "hg19", package="LOLA")
+collectionAnno = readCollectionAnnotation(dbLocation=dbPath)
+}
 

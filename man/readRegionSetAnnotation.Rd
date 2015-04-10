@@ -11,13 +11,19 @@ readRegionSetAnnotation(dbLocation, filePattern = "", refreshSizes = FALSE)
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}
 
-\item{filePattern}{passed to list.files; you can use this to select only certain file names in your folders.}
+\item{filePattern}{passed to list.files; you can use this
+to select only certain file names in your folders.}
 
-\item{refreshSizes}{should I recreate the sizes files documenting how many regions (lines) are in each region set?}
+\item{refreshSizes}{should I recreate the sizes files
+    documenting how many regions (lines) are in each region set?}
 }
 \description{
 Given a folder containing region collections in subfolders, this function
 will either read the annotation file if one exists, or create a generic
 annotation file.
+}
+\examples{
+dbPath = system.file("extdata", "hg19", package="LOLA")
+regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 }
 

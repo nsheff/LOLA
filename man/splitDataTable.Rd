@@ -2,16 +2,25 @@
 % Please edit documentation in R/postEnrichment.R
 \name{splitDataTable}
 \alias{splitDataTable}
-\title{Efficiently splits a data.table}
+\title{Efficiently split a data.table by a column in the table}
 \usage{
 splitDataTable(DT, splitFactor)
 }
 \arguments{
-\item{DT}{data.table object to split}
+\item{DT}{Data.table to split}
 
-\item{splitFactor}{column of DT to split on}
+\item{splitFactor}{Column to split, which can be a character vector
+or an integer.}
+}
+\value{
+List of data.table objects, split by column
 }
 \description{
-Efficiently splits a data.table
+Efficiently split a data.table by a column in the table
+}
+\examples{
+DT = data.table(letters, grp = rep(c("group1", "group2"), 13))
+splitDataTable(DT, "grp")
+splitDataTable(DT, 2)
 }
 

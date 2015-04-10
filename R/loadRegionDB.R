@@ -7,13 +7,15 @@
 #' subfolder collections of regions.
 #' 
 #' @param dbLocation	folder where your regionDB is stored.
-#' @param filePattern	passed to list.files; you can use this to select only certain file names in your folders.
-#' @param limit	You can limit the number of regions for testing. Default: NULL (no limit)
+#' @param filePattern	passed to list.files; you can use this to select 
+#'	only certain file names in your folders.
+#' @param limit 	You can limit the number of regions for testing.
+#'	Default: NULL (no limit)
 #'
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
-#' regionDB = loadRegionDB(dbLocation= dbPath)
+#' regionDB = loadRegionDB(dbLocation=dbPath)
 loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	collectionAnno = readCollectionAnnotation(dbLocation);
@@ -26,6 +28,9 @@ loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 #' @param dbLocation	Location of the database
 #'
 #' @export
+#' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' collectionAnno = readCollectionAnnotation(dbLocation=dbPath)
 readCollectionAnnotation = function(dbLocation) {
 	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
@@ -44,7 +49,7 @@ readCollectionAnnotation = function(dbLocation) {
 
 		} else {
 			message("\tIn '", collection, "', no collection file.");
-			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = F), collectionColNames));
+			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = FALSE), collectionColNames));
 		}
 		collectionDT[,collectionname:=collection]
 		collectionsDT = rbind(collectionsDT, collectionDT);
@@ -60,11 +65,18 @@ readCollectionAnnotation = function(dbLocation) {
 #' annotation file.
 
 #' @param dbLocation	folder where your regionDB is stored.
-#' @param filePattern	passed to list.files; you can use this to select only certain file names in your folders.
-#' @param refreshSizes	should I recreate the sizes files documenting how many regions (lines) are in each region set?
+#' @param filePattern	passed to list.files; you can use this
+#'	to select only certain file names in your folders.
+#' @param refreshSizes	should I recreate the sizes files 
+#'	documenting how many regions (lines) are in each region set?
 #' 
 #' @export
-readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FALSE) {
+#' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
+readRegionSetAnnotation = function(dbLocation, 
+					filePattern = "", 
+					refreshSizes=FALSE) {
 	#Build a data.table annotating the beds.
 	#Should give collections
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
@@ -99,7 +111,7 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 			indexDT= data.table(filename=files)
 		}
 			missCols = setdiff(annotationColNames, colnames(indexDT));
-			for (col in missCols) indexDT[, col:=NA, with=F];
+			for (col in missCols) indexDT[, col:=NA, with=FALSE];
 			indexDT = indexDT[,annotationColNames, with=FALSE] #subset
 
 		setkey(indexDT, "filename")
@@ -134,9 +146,14 @@ readRegionSetAnnotation = function(dbLocation, filePattern = "", refreshSizes=FA
 #' @param dbLocation	folder of regiondB
 #' @param annoDT	output of readRegionSetAnnotation().
 #' @param useCache	uses simpleCache to cache and load the results
-#' @param limit	for testing purposes, limit the number of files read. NULL for no limit (default).
+#' @param limit	for testing purposes, limit the nmber of files read.
+#'	NULL for no limit (default).
 #'
 #' @export
+#' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
+#' regionGRL = readRegionGRL(dbLocation= dbPath, regionAnno, useCache=FALSE)
 readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
 	dbLocation = enforceTrailingSlash(dbLocation);
@@ -147,7 +164,7 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	if (useCache) {
 	simpleCache(iCol, "readCollection(filesToRead)", cacheDir=dbLocation, buildEnvir=nlist(filesToRead))
 	} else {
-	readCollection(filesToRead, limit);
+	assign(iCol, readCollection(filesToRead, limit));
 	}
 	grl = c(grl, get(iCol))
 	}
@@ -162,6 +179,10 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 #' @param limit	for testing purposes, limit the number of files read. NULL for no limit (default).
 #'
 #' @export
+#' @examples
+#' files = list.files(system.file("extdata", "hg19/ucsc_example",
+#'	 package="LOLA"), pattern="*.bed")
+#' regionAnno = readCollection(files)
 readCollection = function(filesToRead, limit=NULL) {
 	grl = GRangesList()
 	if (is.null(limit)) {
@@ -176,7 +197,8 @@ readCollection = function(filesToRead, limit=NULL) {
 		if (file.exists(filename)) {
 			success = tryCatch( { 
 				DT = fread(paste0(filename))
-				tfbsgr = dtToGr(DT, colnames(DT)[1], colnames(DT)[2], colnames(DT)[3], NULL, NULL);
+				cn = colnames(DT)
+				tfbsgr = dtToGr(DT, "V1", "V2", "V3");
 				grl[[i]] = tfbsgr;
 				TRUE
 			},

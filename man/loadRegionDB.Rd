@@ -10,9 +10,11 @@ loadRegionDB(dbLocation, filePattern = "", limit = NULL)
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}
 
-\item{filePattern}{passed to list.files; you can use this to select only certain file names in your folders.}
+\item{filePattern}{passed to list.files; you can use this to select
+only certain file names in your folders.}
 
-\item{limit}{You can limit the number of regions for testing. Default: NULL (no limit)}
+\item{limit}{You can limit the number of regions for testing.
+    Default: NULL (no limit)}
 }
 \description{
 Helper function to annotate and load a regionDB, a folder with
@@ -20,6 +22,6 @@ subfolder collections of regions.
 }
 \examples{
 dbPath = system.file("extdata", "hg19", package="LOLA")
-regionDB = loadRegionDB(dbLocation= dbPath)
+regionDB = loadRegionDB(dbLocation=dbPath)
 }
 

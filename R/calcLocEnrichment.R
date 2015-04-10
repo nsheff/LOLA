@@ -17,6 +17,8 @@
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
 #' @export
+#' @example 
+#' examples/example.R
 calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle", cores=1, redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL

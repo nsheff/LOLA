@@ -1,5 +1,15 @@
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Getting Started}
+---
+title: "Getting Started with LOLA"
+author: "Nathan Sheffield"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Getting Started with LOLA}
+output: knitr:::html_vignette
+---
+
+# Getting started with LOLA
+
 You need 3 things to run a LOL analysis:
 
 1. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)

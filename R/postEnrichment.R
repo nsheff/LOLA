@@ -6,9 +6,9 @@
 #' finds the set of overlaps between the user set and the test set. 
 #' You can then use these, for example, to get sequences for those regions.
 #' 
-#' @param	locResult	results from enrichmentCalc function
-#' @param 	userSets	user sets object you passed to the enrichmentCalc function
-#' @param	regionDB	region database used
+#' @param locResult Results from enrichmentCalc function
+#' @param userSets User sets passed to the enrichmentCalc function
+#' @param regionDB Region database used
 #' 
 #' @export
 extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
@@ -26,14 +26,24 @@ extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
 #regionGRLID = which(regionDB$regionAnno$filename %in% locResult$filename & regionDB$regionAnno$collection %in% locResult$collection)
 
 
-#' Efficiently splits a data.table
-#'
-#' @param DT	data.table object to split
-#' @param splitFactor	column of DT to split on
+
+#' Efficiently split a data.table by a column in the table
 #' 
+#' @param DT Data.table to split
+#' @param splitFactor Column to split, which can be a character vector
+#'	or an integer.
+#' @return	List of data.table objects, split by column
 #' @export
+#' @examples
+#' DT = data.table(letters, grp = rep(c("group1", "group2"), 13))
+#' splitDataTable(DT, "grp")
+#' splitDataTable(DT, 2)
 splitDataTable = function(DT, splitFactor) {
-	split(1:nrow(DT), DT[, get(splitFactor)])
+	if (is.numeric(splitFactor)) {
+		splitFactor = colnames(DT)[splitFactor]
+		message("Integer splitFactor, changed to: ", splitFactor)
+	}
+	lapply( split(1:nrow(DT), DT[, get(splitFactor)]), function(x) DT[x]);
 }
 
 
