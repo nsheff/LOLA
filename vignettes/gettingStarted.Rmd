@@ -10,7 +10,7 @@ output: knitr:::html_vignette
 
 # Getting started with LOLA
 
-You need 3 things to run a LOL analysis:
+You need 3 things to run a LOLA analysis:
 
 1. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
 2. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
