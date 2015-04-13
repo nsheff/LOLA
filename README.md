@@ -27,40 +27,9 @@ install.packages(packageFolder, repos=NULL)
 --------------------------------------------------------------------------------
 ### Running LOLA
 
-```
-library(LOLA)
-?LOLA
-```
+For examples and workflows for `LOLA`, please check out the [R vignettes](vignettes/) to get you started:
 
-For a quick example, load up some data into a GRanges object and test for enrichment.
-
-1. Load the region database:
-
-```
-regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
-regionDB
-```
-
-2. Load your region sets of interest:
-```
-userSets = import(paste0(getOption("SHARE.DIR"), "data/atac_example.bed"))
-userUniverse =userSets
-```
-
-3. Calculate enrichments:
-```
-locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB);
-locResults
-```
-
-4. Write out results:
-
-```
-writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
-```
-
-
-Now take a look at `examples.R` for some more examples. Vignettes are forthcoming.
+* [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
 
 --------------------------------------------------------------------------------
 ### LOLA Core
