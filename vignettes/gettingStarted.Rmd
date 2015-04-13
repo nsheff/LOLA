@@ -39,6 +39,6 @@ locResults = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle
 ```
 
 4. Write out results:
-```
+```{r Write results}
 writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
 ```
