@@ -35,6 +35,10 @@ data("sample_universe", package="LOLA")
 Run the enrichment calculation:
 
 ```{r Run the calculation}
-calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
+locResults = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
 ```
 
+4. Write out results:
+```
+writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
+```
