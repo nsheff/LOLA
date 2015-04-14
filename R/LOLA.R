@@ -9,14 +9,19 @@
 #' @author Nathan Sheffield
 #'
 #' @references \url{http://github.com/sheffien}
-#' @import simpleCache
 #' @import data.table
-#' @import rtracklayer
-#' @import stringr
 #' @import GenomicRanges
 #' @import IRanges
 #' @importFrom reshape2 melt
 NULL
+
+# Because of some issues with CRAN submission,
+#(see here: http://stackoverflow.com/questions/9439256/)
+# I have to register stuff used in data.table as non-standard evaluation,
+# in order to pass some R CMD check NOTES.
+if(getRversion() >= "2.15.1") {
+	utils::globalVariables(c("collectionname", "collection", "filename", "size_int", "pValueLog", "userSet", "size"))
+}
 
 #This function calculates enrichment for two sets of genomic ranges intervals
 
@@ -74,6 +79,8 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 	return(userSets);
 }
 
+#' Check universe appropriateness
+#'
 #' Checks to see if the universe is appropriate for the userSets
 #' Anything in the userSets should be present in the universe.
 #' In addition, 2 different regions in the userSets should not
@@ -85,6 +92,11 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 #' @param fast	Skip the (slow) test for many-to-many relationships
 #'
 #' @export
+#' @examples
+#' data("sample_input", package="LOLA") # load userSet
+#' data("sample_universe", package="LOLA") # load userUniverse
+#' universe = disjoin(c(userSet, (userUniverse)))
+#' checkUniverseAppropriateness(list(userSet), universe)
 checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = FALSE) {
 	message("Confirming universe appropriateness");
 	userSets = listToGRangesList(userSets);
@@ -106,15 +118,14 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 
 	if (any(userSetsPercentInUniverseSum < 1)) {
 		cat(signif(userSetsPercentInUniverseSum, 6), "\n");
-		warning("Your user sets contain ranges that are not in your universe. You need to expand your universe. OR: your universe contains overlapping regions. You should reduce it.");
+		warning("Your user sets contain ranges that are not in your universe. You need to expand your universe. OR: your universe contains overlapping regions. You should reduce it. OR: your universe contains regions that overlap multiple regions in your user sets, You should disjoin your universe.");
 #		I can check with isDisjoint)
-	}
+	} else { message("PASSED"); }
 
 	if (any(userSetsPercentInUniverseAny > 1)) {
 		cat(signif(userSetsPercentInUniverseAny, 6), "\n");
 		warning("Your user sets contain multiple regions mapping to individual regions in the universe. Try redefineUserSets()");
-	}
-
+	} else { message("PASSED"); }
 }
 
 

@@ -15,6 +15,9 @@ nlist(...)
 \arguments{
 \item{...}{arguments passed to list()}
 }
+\value{
+A named list object.
+}
 \description{
 Nathan's magical named list function.
 This function is a drop-in replacement for the base list() function,

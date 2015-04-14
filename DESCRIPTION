@@ -6,14 +6,11 @@ Description: LOLA is an R package providing functions for testing overlap of set
 Author: Nathan Sheffield <http://www.nathansheffield.com>
 Maintainer: Nathan Sheffield <sheffien@github.com>
 Depends:
-    GenomicRanges,
-    IRanges,
-    simpleCache,
-    data.table,
-    rtracklayer
+    GenomicRanges, IRanges, 
+    data.table
 Imports:
-    reshape2, stringr
-Suggests: knitr, parallel, RUnit, BiocGenerics
+    reshape2
+Suggests: knitr, parallel, RUnit, BiocGenerics, simpleCache
 VignetteBuilder: knitr
 License: GPL
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology, FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing

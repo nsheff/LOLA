@@ -17,6 +17,9 @@ readRegionGRL(dbLocation, annoDT, useCache = TRUE, limit = NULL)
 \item{limit}{for testing purposes, limit the nmber of files read.
     NULL for no limit (default).}
 }
+\value{
+GRangesList object
+}
 \description{
 This function takes a region annotation object and reads in the regions,
 returning a GRangesList object of the regions.

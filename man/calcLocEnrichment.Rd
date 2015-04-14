@@ -2,9 +2,7 @@
 % Please edit documentation in R/calcLocEnrichment.R
 \name{calcLocEnrichment}
 \alias{calcLocEnrichment}
-\title{Workhorse function that calculates overlaps between userSets,
-and then uses a fisher's exact test rank them by significance
-of the overlap.}
+\title{Enrichment Calculation}
 \usage{
 calcLocEnrichment(userSets, userUniverse, regionDB, dbTitle = "dbTitle",
   cores = 1, redefineUserSets = FALSE)
@@ -21,6 +19,9 @@ calcLocEnrichment(userSets, userUniverse, regionDB, dbTitle = "dbTitle",
 \item{cores}{Number of processors}
 
 \item{redefineUserSets}{run redefineUserSets() on your userSets?}
+}
+\value{
+Data.table with enrichment results
 }
 \description{
 Workhorse function that calculates overlaps between userSets,

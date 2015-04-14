@@ -9,6 +9,9 @@ readCollectionAnnotation(dbLocation)
 \arguments{
 \item{dbLocation}{Location of the database}
 }
+\value{
+Collection annotation data.table
+}
 \description{
 Read collection annotation
 }

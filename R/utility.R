@@ -45,6 +45,7 @@ replaceFileExtension = function(filename, extension) {
 #'
 #' @param subj Subject
 #' @param quer Query
+#' @return Results from countOverlaps
 countOverlapsAnyRev = function(subj, quer) {
 	countOverlapsAny(quer, subj);
 }
@@ -138,7 +139,8 @@ countFileLines = function(filename) {
 #'
 #' @param GRL	GRangesList from which to sample
 #' @param prop	vector with same length as GRL, of values between 0-1, proportion of the list to select
-#' 
+#'
+#' @return GRangesList object sampled.
 #' @export
 sampleGRL = function(GRL, prop) {
 	sampleGRanges = function(GR, prop) { 
@@ -148,9 +150,9 @@ sampleGRL = function(GRL, prop) {
 }
 
 
-#' To make multicore a possibility but not required, I use an lapply alias
-#' which can point at either the base lapply (for no multicore), or it 
-#' can load library(parallel) and then point to mclapply, 
+#' To make parallel processing a possibility but not required, 
+#' I use an lapply alias which can point at either the base lapply
+#' (for no multicore), or it can point to mclapply, 
 #' and set the options for the number of cores (what mclapply uses).
 #'
 #' @param cores	Number of cpus
@@ -160,19 +162,32 @@ sampleGRL = function(GRL, prop) {
 #' setLapplyAlias(1)
 setLapplyAlias = function(cores) {
 	if(cores > 1) { #use multicore?
-		if (requireNamespace("parallel", quietly = TRUE)) {
-	      		options(mc.cores=cores);
-			lapplyAlias <<- parallel::mclapply;
-   		} else {
-     			warning("You don't have package parallel installed. Setting cores to 1.")
-			lapplyAlias <<- lapply;
-			options(mc.cores=1); #reset cores option.
-  		}
+	if (requireNamespace("parallel", quietly = TRUE)) {
+		options(mc.cores=cores);
 	} else {
-		lapplyAlias <<- lapply;
+		warning("You don't have package parallel installed. Setting cores to 1.")
+		options(mc.cores=1); #reset cores option.
+		}
+	} else {
 		options(mc.cores=1); #reset cores option.
 	}
 }
+
+#' Function to run lapply or mclapply, depending on the option set in
+#' getOption("mc.cores"), which can be set with setLapplyAlias().
+#'
+#' @param ... Arguments passed lapply() or mclapply()
+#' @return Result from lapply 0r parallel::mclapply
+#' @export
+lapplyAlias = function(...) {
+	if(getOption("mc.cores") > 1) {
+		return(parallel::mclapply(...))
+	} else {
+		return(lapply(...))
+	}
+}
+
+
 
 
 
@@ -207,8 +222,9 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 #' Took me awhile to figure this out.
 #'
 #' @param ...	arguments passed to list()
+#' @return A named list object.
 nlist = function(...) {
- 	fcall = match.call(expand.dots=FALSE)
+	fcall = match.call(expand.dots=FALSE)
 	l = list(...);
 	if(!is.null(names(list(...)))) { 
 		names(l)[names(l) == ""] = fcall[[2]][names(l) == ""]

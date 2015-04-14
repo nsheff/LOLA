@@ -16,6 +16,10 @@ only certain file names in your folders.}
 \item{limit}{You can limit the number of regions for testing.
     Default: NULL (no limit)}
 }
+\value{
+regionDB list containing database location, region and
+collection annotations, and regions GRangesList
+}
 \description{
 Helper function to annotate and load a regionDB, a folder with
 subfolder collections of regions.

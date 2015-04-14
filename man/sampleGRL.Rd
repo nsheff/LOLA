@@ -11,6 +11,9 @@ sampleGRL(GRL, prop)
 
 \item{prop}{vector with same length as GRL, of values between 0-1, proportion of the list to select}
 }
+\value{
+GRangesList object sampled.
+}
 \description{
 Function to sample regions from a GRangesList object, in specified proportion
 }

@@ -2,10 +2,7 @@
 % Please edit documentation in R/LOLA.R
 \name{checkUniverseAppropriateness}
 \alias{checkUniverseAppropriateness}
-\title{Checks to see if the universe is appropriate for the userSets
-Anything in the userSets should be present in the universe.
-In addition, 2 different regions in the userSets should not
-overlap the same region in the universe}
+\title{Check universe appropriateness}
 \usage{
 checkUniverseAppropriateness(userSets, userUniverse, cores = 1,
   fast = FALSE)
@@ -24,5 +21,11 @@ Checks to see if the universe is appropriate for the userSets
 Anything in the userSets should be present in the universe.
 In addition, 2 different regions in the userSets should not
 overlap the same region in the universe
+}
+\examples{
+data("sample_input", package="LOLA") # load userSet
+data("sample_universe", package="LOLA") # load userUniverse
+universe = disjoin(c(userSet, (userUniverse)))
+checkUniverseAppropriateness(list(userSet), universe)
 }
 

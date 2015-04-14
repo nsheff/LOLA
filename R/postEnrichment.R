@@ -115,3 +115,4 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplit
 	write.table(combinedResults[order(pValueLog,decreasing=TRUE),], file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE, sep="\t");
 }
 
+

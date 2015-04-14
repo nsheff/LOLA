@@ -12,6 +12,8 @@
 #' @param limit 	You can limit the number of regions for testing.
 #'	Default: NULL (no limit)
 #'
+#' @return regionDB list containing database location, region and 
+#' collection annotations, and regions GRangesList
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -27,6 +29,7 @@ loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
 #'
 #' @param dbLocation	Location of the database
 #'
+#' @return Collection annotation data.table
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -44,7 +47,7 @@ readCollectionAnnotation = function(dbLocation) {
 			collectionDT = fread(collectionFile);
 			setnames(collectionDT, tolower(colnames(collectionDT)));
 			missCols = setdiff(collectionColNames, colnames(collectionDT));
-			for (col in missCols) collectionDT[, col:=NA, with=F];
+			for (col in missCols) collectionDT[, col:=NA, with=FALSE];
 			collectionDT = collectionDT[,collectionColNames, with=FALSE] #subset
 
 		} else {
@@ -70,6 +73,7 @@ readCollectionAnnotation = function(dbLocation) {
 #' @param refreshSizes	should I recreate the sizes files 
 #'	documenting how many regions (lines) are in each region set?
 #' 
+#' @return Region set annotation (data.table)
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -77,6 +81,7 @@ readCollectionAnnotation = function(dbLocation) {
 readRegionSetAnnotation = function(dbLocation, 
 					filePattern = "", 
 					refreshSizes=FALSE) {
+	size=NULL # Silence R CMD check Notes.
 	#Build a data.table annotating the beds.
 	#Should give collections
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
@@ -149,6 +154,7 @@ readRegionSetAnnotation = function(dbLocation,
 #' @param limit	for testing purposes, limit the nmber of files read.
 #'	NULL for no limit (default).
 #'
+#' @return GRangesList object
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -162,7 +168,11 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	message(iCol);
 	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), filename)), by=filename]$fullFilename
 	if (useCache) {
-	simpleCache(iCol, "readCollection(filesToRead)", cacheDir=dbLocation, buildEnvir=nlist(filesToRead))
+		if (requireNamespace("simpleCache", quietly=TRUE)) {
+			simpleCache::simpleCache(iCol, "readCollection(filesToRead)", cacheDir=dbLocation, buildEnvir=nlist(filesToRead))
+		} else {
+			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
+		}
 	} else {
 	assign(iCol, readCollection(filesToRead, limit));
 	}

@@ -2,9 +2,9 @@
 % Please edit documentation in R/utility.R
 \name{setLapplyAlias}
 \alias{setLapplyAlias}
-\title{To make multicore a possibility but not required, I use an lapply alias
-which can point at either the base lapply (for no multicore), or it
-can load library(parallel) and then point to mclapply,
+\title{To make parallel processing a possibility but not required,
+I use an lapply alias which can point at either the base lapply
+(for no multicore), or it can point to mclapply,
 and set the options for the number of cores (what mclapply uses).}
 \usage{
 setLapplyAlias(cores)
@@ -13,9 +13,9 @@ setLapplyAlias(cores)
 \item{cores}{Number of cpus}
 }
 \description{
-To make multicore a possibility but not required, I use an lapply alias
-which can point at either the base lapply (for no multicore), or it
-can load library(parallel) and then point to mclapply,
+To make parallel processing a possibility but not required,
+I use an lapply alias which can point at either the base lapply
+(for no multicore), or it can point to mclapply,
 and set the options for the number of cores (what mclapply uses).
 }
 \examples{

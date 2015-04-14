@@ -17,6 +17,9 @@ to select only certain file names in your folders.}
 \item{refreshSizes}{should I recreate the sizes files
     documenting how many regions (lines) are in each region set?}
 }
+\value{
+Region set annotation (data.table)
+}
 \description{
 Given a folder containing region collections in subfolders, this function
 will either read the annotation file if one exists, or create a generic

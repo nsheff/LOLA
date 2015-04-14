@@ -4,7 +4,8 @@
 # ENRICHMENT - Actual workhorse enrichment calculation functions
 ######################################################################
 
-
+#' Enrichment Calculation
+#'
 #' Workhorse function that calculates overlaps between userSets,
 #' and then uses a fisher's exact test rank them by significance
 #' of the overlap.
@@ -16,9 +17,10 @@
 #' @param dbTitle	deprecated parameter	
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
+#' @return Data.table with enrichment results
 #' @export
 #' @example 
-#' examples/example.R
+#' R/examples/example.R
 calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle", cores=1, redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
