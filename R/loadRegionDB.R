@@ -41,7 +41,7 @@ readCollectionAnnotation = function(dbLocation) {
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
 	for (collection in collections) {
-		collectionFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0collection")
+		collectionFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "collection.txt")
 		if (file.exists(collectionFile)) {
 			message("\tIn '", collection, "', found collection annotation file:", collectionFile);
 			collectionDT = fread(collectionFile);
@@ -90,12 +90,12 @@ readRegionSetAnnotation = function(dbLocation,
 	annotationColNames = c("filename", "cell-type", "description", "tissue", "data-source", "antibody", "treatment")
 
 	for (collection in collections) {
-		files = list.files(paste0(dbLocation,"/",collection), filePattern)
+		files = list.files(paste0(dbLocation,"/",collection, "/regions"), filePattern)
 		#eliminate special annotation files
-		specialFileInd = grep("^0", files)
-		if (length(specialFileInd) > 0) {
-			files = files [ -specialFileInd]
-		}
+		#specialFileInd = grep("^0", files)
+		#if (length(specialFileInd) > 0) {
+		#	files = files [ -specialFileInd]
+		#}
 		if (length(files) <1) { 
 			message("\tIn '", collection, "', no files found.");
 			next;
@@ -104,7 +104,7 @@ readRegionSetAnnotation = function(dbLocation,
 		setkey(collectionAnnoDT, "filename")
 
 		#look for index file
-		indexFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0index")
+		indexFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "index.txt")
 		if (file.exists(indexFile)) {
 			message("\tIn '", collection, "', found index file:", indexFile);
 			indexDT = fread(indexFile);
@@ -121,7 +121,7 @@ readRegionSetAnnotation = function(dbLocation,
 
 		setkey(indexDT, "filename")
 		#look for size file
-		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "0sizes")
+		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "sizes.txt")
 		if (file.exists(sizeFile) & !refreshSizes) {
 			groupSizes = fread(sizeFile)
 			#collectionAnnoDT[,size:=-1]
@@ -131,7 +131,7 @@ readRegionSetAnnotation = function(dbLocation,
 		}
 		if (any(collectionAnnoDT[,size] < 0)) {
 			message("Collection: ", collection, ". Creating size file...")
-			collectionAnnoDT[,size:=countFileLines(paste0(dbLocation, "/", collection, "/", filename)), by=filename]
+			collectionAnnoDT[,size:=countFileLines(paste0(dbLocation, "/", collection, "/regions/", filename)), by=filename]
 			write.table(collectionAnnoDT[,list(filename,size)], file=sizeFile, quote=FALSE, row.names=FALSE, sep="\t")
 		}
 
@@ -166,10 +166,10 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	
 	for (iCol in unique(annoDT$collection)) {
 	message(iCol);
-	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), filename)), by=filename]$fullFilename
+	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), "regions/", filename)), by=filename]$fullFilename
 	if (useCache) {
 		if (requireNamespace("simpleCache", quietly=TRUE)) {
-			simpleCache::simpleCache(iCol, "readCollection(filesToRead)", cacheDir=dbLocation, buildEnvir=nlist(filesToRead))
+			simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead))
 		} else {
 			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 		}
@@ -190,7 +190,7 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 #'
 #' @export
 #' @examples
-#' files = list.files(system.file("extdata", "hg19/ucsc_example",
+#' files = list.files(system.file("extdata", "hg19/ucsc_example/regions",
 #'	 package="LOLA"), pattern="*.bed")
 #' regionAnno = readCollection(files)
 readCollection = function(filesToRead, limit=NULL) {
@@ -208,7 +208,8 @@ readCollection = function(filesToRead, limit=NULL) {
 			success = tryCatch( { 
 				DT = fread(paste0(filename))
 				cn = colnames(DT)
-				tfbsgr = dtToGr(DT, "V1", "V2", "V3");
+				cn[1]
+				tfbsgr = dtToGr(DT, cn[1], cn[2], cn[3]);
 				grl[[i]] = tfbsgr;
 				TRUE
 			},

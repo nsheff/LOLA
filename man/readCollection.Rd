@@ -19,7 +19,7 @@ GRangesList object holding all the region sets. This function is used by readReg
 to process annotation objects.
 }
 \examples{
-files = list.files(system.file("extdata", "hg19/ucsc_example",
+files = list.files(system.file("extdata", "hg19/ucsc_example/regions",
 	 package="LOLA"), pattern="*.bed")
 regionAnno = readCollection(files)
 }

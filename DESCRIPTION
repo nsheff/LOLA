@@ -1,17 +1,17 @@
 Package: LOLA
-Version: 0.0.2
+Version: 0.0.3
 Date: 2015-04
 Title: Location OverLap Analysis
 Description: LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases.
 Author: Nathan Sheffield <http://www.nathansheffield.com>
 Maintainer: Nathan Sheffield <sheffien@github.com>
-Depends:
+Depends: 
     GenomicRanges, IRanges, 
     data.table
-Imports:
+Imports: 
     reshape2
-Suggests: knitr, parallel, RUnit, BiocGenerics, simpleCache
+Suggests: knitr, parallel, BiocGenerics, simpleCache,
+    testthat
 VignetteBuilder: knitr
 License: GPL
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology, FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
-

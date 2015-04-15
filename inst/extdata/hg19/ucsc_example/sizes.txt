@@ -1,0 +1,6 @@
+filename	size
+cpgIslandExt.bed	28691
+laminB1Lads.bed	1302
+numtSAssembled.bed	78
+vistaEnhancers.bed	1339
+vistaEnhancers_colNames.bed	1340

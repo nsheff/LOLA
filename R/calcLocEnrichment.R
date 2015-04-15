@@ -28,7 +28,7 @@ calcLocEnrichment = function(userSets, userUniverse, regionDB, dbTitle="dbTitle"
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
 	annotationDT[, dbSet := 1:nrow(annotationDT)]
-	setkey(	annotationDT, dbSet)
+	setkey(annotationDT, dbSet)
 	### Data sanity checks ###
 	#Confirm we received GRangesList objects, convert from list if possible.
 	userSets = listToGRangesList(userSets);
