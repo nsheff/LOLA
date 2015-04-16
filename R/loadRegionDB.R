@@ -9,6 +9,7 @@
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param filePattern	passed to list.files; you can use this to select 
 #'	only certain file names in your folders.
+#' @param useCache	uses simpleCache to cache and load the results
 #' @param limit 	You can limit the number of regions for testing.
 #'	Default: NULL (no limit)
 #'
@@ -18,10 +19,10 @@
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation=dbPath)
-loadRegionDB = function(dbLocation, filePattern="", limit=NULL) {
+loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	collectionAnno = readCollectionAnnotation(dbLocation);
-	regionGRL = readRegionGRL(dbLocation, regionAnno, limit=limit);
+	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
 
