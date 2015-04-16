@@ -7,26 +7,16 @@ LOLA is deployable anywhere, using generic custom bed-file database.
 
 --------------------------------------------------------------------------------
 ### Installing LOLA
-install the development version directly from github with devtools
-
-To install LOLA with devtools:
-
+Install the development version directly from github with devtools:
 ```{r}
 require(devtools)
 install_github("sheffien/LOLA") 
 ```
 
-To install a local copy:
-
+Or, clone the repo and install from there:
 ```{r}
 packageFolder = "~/R/LOLA";
 install.packages(packageFolder, repos=NULL)
-```
-
-You may also want to grab my R package `simpleCache`, which is option, but increases speed of loading the large databases (plus you may find it useful anyway).
-
-```{r}
-install_github("sheffien/simpleCache")
 ```
 
 --------------------------------------------------------------------------------
@@ -37,9 +27,23 @@ For examples and workflows for `LOLA`, please check out the [R vignettes](vignet
 * [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
 
 --------------------------------------------------------------------------------
-### LOLA Core
+### LOLA Core Database
 
-LOLA comes with a core database that includes encode transcription factor binding sites, the cistrome database, and DNase hypersensitive sites. You may want to add additional region sets specific to your application (instructions follow).
+LOLA comes with a core database (`regionDB`) that includes ENCODE transcription factor binding sites, the cistrome database, and DNase hypersensitive sites. There are two download options: you can download pre-cached `.RData` files, which `LOLA` can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which `LOLA` can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+
+The latest LOLA Core database can be downloaded here:
+
+* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150416.tgz) (Raw source and processed caches - 840Mb)
+* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150416.tgz) (Processed cache files only - 167Mb)
+
+If you're just using `LOLA`, I recommend using the cached version, unless you need the raw files for something else. 
+To do this, you'll need to grab my R package `simpleCache` (which you may find it useful for other projects, too).
+
+```{r}
+install_github("sheffien/simpleCache")
+```
+
+`LOLA` Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
 
 --------------------------------------------------------------------------------
 ### Building a custom database
