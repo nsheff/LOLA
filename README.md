@@ -25,7 +25,7 @@ For examples and workflows for LOLA, please check out the [R vignettes](vignette
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-To get started, you can download a core region set database (`regionDB`) that includes ENCODE transcription factor binding sites, the cistrome database, and DNase hypersensitive sites. There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+To get started, you can download a core region set database (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
 
 The latest LOLA Core database can be downloaded here:
 
@@ -39,7 +39,21 @@ To do this, you'll need to grab my R package `simpleCache` (which you may find i
 install_github("sheffien/simpleCache")
 ```
 
-LOLA Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
+Current contents of LOLA core:
+
+* hg19
+  1. Transcription Factor binding sites from  [ENCODE](http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/)
+  2. Tissue clustered DNase hypersensitive sites from [Sheffield et al. (2013)](http://dnase.genome.duke.edu)
+  3. [Codex database](http://codex.stemcells.cam.ac.uk/)
+  4. A collection of UCSC feature tables (like CpG islands)
+  5. Cistrome database from [Cistrome](http://dx.doi.org/10.1186/gb-2011-12-8-r83)
+  6. Epigenome databases from [Cistrome](http://dx.doi.org/10.1186/gb-2011-12-8-r83)
+* mm10
+  1. [Codex database](http://codex.stemcells.cam.ac.uk/)
+  2. Cistrome database (in process)
+  3. Encode TFBS (in process)
+
+We're actively adding new collections, so stay tuned. Please contribute! LOLA Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
 
 --------------------------------------------------------------------------------
 ### Building a custom database
