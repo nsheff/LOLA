@@ -1,4 +1,4 @@
-LOLA: Location Overlap Analysis
+# LOLA: Genomic Locus Overlap Enrichment Analysis
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. This README provides a package overview, motivation, and installation instructions. For detailed documentation of functions and additional examples, please see the R documentation.
 
@@ -15,37 +15,36 @@ Or, clone the repo and install from there:
 packageFolder = "~/R/LOLA";
 install.packages(packageFolder, repos=NULL)
 ```
-
 --------------------------------------------------------------------------------
 ### Running LOLA
 
-For examples and workflows for `LOLA`, please check out the [R vignettes](vignettes/) to get you started:
+For examples and workflows for LOLA, please check out the [R vignettes](vignettes/) to get you started:
 
 * [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
 
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-To get started, you can download a core region set database (`regionDB`) that includes ENCODE transcription factor binding sites, the cistrome database, and DNase hypersensitive sites. There are two download options: you can download pre-cached `.RData` files, which `LOLA` can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which `LOLA` can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+To get started, you can download a core region set database (`regionDB`) that includes ENCODE transcription factor binding sites, the cistrome database, and DNase hypersensitive sites. There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
 
 The latest LOLA Core database can be downloaded here:
 
 * [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150416.tgz) (Raw source and processed caches - 840Mb)
 * [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150416.tgz) (Processed cache files only - 167Mb)
 
-If you're just using `LOLA`, I recommend using the cached version, unless you need the raw files for something else. 
+I recommend using the cached version, unless you need the raw files for something else. 
 To do this, you'll need to grab my R package `simpleCache` (which you may find it useful for other projects, too).
 
 ```{r}
 install_github("sheffien/simpleCache")
 ```
 
-`LOLA` Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
+LOLA Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
 
 --------------------------------------------------------------------------------
 ### Building a custom database
 
-Check out the LOLA core database for an example of how to organize your own custom database. LOLA can read your custom region sets the same way it loads LOLA core. Start by creating collections of bed files: a collection is just a folder with a bunch of bed files in it. For example, you may find a paper that produced 100 data sets you're interested in testing for overlap with your data. To make a collection for the paper, create a folder, name it after the paper, and then put the 100 bed files _into a subfolder called `regions`_. Drop this collection into a parent database folder that holds all your collections, and you're good to go!
+Check out the raw LOLA core database for an example of how to organize your own custom database. LOLA can read your custom region sets the same way it loads LOLA core. Start by creating collections of bed files: a collection is just a folder with a bunch of bed files in it. For example, you may find a paper that produced 100 data sets you're interested in testing for overlap with your data. To make a collection for the paper, create a folder, name it after the paper, and then put the 100 bed files _into a subfolder called `regions`_. Drop this collection into a parent database folder that holds all your collections, and you're good to go!
 
 If you find yourself creating lots of custom collections, you should consider sharing them to improve the core database! I'm always looking for additional datasets to add.
 
