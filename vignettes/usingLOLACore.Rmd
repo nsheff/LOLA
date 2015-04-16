@@ -1,0 +1,43 @@
+---
+title: "Using LOLA Core"
+author: "Nathan Sheffield"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Using LOLA Core}
+output: knitr:::html_vignette
+---
+# Using LOLA Core
+
+(This vignette is unevaluated because it relies on loading huge database files).
+
+First, load LOLA Core and make a universe:
+
+```{r, eval = FALSE}
+library("LOLA")
+
+regionDB = loadRegionDB("regionDB/hg19")
+
+myuniv = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
+myuniv
+myuniv = disjoin(myuniv)
+myuniv
+```
+
+Load a mystery user set:
+
+```{r, eval = FALSE}
+userSet = LOLA:::dtToGr(fread("mystery.bed"), "V1", "V2", "V3")
+```
+
+Run the enrichment calculation:
+
+```{r, eval = FALSE}
+locResults = calcLocEnrichment(userSet, myuniv, regionDB, dbTitle="dbTitle", cores=1)
+```
+
+You can take a closer look at the results like so:
+
+```{r, eval = FALSE}
+locResults[collection=="sheffield_dnase", ][order(maxRnk, decreasing=FALSE),][1:20,]
+```
