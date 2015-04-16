@@ -48,9 +48,18 @@ Check out the raw LOLA core database for an example of how to organize your own 
 
 If you find yourself creating lots of custom collections, you should consider sharing them to improve the core database! I'm always looking for additional datasets to add.
 
+##### Basic minimal requirements for a collection
+
+A collection is a folder that contains the following items:
+
+1. `regions/` subfolder with bed-like (chr,start,stop) files inside (**REQUIRED**)
+2. `collection.txt` file describing the collection (**RECOMMENDED**)
+3. `index.txt` file describing the regions (**RECOMMENDED**)
+4. Scripts or descriptions on how to reproduce the collection (**OPTIONAL**)
+
 ##### Guidelines for collections
 
-* **All regions within the collection folder should be in a subfolder named `regions`.**
+* **All region sets within the collection folder should be in a subfolder named `regions`.**
 
 * For convenience and efficiency, aim for collections between 50 and 2000 region sets. Around 250 is ideal. The software can handle less if you have to, but try lumping small collections together logically, if possible. It will make it easier to organize things in the future. If you lump different sources together, make sure to annotate with appropriate column (see below).
 
