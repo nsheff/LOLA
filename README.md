@@ -4,7 +4,13 @@ LOLA is an R package providing functions for testing overlap of sets of genomic 
 
 --------------------------------------------------------------------------------
 ### Installing LOLA
-Install the development version directly from github with devtools:
+
+Make sure you have GenomicRanges (bioconductor installed:
+```{r}
+source("http://bioconductor.org/biocLite.R")
+biocLite("GenomicRanges")
+```
+Then, install the development version directly from github with devtools:
 ```{r}
 require(devtools)
 install_github("sheffien/LOLA") 
