@@ -8,27 +8,52 @@ vignette: >
 output: knitr:::html_vignette
 ---
 # Using LOLA Core
+(NB: __This vignette is unevaluated because it relies on loading huge database files__)
 
-(This vignette is unevaluated because it relies on loading huge database files).
+Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database, called LOLA Core, which we curate from many sources. Since LOLA Core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. A download link to the latest database is kept in the README file at the [LOLA github page](http://github.com/sheffien/LOLA). Start there, downloading the database (all you need for this vignette is the smaller cached version).
 
-First, load LOLA Core and make a universe:
+After downloading and unpacking the LOLA Core archive, Load it up like this (this should take under a minute or so on a modern machine):
 
 ```{r, eval = FALSE}
 library("LOLA")
 
 regionDB = loadRegionDB("regionDB/hg19")
+```
 
+For this vignette, you'll also need a few region sets of interest. Typically, this will be data you've generated or downloaded and you'll know something about it already; but just for fun, in this vignette I'll call these mystery sets, and the point will be to see what LOLA tells us about them if we have no previous knowledge. Then I'll reveal their true identity at the end of the vignette.
+You can download these from the same page as LOLA Core.
+
+Load the mystery region sets. LOLA requires the data in GRanges objects, so you can use `fread()` to get a `data.table`, and then convert with this LOLA function dtToGr, or you could use `rtracklayer` to import them as GRanges directly if you prefer.
+
+```{r, eval = FALSE}
+regionSetA = LOLA:::dtToGr(fread("mysteryA.bed"), "V1", "V2", "V3")
+regionSetB = LOLA:::dtToGr(fread("mysteryB.bed"), "V1", "V2", "V3")
+regionSetC = LOLA:::dtToGr(fread("mysteryC.bed"), "V1", "V2", "V3")
+```
+
+We then need to combine these GRanges objects into a single GRangesList:
+
+```{r, eval = FALSE}
+userSets = GRangesList(regionSetA, regionSetB, regionSetC)
+```
+
+One of the key questions when you run LOLA is what your universe is. The universe set is tested for overlap with the database, and the counts are used in the contingency tables that determine significance for your user sets. You should think of the universe as the set of regions you tested for possible inclusion in your user sets. The reason this is important is that if you have some regions which were never really possible to end up in a region set of interest, it's unfair to penalize your regions for not overlapping those regions in the database, changing the reuslts of the signficance test.
+
+Here, we'll make 2 different universes to illustrate how they differ. First, we'll create a general universe using the union of all dnase hypersensitive sites in 112 samples from Sheffield et al. (2013). With this as our universe, we're essentially testing for what our regions of interest are overlapping among any known active regulatory elements, since this is quite a broad universe.
+
+```{r, eval = FALSE}
 myuniv = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
 myuniv
 myuniv = disjoin(myuniv)
 myuniv
 ```
 
-Load a mystery user set:
-
+Equally valid is to consider a more restricted universe. For instance, if we make a universe that is the union of all the region sets in any of the mystery sets, then what we're testing is for enrichment in one mystery set vs. the others.
+So let's create that universe, too:
 ```{r, eval = FALSE}
-userSet = LOLA:::dtToGr(fread("mystery.bed"), "V1", "V2", "V3")
+restrictedUniverse = unlist(userSets)
 ```
+
 
 Run the enrichment calculation:
 
