@@ -10,14 +10,15 @@ output: knitr:::html_vignette
 
 # Getting started with LOLA
 
+In this vignette, you'll use small example datasets that come with the LOLA package to get a first look at the most common functions in a LOLA workflow.
+
 You need 3 things to run a LOLA analysis:
 
-1. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
-2. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
-3. regionDB: A database of region sets to test for enrichment of overlap
+1. regionDB: A database of region sets to test for enrichment of overlap. For this vignette, we have a just a handful of region sets as a database.
+2. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
+3. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
 
-
-Let's load an example dataset. The database location should point to a folder that contains collection subfolders:
+Let's load an example regionDB with `loadRegionDB()`. Here's a small example that comes with LOLA. The database location should point to a folder that contains collection subfolders:
 
 ```{r Load a regionDB}
 library("LOLA")
@@ -36,14 +37,14 @@ names(regionDB)
 * regionAnno: A `data.table` annotating each region set, with rows corresponding to bed files in the database (there is also a `collection` column recording which collection each region set belongs to).
 * regionGRL: A `GRangesList` object holding the actual regions, with one list element per region set, ordered as in `regionAnno`.
 
-Now with the database loaded, let's load up some sample data:
+Now with the database loaded, let's load up some sample data (the regions of interest, and the tested universe):
 
 ```{r Load sample user sets and universe}
 data("sample_input", package="LOLA") # load userSet
 data("sample_universe", package="LOLA") # load userUniverse
 ```
 
-Now we have a GRanges object called `userSet` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation:
+Now we have a GRanges object called `userSet` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSet, and each region set in the regionDB.
 
 ```{r Run the calculation}
 locResults = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
@@ -56,6 +57,7 @@ colnames(locResults)
 head(locResults)
 ```
 
+If you're not familiar with how `data.table` works in R, it's worth reading some of the [documentation of this powerful package](http://cran.r-project.org/web/packages/data.table/index.html).
 Columns `userSet` and `dbSet` are indexes into the respective GRangeList objects, identifying each pairwise comparison. There are a series of columns describing the results of the statistical test, such as `pValueLog`, `logOdds`, and the actual values from the contingency table (`support` is the overlap, and `b`, `c`, and `d` complete the 2x2 table). Rank columns simply rank the tests by `pValueLog`, `logOdds`, or `support`; following these are a series of columns annotating the database regions, depending on how you populated the `index` table in the regionDB folder.
 
 You can explore these results in R by, for example, ranking with different orders:
@@ -70,3 +72,7 @@ And finally, record the results to file like this:
 ```{r Write results}
 writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
 ```
+
+By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
+
+Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.
