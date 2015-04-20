@@ -27,6 +27,10 @@ install.packages(packageFolder, repos=NULL)
 For examples and workflows for LOLA, please check out the [R vignettes](vignettes/) to get you started:
 
 * [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
+* [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd)
+* [Choosing a Universe](vignettes/choosingUniverse.Rmd)
+
+The later vignettes require the LOLA Core database and some example files, which you can download below.
 
 --------------------------------------------------------------------------------
 ### LOLA Core Database
@@ -35,8 +39,9 @@ To get started, you can download a core region set database (`regionDB`). There 
 
 The latest LOLA Core database can be downloaded here:
 
-* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150416.tgz) (Raw source and processed caches - 840Mb)
-* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150416.tgz) (Processed cache files only - 167Mb)
+* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150420.tgz) (Raw source and processed caches - 840Mb)
+* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150420.tgz) (Processed cache files only - 167Mb)
+* [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150420.tgz) (For testing LOLA Core - 20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else. 
 To do this, you'll need to grab my R package `simpleCache` (which you may find it useful for other projects, too).
