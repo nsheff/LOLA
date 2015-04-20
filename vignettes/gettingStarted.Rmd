@@ -16,7 +16,7 @@ You need 3 things to run a LOLA analysis:
 
 1. regionDB: A database of region sets to test for enrichment of overlap. For this vignette, we have a just a handful of region sets as a database.
 2. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
-3. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
+3. userUniverse: The reference set of all regions used in the enrichment analysis (a single GRanges object). A super-set of both, regionDB and userSets. Tested for inclusion in your sets of regions of interest.
 
 Let's load an example regionDB with `loadRegionDB()`. Here's a small example that comes with LOLA. The database location should point to a folder that contains collection subfolders:
 
