@@ -4,8 +4,8 @@
 \alias{calcLocEnrichment}
 \title{Enrichment Calculation}
 \usage{
-calcLocEnrichment(userSets, userUniverse, regionDB, dbTitle = "dbTitle",
-  cores = 1, redefineUserSets = FALSE)
+calcLocEnrichment(userSets, userUniverse, regionDB, cores = 1,
+  redefineUserSets = FALSE)
 }
 \arguments{
 \item{userSets}{Regions of interest}
@@ -13,8 +13,6 @@ calcLocEnrichment(userSets, userUniverse, regionDB, dbTitle = "dbTitle",
 \item{userUniverse}{Regions tested for inclusion in userSets}
 
 \item{regionDB}{Region DB to check for overlap, from loadRegionDB()}
-
-\item{dbTitle}{deprecated parameter}
 
 \item{cores}{Number of processors}
 
@@ -33,7 +31,7 @@ dbPath = system.file("extdata", "hg19", package="LOLA")
 regionDB = loadRegionDB(dbLocation=dbPath)
 data("sample_universe", package="LOLA")
 data("sample_input", package="LOLA")
-res = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
+res = calcLocEnrichment(userSet, userUniverse, regionDB, cores=1)
 locResult = res[2,]
 extractEnrichmentOverlaps(locResult, userSet, regionDB)
 }

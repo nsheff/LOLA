@@ -16,7 +16,7 @@ test_that( "calcLocEnrichment", {
 	regionDB = loadRegionDB(dbPath)
 	data("sample_input", package="LOLA") # load userSet
 	data("sample_universe", package="LOLA") # load userUniverse
-	locResults = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
+	locResults = calcLocEnrichment(userSet, userUniverse, regionDB, cores=1)
 
 	expect_equal(nrow(locResults), 5)
 	expect_true(all(locResults[,support] == c(662, 121, 121, 4, 3006)))
