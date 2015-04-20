@@ -47,7 +47,7 @@ data("sample_universe", package="LOLA") # load userUniverse
 Now we have a GRanges object called `userSet` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSet, and each region set in the regionDB.
 
 ```{r Run the calculation}
-locResults = calcLocEnrichment(userSet, userUniverse, regionDB, dbTitle="dbTitle", cores=1)
+locResults = calcLocEnrichment(userSet, userUniverse, regionDB, cores=1)
 ```
 
 calcLocEnrichment tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess signficance of the overlap. The results are a `data.table` with several columns:
@@ -66,13 +66,25 @@ You can explore these results in R by, for example, ranking with different order
 locResults[order(support, decreasing=TRUE),]
 ```
 
+You can order by one of the rank columns:
+
+```{r}
+locResults[order(maxRnk, decreasing=TRUE),]
+```
+
+
 And finally, record the results to file like this:
 
 4. Write out results:
+
 ```{r Write results}
-writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
+writeCombinedEnrichment(locResults, outFolder= "lolaResults");
 ```
 
 By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
+
+```{r Write split results}
+writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
+```
 
 Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.

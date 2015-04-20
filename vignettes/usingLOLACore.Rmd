@@ -8,61 +8,79 @@ vignette: >
 output: knitr:::html_vignette
 ---
 # Using LOLA Core
-(NB: __This vignette is unevaluated because it relies on loading huge database files__)
+(__This vignette is unevaluated because it relies on loading huge database files__)
 
 Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database, called LOLA Core, which we curate from many sources. Since LOLA Core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. A download link to the latest database is kept in the README file at the [LOLA github page](http://github.com/sheffien/LOLA). Start there, downloading the database (all you need for this vignette is the smaller cached version).
 
-After downloading and unpacking the LOLA Core archive, Load it up like this (this should take under a minute or so on a modern machine):
+### Loading full-scale example data
+
+After downloading and unpacking the LOLA Core archive into your current working directory, load it up like this (this should take under a minute or so on a modern machine).
+
+You'll also need a few region sets of interest. Typically, this will be data you've generated or downloaded and you'll know something about it already; for this vignette, you can download some [example data](http://github.com/sheffien/LOLA) from the same page as LOLA Core. Just for fun, in this vignette I'll call these mystery sets, and the point will be to see what LOLA tells us about them if we have no previous knowledge. Then I'll reveal their true identity at the end of the vignette. 
+
+Load the mystery region sets. LOLA requires the data in GRanges objects, so you can use `fread()` to get a `data.table`, and then convert with this LOLA function dtToGr, or you could use `rtracklayer` to import them as GRanges directly if you prefer. You also need to come up with a "region universe" for the calculation. This can be quite tricky, so there's another vignette dedicated to choosing an appropriate universe. For this vignette, I've provided a reasonable universe (it will likely be applicable for other applications, too). This is just a combined set of all active DNase hypersensitive sites in the genome. This would be a reasonable universe to use for a set of some specific active regulatory elements, like in a ChIP-seq experiment. Since the mystery data in this vignette is all active ChIP-seq data, it's a reasonable universe here.
 
 ```{r, eval = FALSE}
 library("LOLA")
 
 regionDB = loadRegionDB("regionDB/hg19")
+
+regionSetA = LOLA:::dtToGr(fread("lola_vignette_data/setA.bed"), "V1", "V2", "V3")
+regionSetB = LOLA:::dtToGr(fread("lola_vignette_data/setB.bed"), "V1", "V2", "V3")
+regionSetC = LOLA:::dtToGr(fread(lola_vignette_data/setC.bed"), "V1", "V2", "V3")
+activeDHS = LOLA:::dtToGr(fread("lola_vignette_data/activeDHS_universe.bed"), "V1", "V2", "V3")
 ```
 
-For this vignette, you'll also need a few region sets of interest. Typically, this will be data you've generated or downloaded and you'll know something about it already; but just for fun, in this vignette I'll call these mystery sets, and the point will be to see what LOLA tells us about them if we have no previous knowledge. Then I'll reveal their true identity at the end of the vignette.
-You can download these from the same page as LOLA Core.
+### Running the enrichment
 
-Load the mystery region sets. LOLA requires the data in GRanges objects, so you can use `fread()` to get a `data.table`, and then convert with this LOLA function dtToGr, or you could use `rtracklayer` to import them as GRanges directly if you prefer.
-
-```{r, eval = FALSE}
-regionSetA = LOLA:::dtToGr(fread("mysteryA.bed"), "V1", "V2", "V3")
-regionSetB = LOLA:::dtToGr(fread("mysteryB.bed"), "V1", "V2", "V3")
-regionSetC = LOLA:::dtToGr(fread("mysteryC.bed"), "V1", "V2", "V3")
-```
-
-We then need to combine these GRanges objects into a single GRangesList:
+We then need to combine these GRanges objects into a single GRangesList. This lets us calculate enrichments for all your region sets simultaneously. It's done independently, but it's faster to merge them and get a single result than to calculate for each set individually. Run the enrichment calculation:
 
 ```{r, eval = FALSE}
 userSets = GRangesList(regionSetA, regionSetB, regionSetC)
+locResults = calcLocEnrichment(userSets, activeDHS, regionDB, cores=1)
 ```
 
-One of the key questions when you run LOLA is what your universe is. The universe set is tested for overlap with the database, and the counts are used in the contingency tables that determine significance for your user sets. You should think of the universe as the set of regions you tested for possible inclusion in your user sets. The reason this is important is that if you have some regions which were never really possible to end up in a region set of interest, it's unfair to penalize your regions for not overlapping those regions in the database, changing the reuslts of the signficance test.
-
-Here, we'll make 2 different universes to illustrate how they differ. First, we'll create a general universe using the union of all dnase hypersensitive sites in 112 samples from Sheffield et al. (2013). With this as our universe, we're essentially testing for what our regions of interest are overlapping among any known active regulatory elements, since this is quite a broad universe.
+### Exploring results
 
 ```{r, eval = FALSE}
-myuniv = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
-myuniv
-myuniv = disjoin(myuniv)
-myuniv
+locResults[1:10,]
 ```
 
-Equally valid is to consider a more restricted universe. For instance, if we make a universe that is the union of all the region sets in any of the mystery sets, then what we're testing is for enrichment in one mystery set vs. the others.
-So let's create that universe, too:
-```{r, eval = FALSE}
-restrictedUniverse = unlist(userSets)
-```
+A first look at the top results looks like userSet1 (setA) is highly enriched for active ChIP experiments (Pol2, TAF1) in a variety of cell-types, with SK-N-MC at the top. By default, the results will be ranked by p-value. The meanRnk and maxRnk columns rank the results by a combination of p-value, log odds, and support (overlap), and often yield the most interpretable results. Explore these rankings by simply reordering the data.table. Since these results are dominated by just a single collection (encode_tfbs), it may also be interesting to just look at enrichments for a particular collection. Look around at the results in various ways to get an idea of what trends in the results. Since one userSet is also dominating the top results, we can limit the table to other userSets to see how they fare.
 
-
-Run the enrichment calculation:
 
 ```{r, eval = FALSE}
-locResults = calcLocEnrichment(userSet, myuniv, regionDB, dbTitle="dbTitle", cores=1)
+locResults[order(meanRnk, decreasing=FALSE),][1:20,]
+locResults[order(maxRnk, decreasing=FALSE),][1:20,]
+locResults[collection=="sheffield_dnase", ][order(maxRnk, decreasing=FALSE),]
+
+locResults[userSet==2,][order(maxRnk, decreasing=FALSE),][1:10,]
+locResults[userSet==3,][order(maxRnk, decreasing=FALSE),][1:10,]
+
+locResults[userSet==1,][collection=="sheffield_dnase", ][1:15,]
+locResults[userSet==2,][collection=="sheffield_dnase", ][1:15,]
+locResults[userSet==3,][collection=="sheffield_dnase", ][1:15,]
 ```
 
-You can take a closer look at the results like so:
+From this we can see that set B and set C have very different enrichments, with setC (userSet3) being enriched in AP-1 factors (cJun and cFos) in a variety of cell types, and multiple databases. UserSet 2 looks more similar to userSet1, dominated by polymerase binding. In the DNase collection, we see that both userSets 1 and 2 are enriched for both ubiquitous CGI promoters, and Ewing-sarcoma specific elements. Set 3 is enriched in a bunch of astrocyte-specific dnase hypersensitive sites, and other weaker sites, likely to be enhancer elements rather than promoters.
+
+To make it easier to look at results for individual region sets or databases, you can write the results out and view them with spreadsheet software.
+
+
 
 ```{r, eval = FALSE}
-locResults[collection=="sheffield_dnase", ][order(maxRnk, decreasing=FALSE),][1:20,]
+writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
 ```
+
+By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
+
+### Mystery set identity
+
+The results we found fit perfectly with the identity of the region sets:
+
+* region set A: EWS-FLI1 binding sites in A673 cell line from Bilke et al. (2008). These correspond primarily to active promoters, and Ewing sarcoma regulatory elements.
+* region set B: H3K27ac peaks that disappear when EWS-FLI1 is knocked out in the same cell line (A673) from Tomazou et al. (2015). These overlap significantly with EWS-FLI1 binding sites, and also with Ewing-specific regulatory elements, as we discovered.
+* region set C: H3K27ac peaks that are suppressed by EWS-FLI1 in A673 (from Tomazou et al. 2015). These correspond mostly to enhancer elements with AP-1 enrichment.
+
+
+
