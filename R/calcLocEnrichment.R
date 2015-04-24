@@ -94,7 +94,7 @@ calcLocEnrichment = function(userSets, userUniverse, regionDB, cores=1, redefine
 	# limit description to 80 characters
 	scoreTable[,description:=substr(description, 0, 80)]
 
-	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOdds", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "cell-type", "tissue", "antibody", "treatment", "data-source", "filename", "description")
+	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOdds", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename", "description")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
 	setcolorder(scoreTable,  c(orderedCols, unorderedCols));
