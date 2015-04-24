@@ -88,6 +88,7 @@ readRegionSetAnnotation = function(dbLocation,
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Found collections: ", paste(collections, collapse=", "));
 	annoDT = data.table();
+	# Define pre-approved column names (others will be ignored)
 	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
 
 	for (collection in collections) {
@@ -116,10 +117,12 @@ readRegionSetAnnotation = function(dbLocation,
 #			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames));
 			indexDT= data.table(filename=files)
 		}
-			missCols = setdiff(annotationColNames, colnames(indexDT));
+			missCols = setdiff(tolower(annotationColNames), colnames(indexDT));
 			for (col in missCols) indexDT[, col:=NA, with=FALSE];
-			indexDT = indexDT[,annotationColNames, with=FALSE] #subset
-
+			indexDT = indexDT[,tolower(annotationColNames), with=FALSE]
+ #subset
+			# Revert back to camelCase
+			setnames(indexDT, tolower(annotationColNames), annotationColNames);
 		setkey(indexDT, "filename")
 		#look for size file
 		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "sizes.txt")
