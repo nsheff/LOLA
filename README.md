@@ -114,15 +114,15 @@ You should annotate your region sets by putting a file named `index.txt` into ea
 
 * filename (must match files in the collection exactly)
 * description
-* cell-type
+* cellType
 * tissue
 * antibody (for ChIP experiments)
 * treatment
-* data-source (for publication author, database, etc.)
+* dataSource (for publication author, database, etc.)
 
 Any other column names will be ignored, so add whatever else you like. You can also feel free to annotate as many or as few columns, and rows, as you wish. LOLA will simply use as much annotation information as you give it, defaulting to identifying a sample with only the file name if you provide nothing else. So, for example, a `0index` file may look like this:
 
-filename	|cell-type	|antibody
+filename	|cellType	|antibody
 --------------|-------------|--------
 regionset1.bed|K562		|GATA2 
 regionset2.bed|K562		|CTCF

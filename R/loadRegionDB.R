@@ -88,7 +88,7 @@ readRegionSetAnnotation = function(dbLocation,
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Found collections: ", paste(collections, collapse=", "));
 	annoDT = data.table();
-	annotationColNames = c("filename", "cell-type", "description", "tissue", "data-source", "antibody", "treatment")
+	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
 
 	for (collection in collections) {
 		files = list.files(paste0(dbLocation,"/",collection, "/regions"), filePattern)
