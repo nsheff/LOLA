@@ -1,0 +1,2 @@
+collector	date	source	description
+Nathan	2015-04-01	UCSC Genome Browser	Selected bed tracks from the UCSC database.

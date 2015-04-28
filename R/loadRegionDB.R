@@ -38,7 +38,7 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 readCollectionAnnotation = function(dbLocation) {
 	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
-	message("Found collections: ", paste(collections, collapse=", "));
+	message("Reading collection annotations: ", paste(collections, collapse=", "));
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
 	for (collection in collections) {
@@ -86,7 +86,7 @@ readRegionSetAnnotation = function(dbLocation,
 	#Build a data.table annotating the beds.
 	#Should give collections
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
-	message("Found collections: ", paste(collections, collapse=", "));
+	message("Reading region annotations...");
 	annoDT = data.table();
 	# Define pre-approved column names (others will be ignored)
 	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")

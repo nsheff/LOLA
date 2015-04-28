@@ -16,7 +16,7 @@
 #' @param regionDB	Region DB to check for overlap, from loadRegionDB()
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
-#' @return Data.table with enrichment results
+#' @return Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
 #' @export
 #' @example 
 #' R/examples/example.R
@@ -50,29 +50,42 @@ calcLocEnrichment = function(userSets, userUniverse, regionDB, cores=1, redefine
 
 	### Construct significance tests ###
 	message("Calculating unit set overlaps...");
-	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL);
+	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL); #Returns for each userSet, a vector of length length(testSetsGRL), with total number of regions in that set overlapping anything in each testSetsGRL; this is then lapplied across each userSet.
 	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
 
+	# This will become "support" -- the number of regions in the 
+	# userSet (which I implicitly assume is ALSO the number of regions
+	# in the universe) that overlap anything in each database set.
+	# Turn results into an overlap matrix. It is
+	# dbSets (rows) by userSets (columns), counting overlap.
 	olmat = do.call(cbind, geneSetDatabaseOverlap); 
-	#turn results into an overlap matrix. It is
-	#database sets (rows) by test sets (columns), scoring the number of overlap.
+	
 
 	message("Calculating universe set overlaps...");
+	# Now for each test set, how many items *in the universe* does
+	# it overlap? This will go into the calculation for c
 	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse) #faster #returns number of items in userUniverse.
 	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse) #returns number of items in test set
+	# Total size of the universe
 	universeLength = length(userUniverse);
 
+	# To build the fisher matrix, support is 'a'; 
 	scoreTable = data.table(melt(t(olmat)))
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
 	message("Calculating Fisher scores...");
+	# b = the # of items *in the universe* that overlap each dbSet,
+	# less the support; This is the number of items in the universe
+	# that are in the dbSet ONLY (not in userSet)
+	# c = the size of userSet, less the support; This is the opposite:
+	# Items in the userSet ONLY (not in the dbSet);
 	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet, names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
+	# d = total universe size, less all other categories;
+	# This is the regions in the universe, but not in dbSet nor userSet.
 	scoreTable[,d:=universeLength-support-b-c]
 	if( scoreTable[,any(b<0)] ) { #inappropriate universe.
 		print(scoreTable[which(b<0),]);
 		warning("Negative b entry in table. This means either: 1) Your user sets contain items outside your universe; or 2) your universe has a region that overlaps multiple user set regions, interfering with the universe set overlap calculation.");
 		return(scoreTable);
-		#sum(countOverlaps(testSetsGRL[[12]], userUniverse) > 0)
-		#sum(countOverlaps(userUniverse, testSetsGRL[[12]]) > 0)
 	}
 	if( scoreTable[,any(c<0)] ) {
 		warning("Negative c entry in table. Bug with userSetsLength; this should not happen.");
@@ -87,7 +100,7 @@ calcLocEnrichment = function(userSets, userUniverse, regionDB, cores=1, redefine
 	scoreTable[, maxRnk:=max(c(rnkSup, rnkPV, rnkLO)), by=list(userSet,dbSet)]
 	scoreTable[, meanRnk:=signif(mean(c(rnkSup, rnkPV, rnkLO)), 3), by=list(userSet,dbSet)]
 
-	#append description column
+	# Append description column
 	setkeyv(scoreTable, "dbSet")
 	scoreTable = scoreTable[annotationDT]
 
