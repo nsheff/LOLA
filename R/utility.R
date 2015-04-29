@@ -78,23 +78,41 @@ write.tsv = function(...) {
 }
 
 ######################################################################
+
+#' Imports bed files and creates GRanges objects, using the fread()
+#' function from data.table.
+#'
+#' @param file File name of bed file.
+#' @export
+readBed = function(file) {
+	DT = fread(file);
+	# bed specification says:
+	# 1=chr, 2=start, 3=end, 4=name, 5=score (discarded), 6=strand.
+	cn = rep(NA, 6);
+	readCols = colnames(DT)
+	cn[1:length(readCols)] = readCols
+	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3], name=cn[4], strand=cn[6]);
+
+}
+
+
 #Two utility functions for converting data.tables into GRanges objects
 #genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId");
-dtToGrInternal = function(DT, chr, start, end=NULL, strand=NULL, name=NULL,metaCols=NULL) {
-	if (is.null(end)) {
+dtToGrInternal = function(DT, chr, start, end=NA, strand=NA, name=NA, metaCols=NA) {
+	if (is.na(end)) {
 		end = start;
 	}
-	if (is.null(strand)) {
+	if (is.na(strand)) {
 			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand="*")
 	} else {
 	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`strand`]])
 	}
-	if (! is.null(name)) {
+	if (! is.na(name) ) {
 		names(gr) = DT[[`name`]];
 	} else {
 		names(gr) = 1:length(gr);
 	}
-	if(! is.null(metaCols)) {
+	if(! is.na(metaCols)) {
 		for(x in metaCols) {
 			elementMetadata(gr)[[`x`]]=DT[[`x`]]
 		}
@@ -102,8 +120,8 @@ dtToGrInternal = function(DT, chr, start, end=NULL, strand=NULL, name=NULL,metaC
 	gr;
 }
 
-dtToGr = function(DT, chr="chr", start="start", end=NULL, strand=NULL, name=NULL, splitFactor=NULL, metaCols=NULL) {
-	if(is.null(splitFactor)) {
+dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, splitFactor=NA, metaCols=NA) {
+	if(is.na(splitFactor)) {
 		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols));
 	}
 	if ( length(splitFactor) == 1 ) { 

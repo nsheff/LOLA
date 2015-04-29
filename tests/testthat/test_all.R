@@ -1,7 +1,7 @@
 # Unit tests
 library(LOLA)
 
-context("Context here...")
+context("Testthat connext...")
 
 test_that("loadRegionDB",  {
 	dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -69,7 +69,13 @@ test_that("GRangesOverlaps", {
 })
 
 
+context("Test reading functions")
 # To do: write a test case for splitFileIntoCollection():
 #splitFileIntoCollection(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
-
-
+test_that("readBed", {
+	file = system.file("extdata", "examples/combined_regions.bed", package="LOLA")
+	rb = readBed(file)
+	expect_equal(length(rb), 16)
+	# Make sure strand is getting picked up correctly:
+	expect_false("*" %in% as.character(strand(rb)))
+})
