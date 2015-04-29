@@ -129,4 +129,20 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 }
 
 
+#' If you want to test for differential enrichment within
+#' your usersets, you can restrict the universe to only
+#' regions that are covered in at least one of your sets.
+#' This function helps you build just such a restricted
+#' universe
+#'
+#' @param userSets The userSets you will pass to the enrichment calculation.
+#' @return A restricted universe
+#' @examples
+#' data("sample_input", package="LOLA") # load userSet
+#' restrictedUniverse = buildRestrictedUniverse(userSet)
+buildRestrictedUniverse = function(userSets) {
+	disjoin(unlist(userSets))
+}
+
+
 
