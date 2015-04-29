@@ -12,14 +12,12 @@ biocLite("GenomicRanges")
 ```
 Then, install the development version directly from github with devtools:
 ```{r}
-require(devtools)
-install_github("sheffien/LOLA") 
+devtools::install_github("sheffien/LOLA") 
 ```
 
 Or, clone the repo and install from there:
 ```{r}
-packageFolder = "~/R/LOLA";
-install.packages(packageFolder, repos=NULL)
+install.packages("path/to/LOLA", repos=NULL)
 ```
 --------------------------------------------------------------------------------
 ### Running LOLA
@@ -27,21 +25,19 @@ install.packages(packageFolder, repos=NULL)
 For examples and workflows for LOLA, please check out the [R vignettes](vignettes/) to get you started:
 
 * [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
-* [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd)
-* [Choosing a Universe](vignettes/choosingUniverse.Rmd)
-
-The later vignettes require the LOLA Core database and some example files, which you can download below.
+* [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd) (Requires database files; see below)
+* [Choosing a Universe](vignettes/choosingUniverse.Rmd) (Requires database files; see below)
 
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-To get started, you can download a core region set database (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+To get started, you can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires my [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
 
 The latest LOLA Core database can be downloaded here:
 
-* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150424.tgz) (Raw source and processed caches - 840Mb)
-* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150424.tgz) (Processed cache files only - 167Mb)
-* [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150420.tgz) (For testing LOLA Core - 20Mb)
+* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150424.tgz) (Raw source and processed caches, ~1GB)
+* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150424.tgz) (Processed cache files only, ~200Mb)
+* [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150420.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else. 
 To do this, you'll need to grab my R package `simpleCache` (which you may find it useful for other projects, too).
