@@ -228,3 +228,34 @@ readCollection = function(filesToRead, limit=NULL) {
 }
 
 
+#' Given two regionDBs, (lists returned from readRegionDB()),
+#' This function will combine them into a single regionDB. This
+#' will enable you to combine, for example, LOLA Core databases
+#' with custom databases into a single analysis.
+#'
+#' @param dbA First regionDB database.
+#' @param dbB Second regionDB database.
+#'
+#' @return A combined regionDB.
+#' @export
+#' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' regionDB = loadRegionDB(dbPath)
+#' combinedRegionDB = mergeRegionDBs(regionDB, regionDB)
+
+mergeRegionDBs = function(dbA, dbB) {
+	myNames = names(regionDB)
+	# Loop through each item and concat them
+	combinedRegionDB = list()	
+	for (item in myNames) {
+		message(item)
+		if ("character" %in% class(dbA[[item]])) {
+			combinedRegionDB[[item]] = c(dbA[[item]], dbB[[item]])
+		} else if ("data.table" %in% class(dbA[[item]])) {
+			combinedRegionDB[[item]] = rbind(dbA[[item]], dbB[[item]])
+		} else if ("GRangesList" %in% class(dbA[[item]])) {
+			combinedRegionDB[[item]] = c(dbA[[item]], dbB[[item]])
+		}			
+	}
+	return(combinedRegionDB)
+}
