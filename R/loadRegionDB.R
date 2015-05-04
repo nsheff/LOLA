@@ -20,8 +20,8 @@
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation=dbPath)
 loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
-	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	collectionAnno = readCollectionAnnotation(dbLocation);
+	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
@@ -38,6 +38,9 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 readCollectionAnnotation = function(dbLocation) {
 	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
+	if (length(collections) == 0) {
+		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
+	}
 	message("Reading collection annotations: ", paste(collections, collapse=", "));
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
@@ -90,7 +93,9 @@ readRegionSetAnnotation = function(dbLocation,
 	annoDT = data.table();
 	# Define pre-approved column names (others will be ignored)
 	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
-
+	if (length(collections) == 0) {
+		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
+	}
 	for (collection in collections) {
 		files = list.files(paste0(dbLocation,"/",collection, "/regions"), filePattern)
 		#eliminate special annotation files
@@ -143,7 +148,7 @@ readRegionSetAnnotation = function(dbLocation,
 #	collectionAnnoDT = collectionAnnoDT[indexDT]
 	annoDT = rbind(annoDT, collectionAnnoDT);
 	} #end loop through collections
-
+	if (nrow(annoDT) < 1) { stop("No regions found. Are you sure '", dbLocation, "' is a region database?") }
 	return(annoDT)
 }
 
