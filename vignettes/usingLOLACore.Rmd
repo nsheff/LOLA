@@ -10,7 +10,7 @@ output: knitr:::html_vignette
 # Using LOLA Core
 (__This vignette is unevaluated because it relies on loading huge database files__)
 
-Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database, called LOLA Core, which we curate from many sources. Since LOLA Core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. A download link to the latest database is kept in the README file at the [LOLA github page](http://github.com/sheffien/LOLA). Start there, downloading the database (all you need for this vignette is the smaller cached version).
+Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database, called LOLA Core, which we curate from many sources. Since LOLA Core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. A download link to the latest database is kept in the README file at the [LOLA github page](http://github.com/sheffien/LOLA). Start there, downloading the database (all you need for this vignette is the smaller cached database, assuming you also have simpleCache installed).
 
 ### Loading full-scale example data
 
