@@ -22,7 +22,7 @@ install.packages("path/to/LOLA", repos=NULL)
 --------------------------------------------------------------------------------
 ### Running LOLA
 
-For examples and workflows for LOLA, please check out the [R vignettes](vignettes/) to get you started:
+For examples and workflows for LOLA, please check out the following [R vignettes](vignettes/) to get you started:
 
 * [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
 * [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd) (Requires database files; see below)
@@ -31,7 +31,7 @@ For examples and workflows for LOLA, please check out the [R vignettes](vignette
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-To get started, you can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires my [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires my [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
 
 The latest LOLA Core database can be downloaded here:
 
