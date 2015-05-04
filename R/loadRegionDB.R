@@ -84,8 +84,8 @@ readCollectionAnnotation = function(dbLocation) {
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param filePattern	passed to list.files; you can use this
 #'	to select only certain file names in your folders.
-#' @param refreshSizes	should I recreate the sizes files 
-#'	documenting how many regions (lines) are in each region set?
+#' @param refreshCaches	should I recreate the caches?
+#' @param useCache Use simpleCache to store results and load them?
 #' 
 #' @return Region set annotation (data.table)
 #' @export
@@ -94,29 +94,61 @@ readCollectionAnnotation = function(dbLocation) {
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 readRegionSetAnnotation = function(dbLocation, 
 					filePattern = "", 
-					refreshSizes=FALSE) {
+					refreshCaches=FALSE, 
+					useCache=TRUE) {
 	size=NULL # Silence R CMD check Notes.
 	#Build a data.table annotating the beds.
 	#Should give collections
+	annoDT = data.table();
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Reading region annotations...");
-	annoDT = data.table();
-	# Define pre-approved column names (others will be ignored)
-	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
 	if (length(collections) == 0) {
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
 	for (collection in collections) {
-		files = list.files(paste0(dbLocation,"/",collection, "/regions"), filePattern)
+		if (useCache) {
+			if (requireNamespace("simpleCache", quietly=TRUE)) {
+				simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=paste0(dbLocation, collection), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
+			} else {
+				warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
+			}
+		} else {
+			assign(paste0(collection, "_files"), readCollectionFiles(dbLocation, collection, refreshSizes=TRUE));
+		}
+
+		annoDT = rbind(annoDT, get(paste0(collection, "_files")));
+	} #end loop through collections
+
+
+	if (nrow(annoDT) < 1) { 
+		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
+	}
+	return(annoDT)
+}
+#' Given a database and a collection, this will create the region annotation
+#' data.table; either giving a generic table based on file names, or by
+#' reading in the annotation data.
+#' @param dbLocation	folder where your regionDB is stored.
+#' @oaran collection Collection folder to load
+#' @param refreshSizes	should I recreate the sizes files 
+#'	documenting how many regions (lines) are in each region set?
+#' @export
+#' @examples
+readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
+	# Define pre-approved column names (others will be ignored)
+	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
+	message(paste0(dbLocation,"/",collection, "/regions"))
+	files = list.files(paste0(dbLocation,"/",collection, "/regions"))
 		#eliminate special annotation files
 		#specialFileInd = grep("^0", files)
 		#if (length(specialFileInd) > 0) {
 		#	files = files [ -specialFileInd]
 		#}
-		if (length(files) <1) { 
+		if (length(files) <1) {
 			message("\tIn '", collection, "', no files found.");
-			next;
+			return();
 		}
+
 		collectionAnnoDT = data.table(collection=collection, filename=files, size=-1); #preserve new ones
 		setkey(collectionAnnoDT, "filename")
 
@@ -156,14 +188,8 @@ readRegionSetAnnotation = function(dbLocation,
 
 	collectionAnnoDT = indexDT[collectionAnnoDT]
 #	collectionAnnoDT = collectionAnnoDT[indexDT]
-	annoDT = rbind(annoDT, collectionAnnoDT);
-	} #end loop through collections
-	if (nrow(annoDT) < 1) { 
-		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
-	}
-	return(annoDT)
+	return(collectionAnnoDT);
 }
-
 
 
 #' This function takes a region annotation object and reads in the regions,
@@ -195,7 +221,7 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 		}
 	} else {
-	assign(iCol, readCollection(filesToRead, limit));
+		assign(iCol, readCollection(filesToRead, limit));
 	}
 	grl = c(grl, get(iCol))
 	}
@@ -261,7 +287,7 @@ readCollection = function(filesToRead, limit=NULL) {
 #' combinedRegionDB = mergeRegionDBs(regionDB, regionDB)
 
 mergeRegionDBs = function(dbA, dbB) {
-	myNames = names(regionDB)
+	myNames = names(dbA)
 	# Loop through each item and concat them
 	combinedRegionDB = list()	
 	for (item in myNames) {

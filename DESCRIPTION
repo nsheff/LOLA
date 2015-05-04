@@ -1,5 +1,5 @@
 Package: LOLA
-Version: 0.0.3
+Version: 0.0.4
 Date: 2015-04
 Title: Location OverLap Analysis
 Description: LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases.
