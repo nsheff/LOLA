@@ -137,6 +137,7 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 #'
 #' @param userSets The userSets you will pass to the enrichment calculation.
 #' @return A restricted universe
+#' @export
 #' @examples
 #' data("sample_input", package="LOLA") # load userSet
 #' restrictedUniverse = buildRestrictedUniverse(userSet)

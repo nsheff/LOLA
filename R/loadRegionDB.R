@@ -55,11 +55,21 @@ readCollectionAnnotation = function(dbLocation) {
 			collectionDT = collectionDT[,collectionColNames, with=FALSE] #subset
 
 		} else {
-			message("\tIn '", collection, "', no collection file.");
+			regionFiles = list.files(paste0(dbLocation,"/",collection, "/regions"))
+			if (length(regionFiles) < 1) {
+				warning(collection, " has no collection annotation or region files. Skipping...");
+				next;
+			} else {
+			message("\tIn collection '", collection, "', consider adding a 'collection.txt' annotation file.");
 			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = FALSE), collectionColNames));
+			}
 		}
+		
 		collectionDT[,collectionname:=collection]
 		collectionsDT = rbind(collectionsDT, collectionDT);
+	}
+	if (nrow(collectionsDT) < 1) { 
+		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
 	}
 	setkey(collectionsDT, "collectionname")
 	setcolorder(collectionsDT, c("collectionname", collectionColNames));
@@ -148,7 +158,9 @@ readRegionSetAnnotation = function(dbLocation,
 #	collectionAnnoDT = collectionAnnoDT[indexDT]
 	annoDT = rbind(annoDT, collectionAnnoDT);
 	} #end loop through collections
-	if (nrow(annoDT) < 1) { stop("No regions found. Are you sure '", dbLocation, "' is a region database?") }
+	if (nrow(annoDT) < 1) { 
+		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
+	}
 	return(annoDT)
 }
 
