@@ -38,8 +38,8 @@ restrictedUniverse = unlist(userSets)
 Check out how the results for userSetB and userSetC differ, depending on the universe used:
 
 ```{r, eval = FALSE}
-locResults = calcLocEnrichment(userSets, activeDHS, regionDB, cores=1)
-locResultsRestricted = calcLocEnrichment(userSets, restrictedUniverse, regionDB, cores=1)
+locResults = runLOLA(userSets, activeDHS, regionDB, cores=1)
+locResultsRestricted = runLOLA(userSets, restrictedUniverse, regionDB, cores=1)
 ```
 
 ```{r, eval = FALSE}

@@ -20,7 +20,7 @@
 #' @export
 #' @example 
 #' R/examples/example.R
-calcLocEnrichment = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=FALSE) {
+runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
 	logOddsRatio=maxRnk=meanRnk=dbSet=description=NULL

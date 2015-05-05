@@ -37,7 +37,7 @@ We then need to combine these GRanges objects into a single GRangesList. This le
 
 ```{r, eval = FALSE}
 userSets = GRangesList(regionSetA, regionSetB, regionSetC)
-locResults = calcLocEnrichment(userSets, activeDHS, regionDB, cores=1)
+locResults = runLOLA(userSets, activeDHS, regionDB, cores=1)
 ```
 
 ### Exploring results
