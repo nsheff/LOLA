@@ -109,7 +109,7 @@ readRegionSetAnnotation = function(dbLocation,
 	for (collection in collections) {
 		if (useCache) {
 			if (requireNamespace("simpleCache", quietly=TRUE)) {
-				simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=paste0(dbLocation, collection), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
+				simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
 			} else {
 				warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 			}
@@ -130,11 +130,13 @@ readRegionSetAnnotation = function(dbLocation,
 #' data.table; either giving a generic table based on file names, or by
 #' reading in the annotation data.
 #' @param dbLocation	folder where your regionDB is stored.
-#' @oaran collection Collection folder to load
+#' @param collection Collection folder to load
 #' @param refreshSizes	should I recreate the sizes files 
 #'	documenting how many regions (lines) are in each region set?
 #' @export
 #' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' regionAnno = readCollectionFiles(dbLocation=dbPath, "ucsc_example")
 readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
 	# Define pre-approved column names (others will be ignored)
 	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")

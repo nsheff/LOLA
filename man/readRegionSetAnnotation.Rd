@@ -15,8 +15,9 @@ readRegionSetAnnotation(dbLocation, filePattern = "", refreshCaches = FALSE,
 \item{filePattern}{passed to list.files; you can use this
 to select only certain file names in your folders.}
 
-\item{refreshSizes}{should I recreate the sizes files
-    documenting how many regions (lines) are in each region set?}
+\item{refreshCaches}{should I recreate the caches?}
+
+\item{useCache}{Use simpleCache to store results and load them?}
 }
 \value{
 Region set annotation (data.table)
