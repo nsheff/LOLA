@@ -100,6 +100,7 @@ readRegionSetAnnotation = function(dbLocation,
 	#Build a data.table annotating the beds.
 	#Should give collections
 	annoDT = data.table();
+	dbLocation = enforceTrailingSlash(dbLocation)
 	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	message("Reading region annotations...");
 	if (length(collections) == 0) {
