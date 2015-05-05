@@ -84,6 +84,9 @@ write.tsv = function(...) {
 #'
 #' @param file File name of bed file.
 #' @export
+#' @examples
+#' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
+
 readBed = function(file) {
 	DT = fread(file);
 	# bed specification says:
