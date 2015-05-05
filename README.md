@@ -35,8 +35,8 @@ You can download a core region set database, or (`regionDB`). There are two down
 
 The latest LOLA Core database can be downloaded here:
 
-* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDB_150424.tgz) (Raw source and processed caches, ~1GB)
-* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/regionDBcaches_150424.tgz) (Processed cache files only, ~200Mb)
+* [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/LOLACore_150504.tgz) (Raw source and processed caches, ~1GB)
+* [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/LOLACoreCaches_150504.tgz) (Processed cache files only, ~200Mb)
 * [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150420.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else. 
