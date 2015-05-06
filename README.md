@@ -37,7 +37,7 @@ The latest LOLA Core database can be downloaded here:
 
 * [Full database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/LOLACore_150504.tgz) (Raw source and processed caches, ~1GB)
 * [Cached database](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/LOLACoreCaches_150504.tgz) (Processed cache files only, ~200Mb)
-  * [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
+* [Vignette example data](http://www.biomedical-sequencing.at/bocklab/nsheffield/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else. 
 To do this, you'll need to grab my R package `simpleCache` (which you may find it useful for other projects, too).
