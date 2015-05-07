@@ -20,7 +20,7 @@ NULL
 # I have to register stuff used in data.table as non-standard evaluation,
 # in order to pass some R CMD check NOTES.
 if(getRversion() >= "2.15.1") {
-	utils::globalVariables(c("collectionname", "collection", "filename", "size_int", "pValueLog", "userSet", "size"))
+	utils::globalVariables(c("collectionname", "collection", "filename", "size_int", "pValueLog", "userSet", "size", "cellType", "description", "tissue", "antibody", "treatment"))
 }
 
 #This function calculates enrichment for two sets of genomic ranges intervals

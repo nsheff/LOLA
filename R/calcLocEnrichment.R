@@ -16,7 +16,7 @@
 #' @param regionDB	Region DB to check for overlap, from loadRegionDB()
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
-#' @return Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
+#' @return Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. The --value is the negative natural log of the p-value returned from a one-sided fisher's exact test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
 #' @export
 #' @example 
 #' R/examples/example.R
@@ -107,7 +107,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	# limit description to 80 characters
 	scoreTable[,description:=substr(description, 0, 80)]
 
-	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOddsRatio", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename", "description")
+	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOddsRatio", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
 	setcolorder(scoreTable,  c(orderedCols, unorderedCols));

@@ -5,12 +5,15 @@
 \title{This function takes a region annotation object and reads in the regions,
 returning a GRangesList object of the regions.}
 \usage{
-readRegionGRL(dbLocation, annoDT, useCache = TRUE, limit = NULL)
+readRegionGRL(dbLocation, annoDT, refreshCaches = FALSE, useCache = TRUE,
+  limit = NULL)
 }
 \arguments{
 \item{dbLocation}{folder of regiondB}
 
 \item{annoDT}{output of readRegionSetAnnotation().}
+
+\item{refreshCaches}{should I recreate the caches?}
 
 \item{useCache}{uses simpleCache to cache and load the results}
 

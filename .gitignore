@@ -25,6 +25,7 @@
 *.log
 *.sql
 *.sqlite
+*.RData
  
 # OS generated files #
 ######################

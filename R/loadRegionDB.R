@@ -137,7 +137,7 @@ readRegionSetAnnotation = function(dbLocation,
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readCollectionFiles(dbLocation=dbPath, "ucsc_example")
-readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
+readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 	# Define pre-approved column names (others will be ignored)
 	annotationColNames = c("filename", "cellType", "description", "tissue", "dataSource", "antibody", "treatment")
 	message(paste0(dbLocation,"/",collection, "/regions"))
@@ -168,7 +168,9 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
 			indexDT= data.table(filename=files)
 		}
 			missCols = setdiff(tolower(annotationColNames), colnames(indexDT));
-			for (col in missCols) indexDT[, col:=NA, with=FALSE];
+
+			# Populate any missing columns with NAs (of character type):
+			for (col in missCols) indexDT[, col:=as.character(NA), with=FALSE];
 			indexDT = indexDT[,tolower(annotationColNames), with=FALSE]
  #subset
 			# Revert back to camelCase
@@ -191,6 +193,27 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
 
 	collectionAnnoDT = indexDT[collectionAnnoDT]
 #	collectionAnnoDT = collectionAnnoDT[indexDT]
+
+	# Let's try to avoid NAs in the description columns:
+	buildGenericDescription = function(cellType, tissue, antibody, treatment, collection) {
+		description = collection
+		# First, try either a generic cellType or tissue
+		if (any(!is.na(cellType))) {
+			description[!is.na(cellType)] = paste(description[!is.na(cellType)], cellType[!is.na(cellType)]);
+		} else if (any(!is.na(tissue))) {
+			description[!is.na(tissue)] = paste(description[!is.na(tissue)], tissue[!is.na(tissue)]);
+		}
+
+		# Second, try either a generic antibody or treatment
+		if (any(!is.na(antibody))) {
+			description[!is.na(antibody)] = paste(description[!is.na(antibody)], antibody[!is.na(antibody)]);
+		}  else if (any(!is.na(treatment))) {
+			description[!is.na(treatment)] = paste(description[!is.na(treatment)], treatment[!is.na(treatment)]);
+		}
+		return(description);
+	}
+	collectionAnnoDT[is.na(description), description:=buildGenericDescription(cellType, tissue, antibody, treatment, collection)]
+
 	return(collectionAnnoDT);
 }
 
@@ -200,6 +223,7 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
 #' 
 #' @param dbLocation	folder of regiondB
 #' @param annoDT	output of readRegionSetAnnotation().
+#' @param refreshCaches	should I recreate the caches?
 #' @param useCache	uses simpleCache to cache and load the results
 #' @param limit	for testing purposes, limit the nmber of files read.
 #'	NULL for no limit (default).
@@ -210,7 +234,7 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=TRUE) {
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 #' regionGRL = readRegionGRL(dbLocation= dbPath, regionAnno, useCache=FALSE)
-readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
+readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
 	dbLocation = enforceTrailingSlash(dbLocation);
 	
@@ -219,7 +243,7 @@ readRegionGRL = function(dbLocation, annoDT, useCache=TRUE, limit=NULL) {
 	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), "regions/", filename)), by=filename]$fullFilename
 	if (useCache) {
 		if (requireNamespace("simpleCache", quietly=TRUE)) {
-			simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead))
+			simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead), recreate=refreshCaches)
 		} else {
 			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 		}

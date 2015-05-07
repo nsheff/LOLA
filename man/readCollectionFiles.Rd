@@ -6,7 +6,7 @@
 data.table; either giving a generic table based on file names, or by
 reading in the annotation data.}
 \usage{
-readCollectionFiles(dbLocation, collection, refreshSizes = TRUE)
+readCollectionFiles(dbLocation, collection, refreshSizes = FALSE)
 }
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}
