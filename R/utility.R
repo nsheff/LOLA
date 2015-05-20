@@ -16,6 +16,8 @@
 #' 
 #' @export
 #' @param sharedDataDir	directory where the shared data is stored.
+#' @examples
+#' setSharedDataDir("project/data")
 setSharedDataDir = function(sharedDataDir) {
 	options(SHARE.DATA.DIR=sharedDataDir); 
 }
@@ -86,7 +88,6 @@ write.tsv = function(...) {
 #' @export
 #' @examples
 #' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
-
 readBed = function(file) {
 	DT = fread(file);
 	# bed specification says:
@@ -162,7 +163,6 @@ countFileLines = function(filename) {
 #' @param prop	vector with same length as GRL, of values between 0-1, proportion of the list to select
 #'
 #' @return GRangesList object sampled.
-#' @export
 sampleGRL = function(GRL, prop) {
 	sampleGRanges = function(GR, prop) { 
 		GR[sample(length(GR), floor(length(GR) * prop))]	
@@ -200,6 +200,8 @@ setLapplyAlias = function(cores) {
 #' @param ... Arguments passed lapply() or mclapply()
 #' @return Result from lapply 0r parallel::mclapply
 #' @export
+#' @examples
+#' lapplyAlias(letters, paste0, ".")
 lapplyAlias = function(...) {
 	if(getOption("mc.cores") > 1) {
 		return(parallel::mclapply(...))

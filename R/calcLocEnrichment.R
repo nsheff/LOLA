@@ -1,5 +1,3 @@
-# A fork of enrichmentLocationCalc() that can use generics.
-# regionDB now is a smarter object, with regions and annotation in one!
 ######################################################################
 # ENRICHMENT - Actual workhorse enrichment calculation functions
 ######################################################################

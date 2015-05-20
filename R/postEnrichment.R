@@ -11,6 +11,8 @@
 #' @param regionDB Region database used
 #' 
 #' @export
+#' @example 
+#' R/examples/example.R
 extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
 	print(locResult);
 	userSets = listToGRangesList(userSets);

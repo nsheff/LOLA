@@ -1,5 +1,4 @@
 # PACKAGE DOCUMENTATION
-# All packages listed as Imported or Depends must show up here with @import.
 #' Provides functions for genome location overlap analysis.
 #'
 #' Run, Lola!
