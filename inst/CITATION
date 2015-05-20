@@ -1,1 +1,10 @@
-Sheffield, Nathan C. and Bock, Christoph. LOLA: Large-scale enrichment analysis for genomic region sets and regulatory elements in R.
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "{LOLA}: Enrichment analysis for genomic region sets and regulatory elements",
+         author = c(person("Nathan", "Sheffield"),
+                    person("Christoph", "Bock")),
+         year = year,
+         note = note,
+         url = "http://lola.databio.org")
