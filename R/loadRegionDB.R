@@ -24,7 +24,7 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
-}re
+}
 
 #' Read collection annotation
 #'
