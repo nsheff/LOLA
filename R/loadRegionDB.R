@@ -107,13 +107,10 @@ readRegionSetAnnotation = function(dbLocation,
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
 	for (collection in collections) {
-		if (useCache) {
-			if (requireNamespace("simpleCache", quietly=TRUE)) {
-				simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
-			} else {
-				warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
-			}
+		if (useCache & requireNamespace("simpleCache", quietly=TRUE)) {
+			simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
 		} else {
+			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 			assign(paste0(collection, "_files"), readCollectionFiles(dbLocation, collection, refreshSizes=TRUE));
 		}
 
