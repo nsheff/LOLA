@@ -24,7 +24,7 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
 	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
-}
+}re
 
 #' Read collection annotation
 #'
@@ -239,13 +239,10 @@ readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE,
 	for (iCol in unique(annoDT$collection)) {
 	message(iCol);
 	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), "regions/", filename)), by=filename]$fullFilename
-	if (useCache) {
-		if (requireNamespace("simpleCache", quietly=TRUE)) {
-			simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead), recreate=refreshCaches)
-		} else {
-			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
-		}
+	if (useCache & requireNamespace("simpleCache", quietly=TRUE)) {
+		simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead), recreate=refreshCaches)
 	} else {
+		warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
 		assign(iCol, readCollection(filesToRead, limit));
 	}
 	grl = c(grl, get(iCol))
