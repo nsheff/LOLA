@@ -6,9 +6,10 @@
 #' finds the set of overlaps between the user set and the test set. 
 #' You can then use these, for example, to get sequences for those regions.
 #' 
-#' @param locResult Results from enrichmentCalc function
-#' @param userSets User sets passed to the enrichmentCalc function
+#' @param locResult Results from runLOLA function
+#' @param userSets User sets passed to the runLOLA function
 #' @param regionDB Region database used
+#' @return userSets overlapping the supplied database entry.
 #' 
 #' @export
 #' @example 
@@ -59,6 +60,7 @@ splitDataTable = function(DT, splitFactor) {
 #' @param splitFactor	column of DT to split on
 #' @param filePrepend	notation string to prepend to output files
 #' @param orderColumn	column of DT to order on (defaults to the first column)
+#' @return NULL
 #'
 #' @export
 #' @return number of splits written
@@ -94,6 +96,7 @@ lapply( split(1:nrow(DT), DT[, get(splitFactor)]),
 #' @param combinedResults	enrichment results object
 #' @param outFolder	location to write results on disk
 #' @param includeSplits	also include individual files for each user set and database?
+#' @return NULL
 #' 
 #' @export
 writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplits=TRUE) {

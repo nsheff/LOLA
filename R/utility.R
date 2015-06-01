@@ -16,6 +16,7 @@
 #' 
 #' @export
 #' @param sharedDataDir	directory where the shared data is stored.
+#' @return NULL
 #' @examples
 #' setSharedDataDir("project/data")
 setSharedDataDir = function(sharedDataDir) {
@@ -35,7 +36,7 @@ countOverlapsAny = function(subj, quer, cores=1) {
 #' This will change the string in filename to have a new extension
 #' @param filename	string to convert
 #' @param extension	new extension
-#" @returns	filename with original extension deleted, replaced by provided extension
+#" @returs	filename with original extension deleted, replaced by provided extension
 replaceFileExtension = function(filename, extension) {
 	sub("\\..*$", enforceEdgeCharacter(extension, prependChar="."), paste0(filename, "."))
 }
@@ -75,6 +76,7 @@ listToGRangesList = function(lst) {
 #' simple .tsv file. Passes additional arguments to write.table
 #' 
 #' @param ... Additional arguments passed to write.table
+#' @return NULL
 write.tsv = function(...) {
 	write.table(..., sep="\t", row.names=FALSE, quote=FALSE);
 }
@@ -85,6 +87,7 @@ write.tsv = function(...) {
 #' function from data.table.
 #'
 #' @param file File name of bed file.
+#' @return GRanges Object 
 #' @export
 #' @examples
 #' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
@@ -96,7 +99,7 @@ readBed = function(file) {
 	readCols = colnames(DT)
 	cn[1:length(readCols)] = readCols
 	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3], name=cn[4], strand=cn[6]);
-
+	return(tfbsgr)
 }
 
 
@@ -177,6 +180,7 @@ sampleGRL = function(GRL, prop) {
 #' and set the options for the number of cores (what mclapply uses).
 #'
 #' @param cores	Number of cpus
+#' @return NULL
 #' @export
 #' @examples
 #' setLapplyAlias(4)

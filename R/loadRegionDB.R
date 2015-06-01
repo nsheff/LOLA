@@ -133,6 +133,7 @@ readRegionSetAnnotation = function(dbLocation,
 #' @param collection Collection folder to load
 #' @param refreshSizes	should I recreate the sizes files 
 #'	documenting how many regions (lines) are in each region set?
+#' @return A data.table annotating the regions in the collections.
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -262,6 +263,7 @@ readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE,
 #' @param filesToRead	a vector containing bed files
 #' @param limit	for testing purposes, limit the number of files read. NULL for no limit (default).
 #'
+#' @return A GRangesList with the GRanges in the filesToRead.
 #' @export
 #' @examples
 #' files = list.files(system.file("extdata", "hg19/ucsc_example/regions",

@@ -86,4 +86,15 @@ By default, this function will write the entire table to a tsv file. I recommend
 writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
 ```
 
+
+# Exploring LOLA Results
+
+Say you'd like to know which regions are responsible for the enrichment we see; or, in other words, you'd like to extract the regions that are actually overlapping a particular database. For this, you can use the function `extractEnrichmentOverlaps()`:
+
+```{r Extracting overlaps}
+oneResult = locResults[2,]
+extractEnrichmentOverlaps(oneResult, userSet, regionDB)
+```
+
+
 Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.
