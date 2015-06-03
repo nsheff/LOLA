@@ -157,7 +157,7 @@ countOverlapsRev = function(query, subject) {
 # Parses result of system "wc" wordcount to return the number of lines in a file into R.
 countFileLines = function(filename) {
 	if (!file.exists(filename)) { warning("File does not exist:", filename); return(0); }
-	as.numeric(strsplit(system(paste("wc -l ", filename), intern=TRUE), " ")[[1]][1])
+	as.numeric(strsplit(sub("^\\s+", "", system(paste("wc -l ", filename), intern=TRUE)), " ")[[1]][1])
 }
 
 
