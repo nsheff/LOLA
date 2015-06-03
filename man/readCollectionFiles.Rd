@@ -16,6 +16,9 @@ readCollectionFiles(dbLocation, collection, refreshSizes = FALSE)
 \item{refreshSizes}{should I recreate the sizes files
 documenting how many regions (lines) are in each region set?}
 }
+\value{
+A data.table annotating the regions in the collections.
+}
 \description{
 Given a database and a collection, this will create the region annotation
 data.table; either giving a generic table based on file names, or by

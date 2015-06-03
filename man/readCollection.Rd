@@ -13,6 +13,9 @@ readCollection(filesToRead, limit = NULL)
 
 \item{limit}{for testing purposes, limit the number of files read. NULL for no limit (default).}
 }
+\value{
+A GRangesList with the GRanges in the filesToRead.
+}
 \description{
 Given a bunch of region set files, read in all those flat (bed) files and create a
 GRangesList object holding all the region sets. This function is used by readRegionGRL

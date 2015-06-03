@@ -20,7 +20,8 @@
 #' @examples
 #' setSharedDataDir("project/data")
 setSharedDataDir = function(sharedDataDir) {
-	options(SHARE.DATA.DIR=sharedDataDir); 
+	options(SHARE.DATA.DIR=sharedDataDir);
+	return();
 }
 
 

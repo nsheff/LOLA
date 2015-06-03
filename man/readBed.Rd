@@ -10,6 +10,9 @@ readBed(file)
 \arguments{
 \item{file}{File name of bed file.}
 }
+\value{
+GRanges Object
+}
 \description{
 Imports bed files and creates GRanges objects, using the fread()
 function from data.table.
