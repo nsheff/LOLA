@@ -8,6 +8,9 @@
 \usage{
 data(sample_universe)
 }
+\value{
+No return value.
+}
 \description{
 A reduced GRanges object from the example regionDB database
 }

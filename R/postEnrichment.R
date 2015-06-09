@@ -96,7 +96,7 @@ lapply( split(1:nrow(DT), DT[, get(splitFactor)]),
 #' @param combinedResults	enrichment results object
 #' @param outFolder	location to write results on disk
 #' @param includeSplits	also include individual files for each user set and database?
-#' @return NULL
+#' @return No return value.
 #' 
 #' @export
 writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplits=TRUE) {

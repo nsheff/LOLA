@@ -91,6 +91,7 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 #' @param fast	Skip the (slow) test for many-to-many relationships
 #'
 #' @export
+#' @return No return value.
 #' @examples
 #' data("sample_input", package="LOLA") # load userSet
 #' data("sample_universe", package="LOLA") # load userUniverse

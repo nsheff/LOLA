@@ -16,6 +16,9 @@ checkUniverseAppropriateness(userSets, userUniverse, cores = 1,
 
 \item{fast}{Skip the (slow) test for many-to-many relationships}
 }
+\value{
+No return value.
+}
 \description{
 Checks to see if the universe is appropriate for the userSets
 Anything in the userSets should be present in the universe.

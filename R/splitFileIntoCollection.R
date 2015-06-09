@@ -7,6 +7,7 @@
 #' @param filename	the file to split
 #' @param splitCol	factor column that groups the lines in the file by set
 #'
+#' @return No return value.
 #' @export
 #' @examples
 #' combFile = system.file("extdata", "examples/combined_regions.bed", package="LOLA")

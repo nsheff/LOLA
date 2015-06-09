@@ -6,6 +6,7 @@
 #' @name userUniverse
 #' @usage data(sample_universe)
 #' @format A GRanges object
+#' @return No return value.
 NULL
 
 #' An example set of regions, sampled from the example database.
@@ -17,6 +18,7 @@ NULL
 #' @name userSet
 #' @usage data(sample_input)
 #' @format A GRanges object
+#' @return No return value.
 NULL
 
 # This is how I produced the sample data sets:

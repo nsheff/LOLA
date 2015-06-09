@@ -16,7 +16,7 @@
 #' 
 #' @export
 #' @param sharedDataDir	directory where the shared data is stored.
-#' @return NULL
+#' @return No return value.
 #' @examples
 #' setSharedDataDir("project/data")
 setSharedDataDir = function(sharedDataDir) {
@@ -37,7 +37,7 @@ countOverlapsAny = function(subj, quer, cores=1) {
 #' This will change the string in filename to have a new extension
 #' @param filename	string to convert
 #' @param extension	new extension
-#" @returs	filename with original extension deleted, replaced by provided extension
+#' @return	Filename with original extension deleted, replaced by provided extension
 replaceFileExtension = function(filename, extension) {
 	sub("\\..*$", enforceEdgeCharacter(extension, prependChar="."), paste0(filename, "."))
 }
@@ -77,7 +77,7 @@ listToGRangesList = function(lst) {
 #' simple .tsv file. Passes additional arguments to write.table
 #' 
 #' @param ... Additional arguments passed to write.table
-#' @return NULL
+#' @return No return value
 write.tsv = function(...) {
 	write.table(..., sep="\t", row.names=FALSE, quote=FALSE);
 }
@@ -166,7 +166,7 @@ countFileLines = function(filename) {
 #' @param GRL	GRangesList from which to sample
 #' @param prop	vector with same length as GRL, of values between 0-1, proportion of the list to select
 #'
-#' @return GRangesList object sampled.
+#' @return A sampled subset of original GRangesList object.
 sampleGRL = function(GRL, prop) {
 	sampleGRanges = function(GR, prop) { 
 		GR[sample(length(GR), floor(length(GR) * prop))]	
@@ -181,7 +181,7 @@ sampleGRL = function(GRL, prop) {
 #' and set the options for the number of cores (what mclapply uses).
 #'
 #' @param cores	Number of cpus
-#' @return NULL
+#' @return No return value
 #' @export
 #' @examples
 #' setLapplyAlias(4)
@@ -197,6 +197,7 @@ setLapplyAlias = function(cores) {
 	} else {
 		options(mc.cores=1); #reset cores option.
 	}
+	return();
 }
 
 #' Function to run lapply or mclapply, depending on the option set in

@@ -10,6 +10,9 @@ setSharedDataDir(sharedDataDir)
 \arguments{
 \item{sharedDataDir}{directory where the shared data is stored.}
 }
+\value{
+No return value.
+}
 \description{
 setSharedDataDir
 Sets global variable specifying the default data directory.

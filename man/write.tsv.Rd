@@ -10,6 +10,9 @@ write.tsv(...)
 \arguments{
 \item{...}{Additional arguments passed to write.table}
 }
+\value{
+No return value
+}
 \description{
 Wrapper of write.table that provides defaults to write a
 simple .tsv file. Passes additional arguments to write.table

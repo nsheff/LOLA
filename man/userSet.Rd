@@ -8,6 +8,9 @@
 \usage{
 data(sample_input)
 }
+\value{
+No return value.
+}
 \description{
 A dataset containing a few sample regions.
 }

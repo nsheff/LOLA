@@ -13,6 +13,9 @@ splitFileIntoCollection(filename, splitCol)
 
 \item{splitCol}{factor column that groups the lines in the file by set}
 }
+\value{
+No return value.
+}
 \description{
 This function will take a single large bed file that is annotated
 with a column grouping different sets of similar regions,
