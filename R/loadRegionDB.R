@@ -22,7 +22,7 @@
 loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 	collectionAnno = readCollectionAnnotation(dbLocation);
 	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
-	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache, limit=limit);
+	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
 
