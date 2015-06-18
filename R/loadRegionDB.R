@@ -12,6 +12,7 @@
 #' @param useCache	uses simpleCache to cache and load the results
 #' @param limit 	You can limit the number of regions for testing.
 #'	Default: NULL (no limit)
+#' @param collections Restrict the database loading to this list of collections
 #'
 #' @return regionDB list containing database location, region and 
 #' collection annotations, and regions GRangesList
@@ -19,9 +20,9 @@
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation=dbPath)
-loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
-	collectionAnno = readCollectionAnnotation(dbLocation);
-	regionAnno = readRegionSetAnnotation(dbLocation, filePattern);
+loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL, collections=NULL) {
+	collectionAnno = readCollectionAnnotation(dbLocation, collections);
+	regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern);
 	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit);
 	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
 }
@@ -29,16 +30,21 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL) {
 #' Read collection annotation
 #'
 #' @param dbLocation	Location of the database
+#' @param collections Restrict the database loading to this list of collections. Leave NULL to load the entire database (Default).
 #'
 #' @return Collection annotation data.table
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' collectionAnno = readCollectionAnnotation(dbLocation=dbPath)
-readCollectionAnnotation = function(dbLocation) {
+readCollectionAnnotation = function(dbLocation, collections=NULL) {
 	annoDT = data.table();
-	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
-	if (length(collections) == 0) {
+	collectionList = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
+	if (! is.null(collections)) {
+		# Restrict the list if parameter is passed.
+		collectionList = intersect(collections, collectionList)
+	}
+	if (length(collectionList) == 0) {
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
 	message("Reading collection annotations: ", paste(collections, collapse=", "));
@@ -82,6 +88,7 @@ readCollectionAnnotation = function(dbLocation) {
 #' annotation file.
 
 #' @param dbLocation	folder where your regionDB is stored.
+#' @param collections Restrict the database loading to this list of collections. Leave NULL to load the entire database (Default).
 #' @param filePattern	passed to list.files; you can use this
 #'	to select only certain file names in your folders.
 #' @param refreshCaches	should I recreate the caches?
@@ -92,7 +99,7 @@ readCollectionAnnotation = function(dbLocation) {
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
-readRegionSetAnnotation = function(dbLocation, 
+readRegionSetAnnotation = function(dbLocation, collections = NULL,
 					filePattern = "", 
 					refreshCaches=FALSE, 
 					useCache=TRUE) {
@@ -101,12 +108,16 @@ readRegionSetAnnotation = function(dbLocation,
 	#Should give collections
 	annoDT = data.table();
 	dbLocation = enforceTrailingSlash(dbLocation)
-	collections = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
+	collectionList = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
+	if (! is.null(collections)) {
+		# Restrict the list if parameter is passed.
+		collectionList = intersect(collections, collectionList)
+	}
 	message("Reading region annotations...");
-	if (length(collections) == 0) {
+	if (length(collectionList) == 0) {
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
-	for (collection in collections) {
+	for (collection in collectionList) {
 		if (useCache & requireNamespace("simpleCache", quietly=TRUE)) {
 			simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
 		} else {
