@@ -50,7 +50,7 @@ readCollectionAnnotation = function(dbLocation, collections=NULL) {
 	message("Reading collection annotations: ", paste(collections, collapse=", "));
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
-	for (collection in collections) {
+	for (collection in collectionList) {
 		collectionFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "collection.txt")
 		if (file.exists(collectionFile)) {
 			message("\tIn '", collection, "', found collection annotation file:", collectionFile);

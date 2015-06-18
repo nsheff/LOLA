@@ -69,6 +69,8 @@ if(getRversion() >= "2.15.1") {
 #'
 #' @export
 #' @return	userSets redefined in terms of userUniverse
+#' @example 
+#' R/examples/example.R
 redefineUserSets = function(userSets, userUniverse, cores=1) {
 	setLapplyAlias(cores);
 	if(!isDisjoint(userUniverse)) {

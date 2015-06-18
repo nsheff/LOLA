@@ -31,4 +31,19 @@ sets are actually exactly the same regions found in the universe;
 otherwise, you can get some weird artifacts from the many-to-many
 relationship between user set regions and universe regions.
 }
+\examples{
+dbPath = system.file("extdata", "hg19", package="LOLA")
+regionDB = loadRegionDB(dbLocation=dbPath)
+data("sample_universe", package="LOLA")
+data("sample_input", package="LOLA")
+res = runLOLA(userSet, userUniverse, regionDB, cores=1)
+locResult = res[2,]
+extractEnrichmentOverlaps(locResult, userSet, regionDB)
+writeCombinedEnrichment(locResult, "temp_outfolder")
+
+userSetsRedefined =	redefineUserSets(list(userSet), userUniverse);
+resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
+
+
+}
 

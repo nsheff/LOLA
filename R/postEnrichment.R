@@ -62,8 +62,8 @@ splitDataTable = function(DT, splitFactor) {
 #' @param orderColumn	column of DT to order on (defaults to the first column)
 #' @return NULL
 #'
-#' @export
 #' @return number of splits written
+
 writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="", orderColumn=NULL) {
 	saveScipenSetting = getOption("scipen"); 
 	options(scipen = 4); #use scientific notation for pvalues.
@@ -99,6 +99,8 @@ lapply( split(1:nrow(DT), DT[, get(splitFactor)]),
 #' @return No return value.
 #' 
 #' @export
+#' @example 
+#' R/examples/example.R
 writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplits=TRUE) {
 	if (outFolder == "" | is.null(outFolder)) {
 		outFolder = "";
