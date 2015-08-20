@@ -47,7 +47,7 @@ I recommend using the cached version, unless you need the raw files for somethin
 To do this, you'll need to grab [simpleCache](http://github.com/sheffien/simpleCache) (which you may find it useful for other projects, too).
 
 ```{r}
-install_github("sheffien/simpleCache")
+devtools::install_github("sheffien/simpleCache")
 ```
 
 Current contents of LOLA core:
