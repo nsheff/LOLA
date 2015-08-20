@@ -44,7 +44,7 @@ The latest LOLA Core database can be downloaded here:
 * [Vignette example data](http://big.databio.org/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else. 
-To do this, you'll need to grab [simpleCache](http://github.com/sheffien/simpleCache) (which you may find it useful for other projects, too).
+To do this, you'll need to grab [simpleCache](http://github.com/sheffien/simpleCache) (which you may find it useful for other projects, too), also installable with devtools.
 
 ```{r}
 devtools::install_github("sheffien/simpleCache")
