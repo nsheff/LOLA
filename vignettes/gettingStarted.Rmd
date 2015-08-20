@@ -25,7 +25,7 @@ dbPath = system.file("extdata", "hg19", package="LOLA")
 regionDB = loadRegionDB(dbPath)
 ```
 
-The regionDB is an R (list) object that has a few elements: 
+The regionDB is an R (list) object that has a few elements:
 
 ```{r}
 names(regionDB)

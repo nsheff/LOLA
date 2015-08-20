@@ -2,8 +2,8 @@
 #Install and load LOLA
 #######################################################################
 library(devtools)
-install_github("sheffien/simpleCache") 
-install_github("sheffien/LOLA") 
+install_github("sheffien/simpleCache")
+install_github("sheffien/LOLA")
 library(LOLA)
 
 #######################################################################
@@ -108,7 +108,7 @@ dhsAnnotation <<- readDhsAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
 dhsGRL <<- simpleCache("dhsGRL", "dhsGRL = readDhs()", cacheDir=getOption("SHARE.RCACHE.DIR"));
 dhsAnnotation <<- appendAnnotations(dhsAnnotation, dhsGRL, "hg19") #optional
 
-dhsResults = enrichmentLocationCalc(userSets, userUniverse, dhsAnnotation, dhsGRL, dbTitle="DHS", mc.cores=6)	
+dhsResults = enrichmentLocationCalc(userSets, userUniverse, dhsAnnotation, dhsGRL, dbTitle="DHS", mc.cores=6)
 
 dhsResults[userSet==4,][order(pValue),]
 
@@ -120,7 +120,7 @@ writeDataTableSplitByColumn(dhsResults, splitFactor="userSet", filePrepend="dhs"
 #Now your userSets and userUniverse should be list objects sets of geneSymbols.
 
 userSets =
-userUniverse = 
+userUniverse =
 
 #mSig
 loadCategoryEnrichmentDatabases()
@@ -131,4 +131,3 @@ mSigResults[userSet==4,][order(pValue),]
 writeDataTableSplitByColumn(mSigResults, splitFactor="userSet", filePrepend="mSig")
 
 writeCombinedEnrichment()
-

@@ -47,11 +47,11 @@ enrichmentCategoryCalc = function(userSets, userUniverse, annotationDT, testSets
 	}
 
 	message("[", dbTitle, "] Calculating unit set overlaps...");
-	geneSetDatabaseOverlap = lapply(userSets, function(y) { 
+	geneSetDatabaseOverlap = lapply(userSets, function(y) {
 		sapply(testSets, function(x) { length(intersect(x, y)) } )
 		} )
 
-	olmat = do.call(cbind, geneSetDatabaseOverlap); 
+	olmat = do.call(cbind, geneSetDatabaseOverlap);
 	#turn results into an overlap matrix. It is
 	#database sets (rows) by test sets (columns), scoring the number of overlap.
 
@@ -106,5 +106,3 @@ enrichmentCategoryCalc = function(userSets, userUniverse, annotationDT, testSets
 #	scoreTable[annotationDT[, list(description=paste0(c(dbTitle, cell, treatment, antibody), collapse=" ")),by=key(annotationDT)], description:=description]
 #	scoreTable
 }
-
-

@@ -132,7 +132,7 @@ readCistromeAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), cistrome
 	setnames(dataEpigenome, c("species", "cell", "tissue", "antibody", "treatment", "filename"))
 	dataEpigenome[, filename:=paste0(cistromeDir, "EpigenomeBeds/", filename)]
 	cistromeAnnotation = rbind(dataCistrome, dataEpigenome)
-	
+
 	cistromeAnnotation[,expID:=1:nrow(cistromeAnnotation)] #set index variable
 	setkey(cistromeAnnotation, "expID");
 
@@ -218,14 +218,14 @@ readDhs = function(shareDir=getOption("SHARE.DATA.DIR")) {
 ######################################################################
 # Generic Region DB Loading  Functions
 ######################################################################
-#Used right now for BockDB (Mouse) 
+#Used right now for BockDB (Mouse)
 #For a folder of bed files that has no annotation file;
 #Example use:
 # customAnno = readRegionAnnotation(bedDir="regionDB/diffMeth/")
 # customGRL = readRegionDb(customAnno)
 
 #' @export
-readRegionAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/") { 
+readRegionAnnotation = function(shareDir=getOption("SHARE.DATA.DIR"), bedDir="regionDB/bock_regions_mm10/") {
 	DT = data.table(filename=list.files(paste0(shareDir,bedDir), "*.bed"))
 	DT[, cell:=replaceFileExtension(filename, "")]
 	DT[, filename:=paste0(bedDir, filename)]
@@ -307,7 +307,7 @@ loadLocationEnrichmentDatabases = function() {
 #' @export
 loadCategoryEnrichmentDatabases = function() {
 	#msigdb
-	simpleCache("mSigList", "mSigList = readMSigDB(SHARE.RDATA.DIR)", cacheDir=getOption("SHARE.RCACHE.DIR")); 
+	simpleCache("mSigList", "mSigList = readMSigDB(SHARE.RDATA.DIR)", cacheDir=getOption("SHARE.RCACHE.DIR"));
 	mSig <<- mSigList$mSig
 	mSigAnnotation <<- mSigList$mSigAnnotation
 	message("Loaded databases: mSig.");
@@ -357,7 +357,7 @@ enrichmentLocationCalcPrev = function(userSets, userUniverse, annotationDT, test
 	userSets = listToGRangesList(userSets);
 	testSetsGRL = listToGRangesList(testSetsGRL);
 	setLapplyAlias(cores);
-	
+
 	if (any(is.null(names(testSetsGRL)))) {
 		names(testSetsGRL) = 1:length(testSetsGRL);
 	}
@@ -367,7 +367,7 @@ enrichmentLocationCalcPrev = function(userSets, userUniverse, annotationDT, test
 		userSets = listToGRangesList(userSets);
 	}
 	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
-	
+
 	if (! any( isDisjoint( userSets) ) ) {
 		message("You have non-disjoint userSets.");
 	}
@@ -377,7 +377,7 @@ enrichmentLocationCalcPrev = function(userSets, userUniverse, annotationDT, test
 	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL);
 	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
 
-	olmat = do.call(cbind, geneSetDatabaseOverlap); 
+	olmat = do.call(cbind, geneSetDatabaseOverlap);
 	#turn results into an overlap matrix. It is
 	#database sets (rows) by test sets (columns), scoring the number of overlap.
 
@@ -420,4 +420,3 @@ enrichmentLocationCalcPrev = function(userSets, userUniverse, annotationDT, test
 	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
 	scoreTable[order(pValueLog),]
 }
-

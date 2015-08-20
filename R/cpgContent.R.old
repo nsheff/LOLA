@@ -5,7 +5,7 @@
 #
 # These functions are not an integral part of LOLA, but were used by
 # an earlier project that required knowing the mean CpG content of
-# each region set in the LOLA database (in the single cell DNA 
+# each region set in the LOLA database (in the single cell DNA
 # methylation project, I used this value in the linear models)
 # I'll leave these in here for now, but they should probably become
 # a separate thing shortly (move to RGenomeUtils?)
@@ -13,14 +13,14 @@
 
 #This is a fantastic example of a function that caches a result the right way (april 29, 2014). I'm very proud.
 #keep in mind: the name of grl is KEY!! it has to be constant.
-#grl can be passed in either as a GRL (GRangesList) object, or as a character vector name of a GRL object; 
-# then I just convert in this function to grl/grlName depending on whatever you passed in. 
+#grl can be passed in either as a GRL (GRangesList) object, or as a character vector name of a GRL object;
+# then I just convert in this function to grl/grlName depending on whatever you passed in.
 # This is what lets me use the deparse/substitute method to get the name from the appendAnnotation function.
-# this function should just be called with appendAnnotation, (it caches things). 
+# this function should just be called with appendAnnotation, (it caches things).
 # For a random GRL, use getCpGPercent directly in the dna methylation module. that's where the actual work is being done.
 #' @export
 calcCpGPercentForDb = function(grl, genomeBuild, cacheDir=getOption("SHARE.RCACHE.DIR")) {
-	if(is.character(grl)) { 
+	if(is.character(grl)) {
 		grlName = grl;
 		grl = get(grlName);
 	} else {
@@ -67,4 +67,3 @@ appendAnnotations = function(anno, grl, genomeBuild) {
 #	}
 #	return(anno);
 #}
-

@@ -2,7 +2,7 @@
 #' Provides functions for genome location overlap analysis.
 #'
 #' Run, Lola!
-#' 
+#'
 #' @docType package
 #' @name LOLA
 #' @author Nathan Sheffield
@@ -55,12 +55,12 @@ if(getRversion() >= "2.15.1") {
 # Prep functions
 ######################################################################
 
-#' this function will take the user sets, overlap with the universe, 
-#' and redefine the user sets as the set of regions in the user 
+#' this function will take the user sets, overlap with the universe,
+#' and redefine the user sets as the set of regions in the user
 #' universe that overlap at least one region in user sets. this makes
-#' for a more appropriate statistical enrichment comparison, as the user 
-#' sets are actually exactly the same regions found in the universe; 
-#' otherwise, you can get some weird artifacts from the many-to-many 
+#' for a more appropriate statistical enrichment comparison, as the user
+#' sets are actually exactly the same regions found in the universe;
+#' otherwise, you can get some weird artifacts from the many-to-many
 #' relationship between user set regions and universe regions.
 #'
 #' @param userSets		Regions of interest
@@ -69,7 +69,7 @@ if(getRversion() >= "2.15.1") {
 #'
 #' @export
 #' @return	userSets redefined in terms of userUniverse
-#' @example 
+#' @example
 #' R/examples/example.R
 redefineUserSets = function(userSets, userUniverse, cores=1) {
 	setLapplyAlias(cores);
@@ -86,7 +86,7 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 #' Anything in the userSets should be present in the universe.
 #' In addition, 2 different regions in the userSets should not
 #' overlap the same region in the universe
-#' 
+#'
 #' @param userSets		Regions of interest
 #' @param userUniverse	Regions tested for inclusion in userSets
 #' @param cores	Number of processors
@@ -104,12 +104,12 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 	userSets = listToGRangesList(userSets);
 	setLapplyAlias(cores)
 	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
-	userSetsOlUserUniverseSum = countOverlaps(userSets, userUniverse); 
+	userSetsOlUserUniverseSum = countOverlaps(userSets, userUniverse);
 	userSetsPercentInUniverseSum = userSetsOlUserUniverseSum/ userSetsLength;
 
 	if (!fast) {
 		message("Checking for many-to-many relationships between sets and universe...");
-		userSetsOlUserUniverseAny = countOverlapsAny(userSets, userUniverse); 
+		userSetsOlUserUniverseAny = countOverlapsAny(userSets, userUniverse);
 		userSetsPercentInUniverseAny = userSetsOlUserUniverseAny/ userSetsLength;
 		cat("any:", signif(userSetsPercentInUniverseAny, 6), "\n");
 	} else {
@@ -146,6 +146,3 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 buildRestrictedUniverse = function(userSets) {
 	disjoin(unlist(userSets))
 }
-
-
-

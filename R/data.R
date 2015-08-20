@@ -1,6 +1,6 @@
 #' A reduced GRanges object from the example regionDB database
-#' 
-#' 
+#'
+#'
 #' @docType data
 #' @keywords datasets
 #' @name userUniverse
@@ -10,9 +10,9 @@
 NULL
 
 #' An example set of regions, sampled from the example database.
-#' 
+#'
 #' A dataset containing a few sample regions.
-#' 
+#'
 #' @docType data
 #' @keywords datasets
 #' @name userSet
@@ -28,5 +28,3 @@ NULL
 #userUniverse = reduce(do.call(c, regionDB$regionGRL))
 #save(userSet, file="sample_input.RData")
 #save(userUniverse, file="sample_universe.RData")
-
-

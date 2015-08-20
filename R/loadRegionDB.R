@@ -5,16 +5,16 @@
 
 #' Helper function to annotate and load a regionDB, a folder with
 #' subfolder collections of regions.
-#' 
+#'
 #' @param dbLocation	folder where your regionDB is stored.
-#' @param filePattern	passed to list.files; you can use this to select 
+#' @param filePattern	passed to list.files; you can use this to select
 #'	only certain file names in your folders.
 #' @param useCache	uses simpleCache to cache and load the results
 #' @param limit 	You can limit the number of regions for testing.
 #'	Default: NULL (no limit)
 #' @param collections Restrict the database loading to this list of collections
 #'
-#' @return regionDB list containing database location, region and 
+#' @return regionDB list containing database location, region and
 #' collection annotations, and regions GRangesList
 #' @export
 #' @examples
@@ -70,12 +70,12 @@ readCollectionAnnotation = function(dbLocation, collections=NULL) {
 			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = FALSE), collectionColNames));
 			}
 		}
-		
+
 		collectionDT[,collectionname:=collection]
 		collectionsDT = rbind(collectionsDT, collectionDT);
 	}
-	if (nrow(collectionsDT) < 1) { 
-		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
+	if (nrow(collectionsDT) < 1) {
+		stop("No regions found. Are you sure '", dbLocation, "' is a region database?")
 	}
 	setkey(collectionsDT, "collectionname")
 	setcolorder(collectionsDT, c("collectionname", collectionColNames));
@@ -93,15 +93,15 @@ readCollectionAnnotation = function(dbLocation, collections=NULL) {
 #'	to select only certain file names in your folders.
 #' @param refreshCaches	should I recreate the caches?
 #' @param useCache Use simpleCache to store results and load them?
-#' 
+#'
 #' @return Region set annotation (data.table)
 #' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 readRegionSetAnnotation = function(dbLocation, collections = NULL,
-					filePattern = "", 
-					refreshCaches=FALSE, 
+					filePattern = "",
+					refreshCaches=FALSE,
 					useCache=TRUE) {
 	size=NULL # Silence R CMD check Notes.
 	#Build a data.table annotating the beds.
@@ -129,8 +129,8 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 	} #end loop through collections
 
 
-	if (nrow(annoDT) < 1) { 
-		stop("No regions found. Are you sure '", dbLocation, "' is a region database?") 
+	if (nrow(annoDT) < 1) {
+		stop("No regions found. Are you sure '", dbLocation, "' is a region database?")
 	}
 	return(annoDT)
 }
@@ -139,7 +139,7 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 #' reading in the annotation data.
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param collection Collection folder to load
-#' @param refreshSizes	should I recreate the sizes files 
+#' @param refreshSizes	should I recreate the sizes files
 #'	documenting how many regions (lines) are in each region set?
 #' @return A data.table annotating the regions in the collections.
 #' @export
@@ -229,7 +229,7 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 
 #' This function takes a region annotation object and reads in the regions,
 #' returning a GRangesList object of the regions.
-#' 
+#'
 #' @param dbLocation	folder of regiondB
 #' @param annoDT	output of readRegionSetAnnotation().
 #' @param refreshCaches	should I recreate the caches?
@@ -246,7 +246,7 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
 	dbLocation = enforceTrailingSlash(dbLocation);
-	
+
 	for (iCol in unique(annoDT$collection)) {
 	message(iCol);
 	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), "regions/", filename)), by=filename]$fullFilename
@@ -286,7 +286,7 @@ readCollection = function(filesToRead, limit=NULL) {
 		message(i, ": ", filesToRead[i]);
 		filename = filesToRead[i]
 		if (file.exists(filename)) {
-			success = tryCatch( { 
+			success = tryCatch( {
 				DT = fread(paste0(filename))
 				cn = colnames(DT)
 				cn[1]
@@ -323,7 +323,7 @@ readCollection = function(filesToRead, limit=NULL) {
 mergeRegionDBs = function(dbA, dbB) {
 	myNames = names(dbA)
 	# Loop through each item and concat them
-	combinedRegionDB = list()	
+	combinedRegionDB = list()
 	for (item in myNames) {
 		message(item)
 		if ("character" %in% class(dbA[[item]])) {
@@ -332,7 +332,7 @@ mergeRegionDBs = function(dbA, dbB) {
 			combinedRegionDB[[item]] = rbind(dbA[[item]], dbB[[item]])
 		} else if ("GRangesList" %in% class(dbA[[item]])) {
 			combinedRegionDB[[item]] = c(dbA[[item]], dbB[[item]])
-		}			
+		}
 	}
 	return(combinedRegionDB)
 }

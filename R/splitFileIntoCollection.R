@@ -1,7 +1,7 @@
 #filename = "~/fhgfs/share/regionDB/hg19/sheffield_dnase/TableS03-dhs-to-cluster.txt"
 #splitCol="refined_cluster"
 #' This function will take a single large bed file that is annotated
-#' with a column grouping different sets of similar regions, 
+#' with a column grouping different sets of similar regions,
 #' and split it into separate files for use with the LOLA collection format.
 #'
 #' @param filename	the file to split
@@ -25,5 +25,3 @@ splitFileIntoCollection = function(filename, splitCol) {
 	}
 	message("Collection written to ", collectionFolder)
 }
-
-

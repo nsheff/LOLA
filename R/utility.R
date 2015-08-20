@@ -3,8 +3,8 @@
 ################################################################################
 # These are functions copied over from my repository of utilities used
 # by this package. They are repeated here simply for portability, so this
-# package can be deployed on systems without access to my utilities. 
-# Any changes should probably be backported to the primary functions rather 
+# package can be deployed on systems without access to my utilities.
+# Any changes should probably be backported to the primary functions rather
 # than in these convenience duplications.
 #
 # These functions should probably remain interior to the package (not exported)
@@ -13,7 +13,7 @@
 
 #' setSharedDataDir
 #' Sets global variable specifying the default data directory.
-#' 
+#'
 #' @export
 #' @param sharedDataDir	directory where the shared data is stored.
 #' @return No return value.
@@ -44,7 +44,7 @@ replaceFileExtension = function(filename, extension) {
 
 
 
-#' Just a reverser. Reverses the order of arguments and passes them 
+#' Just a reverser. Reverses the order of arguments and passes them
 #' untouched to countOverlapsAny -- so you can use it with lapply.
 #'
 #' @param subj Subject
@@ -75,7 +75,7 @@ listToGRangesList = function(lst) {
 
 #' Wrapper of write.table that provides defaults to write a
 #' simple .tsv file. Passes additional arguments to write.table
-#' 
+#'
 #' @param ... Additional arguments passed to write.table
 #' @return No return value
 write.tsv = function(...) {
@@ -88,7 +88,7 @@ write.tsv = function(...) {
 #' function from data.table.
 #'
 #' @param file File name of bed file.
-#' @return GRanges Object 
+#' @return GRanges Object
 #' @export
 #' @examples
 #' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
@@ -132,13 +132,13 @@ dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, spli
 	if(is.na(splitFactor)) {
 		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols));
 	}
-	if ( length(splitFactor) == 1 ) { 
+	if ( length(splitFactor) == 1 ) {
 		if( splitFactor %in% colnames(DT) ) {
 			splitFactor = DT[, get(splitFactor)];
 		}
 	}
-	lapply(split(1:nrow(DT), splitFactor), 
-			function(x) { 
+	lapply(split(1:nrow(DT), splitFactor),
+			function(x) {
 				dtToGrInternal(DT[x,], chr, start, end, strand, name,metaCols)
 			}
 		)
@@ -168,16 +168,16 @@ countFileLines = function(filename) {
 #'
 #' @return A sampled subset of original GRangesList object.
 sampleGRL = function(GRL, prop) {
-	sampleGRanges = function(GR, prop) { 
-		GR[sample(length(GR), floor(length(GR) * prop))]	
+	sampleGRanges = function(GR, prop) {
+		GR[sample(length(GR), floor(length(GR) * prop))]
 	}
 	mapply(sampleGRanges, GRL, prop)
 }
 
 
-#' To make parallel processing a possibility but not required, 
+#' To make parallel processing a possibility but not required,
 #' I use an lapply alias which can point at either the base lapply
-#' (for no multicore), or it can point to mclapply, 
+#' (for no multicore), or it can point to mclapply,
 #' and set the options for the number of cores (what mclapply uses).
 #'
 #' @param cores	Number of cpus
@@ -244,7 +244,7 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 
 #' Nathan's magical named list function.
 #' This function is a drop-in replacement for the base list() function,
-#' which automatically names your list according to the names of the 
+#' which automatically names your list according to the names of the
 #' variables used to construct it.
 #' It seemlessly handles lists with some names and others absent,
 #' not overwriting specified names while naming any unnamed parameters.
@@ -255,11 +255,10 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 nlist = function(...) {
 	fcall = match.call(expand.dots=FALSE)
 	l = list(...);
-	if(!is.null(names(list(...)))) { 
+	if(!is.null(names(list(...)))) {
 		names(l)[names(l) == ""] = fcall[[2]][names(l) == ""]
-	} else {	
+	} else {
 		names(l) = fcall[[2]];
 	}
 	return(l)
 }
-

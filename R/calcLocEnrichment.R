@@ -7,16 +7,16 @@
 #' Workhorse function that calculates overlaps between userSets,
 #' and then uses a fisher's exact test rank them by significance
 #' of the overlap.
-#' 
+#'
 #' @param userSets		Regions of interest
 #' @param userUniverse	Regions tested for inclusion in userSets
-#' @param cores	Number of processors	
+#' @param cores	Number of processors
 #' @param regionDB	Region DB to check for overlap, from loadRegionDB()
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
 #' @return Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. The --value is the negative natural log of the p-value returned from a one-sided fisher's exact test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
 #' @export
-#' @example 
+#' @example
 #' R/examples/example.R
 runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
@@ -31,7 +31,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	userSets = listToGRangesList(userSets);
 	testSetsGRL = listToGRangesList(testSetsGRL);
 	setLapplyAlias(cores);
-	
+
 	if (any(is.null(names(testSetsGRL)))) {
 		names(testSetsGRL) = 1:length(testSetsGRL);
 	}
@@ -41,7 +41,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 		userSets = listToGRangesList(userSets);
 	}
 	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
-	
+
 	if (! any( isDisjoint( userSets) ) ) {
 		message("You have non-disjoint userSets.");
 	}
@@ -51,13 +51,13 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL); #Returns for each userSet, a vector of length length(testSetsGRL), with total number of regions in that set overlapping anything in each testSetsGRL; this is then lapplied across each userSet.
 	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
 
-	# This will become "support" -- the number of regions in the 
+	# This will become "support" -- the number of regions in the
 	# userSet (which I implicitly assume is ALSO the number of regions
 	# in the universe) that overlap anything in each database set.
 	# Turn results into an overlap matrix. It is
 	# dbSets (rows) by userSets (columns), counting overlap.
-	olmat = do.call(cbind, geneSetDatabaseOverlap); 
-	
+	olmat = do.call(cbind, geneSetDatabaseOverlap);
+
 
 	message("Calculating universe set overlaps...");
 	# Now for each test set, how many items *in the universe* does
@@ -67,7 +67,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	# Total size of the universe
 	universeLength = length(userUniverse);
 
-	# To build the fisher matrix, support is 'a'; 
+	# To build the fisher matrix, support is 'a';
 	scoreTable = data.table(melt(t(olmat)))
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
 	message("Calculating Fisher scores...");
