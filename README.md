@@ -1,6 +1,6 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
 
-The website for LOLA can be found at [http://lola.databio.org](http://lola.databio.org).
+The public-facing website for LOLA can be found at [http://databio.org/lola](http://databio.org/lola).
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. You can think of it as testing your `bed file` (genome regions of interest) against a database of other `bed files` (regions from various previous studies) to look for enrichment of overlaps. This enables you to draw connections between newly generated data, and the growing public databases, leading to new hypotheses and annotation sharing.
 
@@ -16,7 +16,7 @@ biocLite("GenomicRanges")
 ```
 Then, install the development version directly from github with devtools:
 ```{r}
-devtools::install_github("sheffien/LOLA") 
+devtools::install_github("sheffien/LOLA")
 ```
 
 Or, clone the repo and install from there:
@@ -43,7 +43,7 @@ The latest LOLA Core database can be downloaded here:
 * [Cached database](http://big.databio.org/regionDB/LOLACoreCaches_latest.tgz) (Processed cache files only, ~200Mb)
 * [Vignette example data](http://big.databio.org/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
-I recommend using the cached version, unless you need the raw files for something else. 
+I recommend using the cached version, unless you need the raw files for something else.
 To do this, you'll need to grab [simpleCache](http://github.com/sheffien/simpleCache) (which you may find it useful for other projects, too), also installable with devtools.
 
 ```{r}
@@ -108,7 +108,7 @@ You should annotate your collections by putting a file named `collection.txt` in
 * source (paper or website where you got the data)
 * description (free form field for details)
 
-Example file: 
+Example file:
 
 collector		|date		|source		|description
 ---------------------|-------------|--------------------|-----------
@@ -131,7 +131,7 @@ Any other column names will be ignored, so add whatever else you like. You can a
 
 filename	|cellType	|antibody
 --------------|-------------|--------
-regionset1.bed|K562		|GATA2 
+regionset1.bed|K562		|GATA2
 regionset2.bed|K562		|CTCF
 
 These `collection.txt` and `index.txt` annotation files are put inside the collection folder so that a collection is a self-contained entity that can be easily moved.
