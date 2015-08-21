@@ -12,6 +12,15 @@ test_that("loadRegionDB",  {
 	expect_identical(regionDB$collectionAnno$collector, "Nathan")
 	expect_identical(regionDB$collectionAnno$source, "UCSC Genome Browser")
 
+	# Test redefined user sets:
+	userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
+	fo = findOverlaps(userSetsRedefined[[1]], userUniverse, type='equal')
+	expect_equal(length(fo), 3045)
+
+	# Test restricted universe:
+	ru = buildRestrictedUniverse(GRangesList(userSet[1:50], userSet[51:100]))
+	expect_equal(length(ru), 100)
+
 })
 
 test_that( "runLOLA", {
@@ -27,7 +36,18 @@ test_that( "runLOLA", {
 	c("laminB1Lads.bed", "vistaEnhancers.bed", "vistaEnhancers_colNames.bed", "numtSAssembled.bed", "cpgIslandExt.bed")))
 	expect_equal(nrow(locResults), 5)
 
+	locResult = res[2,]
+	# Test post-enrichment functions:
+	eeo = extractEnrichmentOverlaps(locResult, userSet, regionDB)
+	expect_equal(length(eeo), 179)
 
+	# Test writing results:
+	extData = system.file("extdata", package="LOLA")
+	tmpFolder= paste0(extData, "/test_temp")
+	writeCombinedEnrichment(locResult, tmpFolder)
+	locResultRead = fread(paste0(tmpFolder, "/allEnrichments.txt"))
+	expect_equal(nrow(locResultRead), 1)
+	unlink(tmpFolder, recursive=TRUE)
 })
 
 test_that("readRegionSetAnnotation", {
@@ -72,12 +92,18 @@ test_that("GRangesOverlaps", {
 
 
 context("Test reading functions")
-# To do: write a test case for splitFileIntoCollection():
-#splitFileIntoCollection(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
 test_that("readBed", {
-	file = system.file("extdata", "examples/combined_regions.bed", package="LOLA")
-	rb = readBed(file)
+	cr = system.file("extdata", "examples/combined_regions.bed", package="LOLA")
+	rb = readBed(cr)
 	expect_equal(length(rb), 16)
 	# Make sure strand is getting picked up correctly:
 	expect_false("*" %in% as.character(strand(rb)))
+	splitFileIntoCollection(cr, 4)
+	i = fread(paste0(cr, "_collection/insulator.bed"))
+	p = fread(paste0(cr, "_collection/promoter.bed"))
+	e = fread(paste0(cr, "_collection/enhancer.bed"))
+	expect_equal(nrow(e), 5)
+	expect_equal(nrow(p), 8)
+	expect_equal(nrow(i), 3)
+	unlink(paste0(cr, "_collection"), recursive=TRUE)
 })

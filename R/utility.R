@@ -103,7 +103,7 @@ readBed = function(file) {
 	# 1=chr, 2=start, 3=end, 4=name, 5=score (discarded), 6=strand.
 	cn = rep(NA, 6)
 	readCols = colnames(DT)
-	cn[seq_len(readCols)] = readCols
+	cn[seq_along(readCols)] = readCols
 	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3],
 		name=cn[4], strand=cn[6])
 	return(tfbsgr)

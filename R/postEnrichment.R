@@ -122,7 +122,7 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 	if (file.exists(paste0(outFolder, "allEnrichments.txt")))
 		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...")
 	write.table(
-		combinedResults[order(pValueLog,decreasing=TRUE),], sep="\t"
+		combinedResults[order(pValueLog,decreasing=TRUE),], sep="\t",
 		file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE,
 	)
 }
