@@ -12,6 +12,8 @@ test_that("loadRegionDB",  {
 	expect_identical(regionDB$collectionAnno$collector, "Nathan")
 	expect_identical(regionDB$collectionAnno$source, "UCSC Genome Browser")
 
+	data("sample_input", package="LOLA") # load userSet
+	data("sample_universe", package="LOLA") # load userUniverse
 	# Test redefined user sets:
 	userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
 	fo = findOverlaps(userSetsRedefined[[1]], userUniverse, type='equal')
@@ -36,7 +38,7 @@ test_that( "runLOLA", {
 	c("laminB1Lads.bed", "vistaEnhancers.bed", "vistaEnhancers_colNames.bed", "numtSAssembled.bed", "cpgIslandExt.bed")))
 	expect_equal(nrow(locResults), 5)
 
-	locResult = res[2,]
+	locResult = locResults[2,]
 	# Test post-enrichment functions:
 	eeo = extractEnrichmentOverlaps(locResult, userSet, regionDB)
 	expect_equal(length(eeo), 179)
