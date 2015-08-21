@@ -143,7 +143,7 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 
 	if (any(userSetsPercentInUniverseSum < 1)) {
 		message(signif(userSetsPercentInUniverseSum, 6), "\n")
-		warning(gsub(''\\s',"",
+		warning(gsub('\\s',"",
 		"Your user sets contain ranges that are not in your universe. You need to
 		expand your universe. OR: your universe contains overlapping regions.
 		You should reduce it. OR: your universe contains regions that overlap
