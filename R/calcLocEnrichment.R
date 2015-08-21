@@ -14,17 +14,28 @@
 #' @param regionDB	Region DB to check for overlap, from loadRegionDB()
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
-#' @return Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. The --value is the negative natural log of the p-value returned from a one-sided fisher's exact test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
+#' @return Data.table with enrichment results. Rows correspond to individual
+#' pairwise fisher's tests comparing a single userSet with a single databaseSet.
+#' The columns in this data.table are: userSet and dbSet: index into their
+#' respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact
+#' result; logOddsRatio: result from the fisher's exact test; support: number of
+#' regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
+#' table of p-value, logOddsRatio, and Support respectively. The --value is the
+#' negative natural log of the p-value returned from a one-sided fisher's exact
+#' test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
+#' combined ranking system. b, c, d: 3 other values completing the 2x2 contingency
+#' table (with support). The remaining columns describe the dbSet for the row.
 #' @export
 #' @example
 #' R/examples/example.R
-runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=FALSE) {
+runLOLA = function(userSets, userUniverse, regionDB, cores=1,
+redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
 	logOddsRatio=maxRnk=meanRnk=dbSet=description=NULL
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
-	annotationDT[, dbSet := 1:nrow(annotationDT)]
+	annotationDT[, dbSet := seq_len(nrow(annotationDT))]
 	setkey(annotationDT, dbSet)
 	### Data sanity checks ###
 	#Confirm we received GRangesList objects, convert from list if possible.
@@ -33,7 +44,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	setLapplyAlias(cores)
 
 	if (any(is.null(names(testSetsGRL)))) {
-		names(testSetsGRL) = 1:length(testSetsGRL)
+		names(testSetsGRL) = seq_along(testSetsGRL)
 	}
 
 	if (redefineUserSets) { #redefine user sets in terms of universe?
@@ -48,8 +59,18 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 
 	### Construct significance tests ###
 	message("Calculating unit set overlaps...")
-	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL); #Returns for each userSet, a vector of length length(testSetsGRL), with total number of regions in that set overlapping anything in each testSetsGRL; this is then lapplied across each userSet.
-	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
+
+
+	# Returns for each userSet, a vector of length length(testSetsGRL), with total
+	# number of regions in that set overlapping anything in each testSetsGRL; this
+	# is then lapplied across each userSet.
+
+
+	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL);
+
+	# This is WRONG:
+	#geneSetDatabaseOverlap =
+	#lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL);
 
 	# This will become "support" -- the number of regions in the
 	# userSet (which I implicitly assume is ALSO the number of regions
@@ -62,8 +83,11 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	message("Calculating universe set overlaps...")
 	# Now for each test set, how many items *in the universe* does
 	# it overlap? This will go into the calculation for c
-	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse) #faster #returns number of items in userUniverse.
-	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse) #returns number of items in test set
+
+	#faster. Returns number of items in userUniverse.
+	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse)
+	# Returns number of items in test set (not used:)
+	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse)
 	# Total size of the universe
 	universeLength = length(userUniverse)
 
@@ -76,21 +100,33 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	# that are in the dbSet ONLY (not in userSet)
 	# c = the size of userSet, less the support; This is the opposite:
 	# Items in the userSet ONLY (not in the dbSet)
-	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet, names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
+
+	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet,
+	names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
+
 	# d = total universe size, less all other categories
 	# This is the regions in the universe, but not in dbSet nor userSet.
 	scoreTable[,d:=universeLength-support-b-c]
-	if( scoreTable[,any(b<0)] ) { #inappropriate universe.
-		print(scoreTable[which(b<0),])
-		warning("Negative b entry in table. This means either: 1) Your user sets contain items outside your universe; or 2) your universe has a region that overlaps multiple user set regions, interfering with the universe set overlap calculation.")
+	if( scoreTable[,any(b<0)] ) { # Inappropriate universe.
+		message(scoreTable[which(b<0),])
+
+		warning("Negative b entry in table. This means either: 1) Your user sets
+		contain items outside your universe; or 2) your universe has a region that
+		overlaps multiple user set regions, interfering with the universe set overlap
+		calculation.")
+
 		return(scoreTable)
 	}
 	if( scoreTable[,any(c<0)] ) {
 		warning("Negative c entry in table. Bug with userSetsLength; this should not happen.")
 		return(scoreTable)
 	}
-	scoreTable[,c("pValueLog", "logOddsRatio") := fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value", "estimate")], by=list(userSet,dbSet)]
-	scoreTable[, pValueLog:=-log(pValueLog)]
+
+	scoreTable[,c("pValueLog", "logOddsRatio") :=
+	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value",
+	"estimate")], by=list(userSet,dbSet)]
+
+		scoreTable[, pValueLog:=-log(pValueLog)]
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
 	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
@@ -105,7 +141,9 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	# limit description to 80 characters
 	scoreTable[,description:=substr(description, 0, 80)]
 
-	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOddsRatio", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
+	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOddsRatio",
+"support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d",
+"description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
 	setcolorder(scoreTable,  c(orderedCols, unorderedCols))

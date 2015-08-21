@@ -1,7 +1,7 @@
 # Unit tests
 library(LOLA)
 
-context("Testthat connext...")
+context("Testthat context...")
 
 test_that("loadRegionDB",  {
 	dbPath = system.file("extdata", "hg19", package="LOLA")
@@ -23,7 +23,7 @@ test_that( "runLOLA", {
 
 	expect_equal(nrow(locResults), 5)
 	expect_true(all(locResults[,support] == c(662, 121, 121, 4, 3006)))
-	expect_true(all(locResults[,filename] == 
+	expect_true(all(locResults[,filename] ==
 	c("laminB1Lads.bed", "vistaEnhancers.bed", "vistaEnhancers_colNames.bed", "numtSAssembled.bed", "cpgIslandExt.bed")))
 	expect_equal(nrow(locResults), 5)
 
@@ -37,8 +37,10 @@ test_that("readRegionSetAnnotation", {
 })
 
 test_that("GRangesOverlaps", {
-	r1 = GRanges("chrX", IRanges(start=c(1, 5, 9, 13, 27, 30), end=c(3, 7, 11, 21, 29, 32)))
-	r2 = GRanges("chrX", IRanges(start=c(4, 6, 17, 20, 24, 42), end=c(5, 15, 18, 22, 28, 45)))
+	r1 = GRanges("chrX", IRanges(start=c(1, 5, 9, 13, 27, 30),
+		end=c(3, 7, 11, 21, 29, 32)))
+	r2 = GRanges("chrX", IRanges(start=c(4, 6, 17, 20, 24, 42),
+		end=c(5, 15, 18, 22, 28, 45)))
 	#r2=reduce(r2);r2
 
 	#r2 = disjoin(r2)

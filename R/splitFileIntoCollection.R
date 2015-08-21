@@ -18,7 +18,7 @@ splitFileIntoCollection = function(filename, splitCol) {
 	dir.create(collectionFolder)
 	sDT = splitDataTable(DT, splitFactor=splitCol)
 	nDT = names(sDT)
-	for (i in 1:length(sDT)) {
+	for (i in seq_along(sDT)) {
 		message(nDT[[i]])
 		print(sDT[[i]])
 		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))

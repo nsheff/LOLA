@@ -37,9 +37,11 @@ countOverlapsAny = function(subj, quer, cores=1) {
 #' This will change the string in filename to have a new extension
 #' @param filename	string to convert
 #' @param extension	new extension
-#' @return	Filename with original extension deleted, replaced by provided extension
+#' @return	Filename with original extension deleted, replaced by provided
+#' extension
 replaceFileExtension = function(filename, extension) {
-	sub("\\..*$", enforceEdgeCharacter(extension, prependChar="."), paste0(filename, "."))
+	sub("\\..*$", enforceEdgeCharacter(extension, prependChar="."),
+	paste0(filename, "."))
 }
 
 
@@ -65,7 +67,9 @@ listToGRangesList = function(lst) {
 			lst = lapply(lst, function(x) { values(x) <- NULL; x; } )
 			lst = GRangesList(lst)
 		} else {
-			warning("in listToGRangesList (funcGenomeLocations), input list must be a list object. I've taken the liberty of converting yours to a list; I hope this is OK.")
+			warning("in listToGRangesList (funcGenomeLocations), input list must be
+			a list object. I've taken the liberty of converting yours to a list; I
+			hope this is OK.")
 			lst = GRangesList(list(lst))
 		}
 	}
@@ -91,34 +95,47 @@ write.tsv = function(...) {
 #' @return GRanges Object
 #' @export
 #' @examples
-#' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
+#' a = readBed(system.file("extdata", "examples/combined_regions.bed",
+#' package="LOLA"))
 readBed = function(file) {
 	DT = fread(file)
 	# bed specification says:
 	# 1=chr, 2=start, 3=end, 4=name, 5=score (discarded), 6=strand.
 	cn = rep(NA, 6)
 	readCols = colnames(DT)
-	cn[1:length(readCols)] = readCols
-	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3], name=cn[4], strand=cn[6])
+	cn[seq_len(readCols)] = readCols
+	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3],
+		name=cn[4], strand=cn[6])
 	return(tfbsgr)
 }
 
 
 #Two utility functions for converting data.tables into GRanges objects
 #genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId")
-dtToGrInternal = function(DT, chr, start, end=NA, strand=NA, name=NA, metaCols=NA) {
+dtToGrInternal = function(DT, chr, start, end=NA,
+	strand=NA, name=NA, metaCols=NA) {
 	if (is.na(end)) {
 		end = start
 	}
 	if (is.na(strand)) {
-			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand="*")
+			gr=GRanges(
+				seqnames=DT[[`chr`]],
+				ranges=IRanges(start=DT[[`start`]],
+				end=DT[[`end`]]),
+				strand="*"
+			)
 	} else {
-	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`strand`]])
+		gr=GRanges(
+			seqnames=DT[[`chr`]],
+			ranges=IRanges(start=DT[[`start`]],
+			end=DT[[`end`]]),
+			strand=DT[[`strand`]]
+		)
 	}
 	if (! is.na(name) ) {
 		names(gr) = DT[[`name`]]
 	} else {
-		names(gr) = 1:length(gr)
+		names(gr) = seq_along(gr)
 	}
 	if(! is.na(metaCols)) {
 		for(x in metaCols) {
@@ -128,7 +145,8 @@ dtToGrInternal = function(DT, chr, start, end=NA, strand=NA, name=NA, metaCols=N
 	gr
 }
 
-dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, splitFactor=NA, metaCols=NA) {
+dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA,
+	splitFactor=NA, metaCols=NA) {
 	if(is.na(splitFactor)) {
 		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols))
 	}
@@ -137,7 +155,7 @@ dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, spli
 			splitFactor = DT[, get(splitFactor)]
 		}
 	}
-	lapply(split(1:nrow(DT), splitFactor),
+	lapply(split(seq_len(nrow(DT)), splitFactor),
 			function(x) {
 				dtToGrInternal(DT[x,], chr, start, end, strand, name,metaCols)
 			}
@@ -146,25 +164,40 @@ dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, spli
 
 }
 
-#If you want to use the GenomicRanges countOverlaps function, but you want to do it in an lapply, that will work... but you can only do it in one direction. If you want to lapply on the opposite argument, you can't do it (because countOverlaps is not symmetric: it depends on which argument comes first). If you want to do an lapply, but countOverlaps with the query as the second argument instead of the first, you can use this function to simply reverse the order of the arguments.
-#This is used in the enrichment calculations (originally from the EWS project; 2014, CeMM).
+# If you want to use the GenomicRanges countOverlaps function, but you want to
+# do it in an lapply, that will work... but you can only do it in one direction.
+# If you want to lapply on the opposite argument, you can't do it (because
+# countOverlaps is not symmetric: it depends on which argument comes first).
+# If you want to do an lapply, but countOverlaps with the query as the second
+# argument instead of the first, you can use this function to simply reverse
+# the order of the arguments.
+# This is used in the enrichment calculations (originally from the EWS
+# project; 2014, CeMM).
 countOverlapsRev = function(query, subject) {
 	return(countOverlaps(subject, query))
 }
 
 
 
-# Parses result of system "wc" wordcount to return the number of lines in a file into R.
+# Parses result of system "wc" wordcount to return the number of lines
+# in a file into R.
 countFileLines = function(filename) {
-	if (!file.exists(filename)) { warning("File does not exist:", filename); return(0); }
-	as.numeric(strsplit(sub("^\\s+", "", system(paste("wc -l ", filename), intern=TRUE)), " ")[[1]][1])
+	if (!file.exists(filename)) {
+		warning("File does not exist:", filename); return(0);
+	}
+	as.numeric(
+		strsplit(sub("^\\s+", "",
+		system(paste("wc -l ", filename),
+		intern=TRUE)), " ")[[1]][1]
+	)
 }
 
 
 #' Function to sample regions from a GRangesList object, in specified proportion
 #'
 #' @param GRL	GRangesList from which to sample
-#' @param prop	vector with same length as GRL, of values between 0-1, proportion of the list to select
+#' @param prop	vector with same length as GRL, of values between 0-1,
+#' proportion of the list to select
 #'
 #' @return A sampled subset of original GRangesList object.
 sampleGRL = function(GRL, prop) {
