@@ -77,13 +77,13 @@ And finally, record the results to file like this:
 4. Write out results:
 
 ```{r Write results}
-writeCombinedEnrichment(locResults, outFolder= "lolaResults");
+writeCombinedEnrichment(locResults, outFolder= "lolaResults")
 ```
 
 By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
 
 ```{r Write split results}
-writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
+writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE)
 ```
 
 

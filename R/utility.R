@@ -20,15 +20,15 @@
 #' @examples
 #' setSharedDataDir("project/data")
 setSharedDataDir = function(sharedDataDir) {
-	options(SHARE.DATA.DIR=sharedDataDir);
-	return();
+	options(SHARE.DATA.DIR=sharedDataDir)
+	return()
 }
 
 
 countOverlapsAny = function(subj, quer, cores=1) {
 	setLapplyAlias(cores)
 	l = unlist(lapplyAlias(subj, function(x) { sum(overlapsAny(x, quer)) } ))
-	return(l);
+	return(l)
 }
 ################################################################################
 # INTERNAL FUNCTIONS - not exported
@@ -51,7 +51,7 @@ replaceFileExtension = function(filename, extension) {
 #' @param quer Query
 #' @return Results from countOverlaps
 countOverlapsAnyRev = function(subj, quer) {
-	countOverlapsAny(quer, subj);
+	countOverlapsAny(quer, subj)
 }
 
 
@@ -63,13 +63,13 @@ listToGRangesList = function(lst) {
 		if ("list" %in% class(lst)) {
 			#strip elementMetadata
 			lst = lapply(lst, function(x) { values(x) <- NULL; x; } )
-			lst = GRangesList(lst);
+			lst = GRangesList(lst)
 		} else {
-			warning("in listToGRangesList (funcGenomeLocations), input list must be a list object. I've taken the liberty of converting yours to a list; I hope this is OK.");
-			lst = GRangesList(list(lst));
+			warning("in listToGRangesList (funcGenomeLocations), input list must be a list object. I've taken the liberty of converting yours to a list; I hope this is OK.")
+			lst = GRangesList(list(lst))
 		}
 	}
-	return(lst);
+	return(lst)
 }
 
 
@@ -79,7 +79,7 @@ listToGRangesList = function(lst) {
 #' @param ... Additional arguments passed to write.table
 #' @return No return value
 write.tsv = function(...) {
-	write.table(..., sep="\t", row.names=FALSE, quote=FALSE);
+	write.table(..., sep="\t", row.names=FALSE, quote=FALSE)
 }
 
 ######################################################################
@@ -93,22 +93,22 @@ write.tsv = function(...) {
 #' @examples
 #' a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
 readBed = function(file) {
-	DT = fread(file);
+	DT = fread(file)
 	# bed specification says:
 	# 1=chr, 2=start, 3=end, 4=name, 5=score (discarded), 6=strand.
-	cn = rep(NA, 6);
+	cn = rep(NA, 6)
 	readCols = colnames(DT)
 	cn[1:length(readCols)] = readCols
-	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3], name=cn[4], strand=cn[6]);
+	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3], name=cn[4], strand=cn[6])
 	return(tfbsgr)
 }
 
 
 #Two utility functions for converting data.tables into GRanges objects
-#genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId");
+#genes = dtToGR(gModels, "chr", "txStart", "txEnd", "strand", "geneId")
 dtToGrInternal = function(DT, chr, start, end=NA, strand=NA, name=NA, metaCols=NA) {
 	if (is.na(end)) {
-		end = start;
+		end = start
 	}
 	if (is.na(strand)) {
 			gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand="*")
@@ -116,25 +116,25 @@ dtToGrInternal = function(DT, chr, start, end=NA, strand=NA, name=NA, metaCols=N
 	gr=GRanges(seqnames=DT[[`chr`]], ranges=IRanges(start=DT[[`start`]], end=DT[[`end`]]), strand=DT[[`strand`]])
 	}
 	if (! is.na(name) ) {
-		names(gr) = DT[[`name`]];
+		names(gr) = DT[[`name`]]
 	} else {
-		names(gr) = 1:length(gr);
+		names(gr) = 1:length(gr)
 	}
 	if(! is.na(metaCols)) {
 		for(x in metaCols) {
 			elementMetadata(gr)[[`x`]]=DT[[`x`]]
 		}
 	}
-	gr;
+	gr
 }
 
 dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, splitFactor=NA, metaCols=NA) {
 	if(is.na(splitFactor)) {
-		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols));
+		return(dtToGrInternal(DT, chr, start, end, strand, name,metaCols))
 	}
 	if ( length(splitFactor) == 1 ) {
 		if( splitFactor %in% colnames(DT) ) {
-			splitFactor = DT[, get(splitFactor)];
+			splitFactor = DT[, get(splitFactor)]
 		}
 	}
 	lapply(split(1:nrow(DT), splitFactor),
@@ -149,7 +149,7 @@ dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA, spli
 #If you want to use the GenomicRanges countOverlaps function, but you want to do it in an lapply, that will work... but you can only do it in one direction. If you want to lapply on the opposite argument, you can't do it (because countOverlaps is not symmetric: it depends on which argument comes first). If you want to do an lapply, but countOverlaps with the query as the second argument instead of the first, you can use this function to simply reverse the order of the arguments.
 #This is used in the enrichment calculations (originally from the EWS project; 2014, CeMM).
 countOverlapsRev = function(query, subject) {
-	return(countOverlaps(subject, query));
+	return(countOverlaps(subject, query))
 }
 
 
@@ -189,7 +189,7 @@ sampleGRL = function(GRL, prop) {
 setLapplyAlias = function(cores) {
 	if(cores > 1) { #use multicore?
 	if (requireNamespace("parallel", quietly = TRUE)) {
-		options(mc.cores=cores);
+		options(mc.cores=cores)
 	} else {
 		warning("You don't have package parallel installed. Setting cores to 1.")
 		options(mc.cores=1); #reset cores option.
@@ -197,7 +197,7 @@ setLapplyAlias = function(cores) {
 	} else {
 		options(mc.cores=1); #reset cores option.
 	}
-	return();
+	return()
 }
 
 #' Function to run lapply or mclapply, depending on the option set in
@@ -222,23 +222,23 @@ lapplyAlias = function(...) {
 
 #check for, and fix, trailing slash. if necessary
 enforceTrailingSlash = function(folder) {
-	enforceEdgeCharacter(folder, appendChar="/");
+	enforceEdgeCharacter(folder, appendChar="/")
 }
 enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 	if (string=="" | is.null(string)) {
-		return(string);
+		return(string)
 	}
 	if(!is.null(appendChar)) {
 		if (substr(string,nchar(string), nchar(string)) != appendChar) { # +1 ?
-			string = paste0(string, appendChar);
+			string = paste0(string, appendChar)
 			}
 	}
 	if (!is.null(prependChar)) {
 		if (substr(string,1,1) != prependChar) { # +1 ?
-			string = paste0(prependChar, string);
+			string = paste0(prependChar, string)
 		}
 	}
-	return(string);
+	return(string)
 }
 
 
@@ -254,11 +254,11 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 #' @return A named list object.
 nlist = function(...) {
 	fcall = match.call(expand.dots=FALSE)
-	l = list(...);
+	l = list(...)
 	if(!is.null(names(list(...)))) {
 		names(l)[names(l) == ""] = fcall[[2]][names(l) == ""]
 	} else {
-		names(l) = fcall[[2]];
+		names(l) = fcall[[2]]
 	}
 	return(l)
 }

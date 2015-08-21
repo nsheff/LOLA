@@ -59,7 +59,7 @@ if(getRversion() >= "2.15.1") {
 #' and redefine the user sets as the set of regions in the user
 #' universe that overlap at least one region in user sets. this makes
 #' for a more appropriate statistical enrichment comparison, as the user
-#' sets are actually exactly the same regions found in the universe;
+#' sets are actually exactly the same regions found in the universe
 #' otherwise, you can get some weird artifacts from the many-to-many
 #' relationship between user set regions and universe regions.
 #'
@@ -72,12 +72,12 @@ if(getRversion() >= "2.15.1") {
 #' @example
 #' R/examples/example.R
 redefineUserSets = function(userSets, userUniverse, cores=1) {
-	setLapplyAlias(cores);
+	setLapplyAlias(cores)
 	if(!isDisjoint(userUniverse)) {
-		message("Your universe is not disjoint; try reduce() or disjoin().");
+		message("Your universe is not disjoint; try reduce() or disjoin().")
 	}
 	userSets =	lapplyAlias(userSets, function(x) { fo = findOverlaps(x, userUniverse); x = userUniverse[unique(subjectHits(fo))]; } )
-	return(userSets);
+	return(userSets)
 }
 
 #' Check universe appropriateness
@@ -100,33 +100,33 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 #' universe = disjoin(c(userSet, (userUniverse)))
 #' checkUniverseAppropriateness(list(userSet), universe)
 checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = FALSE) {
-	message("Confirming universe appropriateness");
-	userSets = listToGRangesList(userSets);
+	message("Confirming universe appropriateness")
+	userSets = listToGRangesList(userSets)
 	setLapplyAlias(cores)
-	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
-	userSetsOlUserUniverseSum = countOverlaps(userSets, userUniverse);
-	userSetsPercentInUniverseSum = userSetsOlUserUniverseSum/ userSetsLength;
+	userSetsLength = unlist(lapplyAlias(as.list(userSets), length))
+	userSetsOlUserUniverseSum = countOverlaps(userSets, userUniverse)
+	userSetsPercentInUniverseSum = userSetsOlUserUniverseSum/ userSetsLength
 
 	if (!fast) {
-		message("Checking for many-to-many relationships between sets and universe...");
-		userSetsOlUserUniverseAny = countOverlapsAny(userSets, userUniverse);
-		userSetsPercentInUniverseAny = userSetsOlUserUniverseAny/ userSetsLength;
-		cat("any:", signif(userSetsPercentInUniverseAny, 6), "\n");
+		message("Checking for many-to-many relationships between sets and universe...")
+		userSetsOlUserUniverseAny = countOverlapsAny(userSets, userUniverse)
+		userSetsPercentInUniverseAny = userSetsOlUserUniverseAny/ userSetsLength
+		cat("any:", signif(userSetsPercentInUniverseAny, 6), "\n")
 	} else {
-		userSetsPercentInUniverseAny = 1; #skip the any test;
+		userSetsPercentInUniverseAny = 1; #skip the any test
 	}
 
-	cat("sum:", signif(userSetsPercentInUniverseSum, 6), "\n");
+	cat("sum:", signif(userSetsPercentInUniverseSum, 6), "\n")
 
 	if (any(userSetsPercentInUniverseSum < 1)) {
-		cat(signif(userSetsPercentInUniverseSum, 6), "\n");
-		warning("Your user sets contain ranges that are not in your universe. You need to expand your universe. OR: your universe contains overlapping regions. You should reduce it. OR: your universe contains regions that overlap multiple regions in your user sets, You should disjoin your universe.");
+		cat(signif(userSetsPercentInUniverseSum, 6), "\n")
+		warning("Your user sets contain ranges that are not in your universe. You need to expand your universe. OR: your universe contains overlapping regions. You should reduce it. OR: your universe contains regions that overlap multiple regions in your user sets, You should disjoin your universe.")
 #		I can check with isDisjoint)
 	} else { message("PASSED"); }
 
 	if (any(userSetsPercentInUniverseAny > 1)) {
-		cat(signif(userSetsPercentInUniverseAny, 6), "\n");
-		warning("Your user sets contain multiple regions mapping to individual regions in the universe. Try redefineUserSets()");
+		cat(signif(userSetsPercentInUniverseAny, 6), "\n")
+		warning("Your user sets contain multiple regions mapping to individual regions in the universe. Try redefineUserSets()")
 	} else { message("PASSED"); }
 }
 

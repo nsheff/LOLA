@@ -7,7 +7,7 @@ locResult = res[2,]
 extractEnrichmentOverlaps(locResult, userSet, regionDB)
 writeCombinedEnrichment(locResult, "temp_outfolder")
 
-userSetsRedefined =	redefineUserSets(list(userSet), userUniverse);
+userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
 resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
 
 

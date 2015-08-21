@@ -15,8 +15,8 @@
 #' @example
 #' R/examples/example.R
 extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
-	print(locResult);
-	userSets = listToGRangesList(userSets);
+	print(locResult)
+	userSets = listToGRangesList(userSets)
 	regionGRLID = which(regionDB$regionAnno$filename %in% locResult$filename & regionDB$regionAnno$collection %in% locResult$collection)
 
 	userSet = userSets[[locResult[,userSet]]]#as.character(
@@ -46,7 +46,7 @@ splitDataTable = function(DT, splitFactor) {
 		splitFactor = colnames(DT)[splitFactor]
 		message("Integer splitFactor, changed to: ", splitFactor)
 	}
-	lapply( split(1:nrow(DT), DT[, get(splitFactor)]), function(x) DT[x]);
+	lapply( split(1:nrow(DT), DT[, get(splitFactor)]), function(x) DT[x])
 }
 
 
@@ -65,7 +65,7 @@ splitDataTable = function(DT, splitFactor) {
 #' @return number of splits written
 
 writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="", orderColumn=NULL) {
-	saveScipenSetting = getOption("scipen");
+	saveScipenSetting = getOption("scipen")
 	options(scipen = 4); #use scientific notation for pvalues.
 	if (is.null(orderColumn)) {
 		orderColumn = colnames(DT)[1];	#default order by first col.
@@ -73,17 +73,17 @@ writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="", orderCol
 	length(
 lapply( split(1:nrow(DT), DT[, get(splitFactor)]),
 		function(x) {
-			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".txt");
+			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".txt")
 			if (file.exists(fileName)) {
-				message("Overwriting ", fileName , "...");
+				message("Overwriting ", fileName , "...")
 			} else {
-				message(fileName);
+				message(fileName)
 			}
-			write.table(DT[x,][order(get(orderColumn)),], file=fileName, quote=FALSE, row.names=FALSE, sep="\t");
+			write.table(DT[x,][order(get(orderColumn)),], file=fileName, quote=FALSE, row.names=FALSE, sep="\t")
 		}
 	)
-	);
-	options(scipen = saveScipenSetting);
+	)
+	options(scipen = saveScipenSetting)
 }
 
 
@@ -103,21 +103,21 @@ lapply( split(1:nrow(DT), DT[, get(splitFactor)]),
 #' R/examples/example.R
 writeCombinedEnrichment = function(combinedResults, outFolder=NULL, includeSplits=TRUE) {
 	if (outFolder == "" | is.null(outFolder)) {
-		outFolder = "";
+		outFolder = ""
 	} else if (substr(outFolder, nchar(outFolder), nchar(outFolder)) != "/") {
-		outFolder = paste0(outFolder, "/");
+		outFolder = paste0(outFolder, "/")
 	}
 
-	dir.create(outFolder, showWarnings=FALSE);
+	dir.create(outFolder, showWarnings=FALSE)
 	if (includeSplits) {
 		if (combinedResults[,length(unique(userSet))] > 1) {
-			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="userSet", filePrepend=paste0(outFolder, "userSet_"));
+			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="userSet", filePrepend=paste0(outFolder, "userSet_"))
 		}
 		if (combinedResults[,length(unique(collection))] > 1) {
-			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="collection", filePrepend=paste0(outFolder, "col_"));
+			writeDataTableSplitByColumn(combinedResults[order(pValueLog,decreasing=TRUE),], splitFactor="collection", filePrepend=paste0(outFolder, "col_"))
 		}
 	}
 	if (file.exists(paste0(outFolder, "allEnrichments.txt")))
-		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...");
-	write.table(combinedResults[order(pValueLog,decreasing=TRUE),], file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE, sep="\t");
+		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...")
+	write.table(combinedResults[order(pValueLog,decreasing=TRUE),], file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE, sep="\t")
 }

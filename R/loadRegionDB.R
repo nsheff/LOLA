@@ -21,10 +21,10 @@
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation=dbPath)
 loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL, collections=NULL) {
-	collectionAnno = readCollectionAnnotation(dbLocation, collections);
-	regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern);
-	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit);
-	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL));
+	collectionAnno = readCollectionAnnotation(dbLocation, collections)
+	regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern)
+	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit)
+	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL))
 }
 
 #' Read collection annotation
@@ -38,7 +38,7 @@ loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL, c
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' collectionAnno = readCollectionAnnotation(dbLocation=dbPath)
 readCollectionAnnotation = function(dbLocation, collections=NULL) {
-	annoDT = data.table();
+	annoDT = data.table()
 	collectionList = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	if (! is.null(collections)) {
 		# Restrict the list if parameter is passed.
@@ -47,38 +47,38 @@ readCollectionAnnotation = function(dbLocation, collections=NULL) {
 	if (length(collectionList) == 0) {
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
-	message("Reading collection annotations: ", paste(collections, collapse=", "));
+	message("Reading collection annotations: ", paste(collections, collapse=", "))
 	collectionColNames = c("collector", "date", "source", "description")
 	collectionsDT = data.table()
 	for (collection in collectionList) {
 		collectionFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "collection.txt")
 		if (file.exists(collectionFile)) {
-			message("\tIn '", collection, "', found collection annotation file:", collectionFile);
-			collectionDT = fread(collectionFile);
-			setnames(collectionDT, tolower(colnames(collectionDT)));
-			missCols = setdiff(collectionColNames, colnames(collectionDT));
-			for (col in missCols) collectionDT[, col:=NA, with=FALSE];
+			message("\tIn '", collection, "', found collection annotation file:", collectionFile)
+			collectionDT = fread(collectionFile)
+			setnames(collectionDT, tolower(colnames(collectionDT)))
+			missCols = setdiff(collectionColNames, colnames(collectionDT))
+			for (col in missCols) collectionDT[, col:=NA, with=FALSE]
 			collectionDT = collectionDT[,collectionColNames, with=FALSE] #subset
 
 		} else {
 			regionFiles = list.files(paste0(dbLocation,"/",collection, "/regions"))
 			if (length(regionFiles) < 1) {
-				warning(collection, " has no collection annotation or region files. Skipping...");
-				next;
+				warning(collection, " has no collection annotation or region files. Skipping...")
+				next
 			} else {
-			message("\tIn collection '", collection, "', consider adding a 'collection.txt' annotation file.");
-			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = FALSE), collectionColNames));
+			message("\tIn collection '", collection, "', consider adding a 'collection.txt' annotation file.")
+			collectionDT = as.data.table(setNames(replicate(length(collectionColNames), NA, simplify = FALSE), collectionColNames))
 			}
 		}
 
 		collectionDT[,collectionname:=collection]
-		collectionsDT = rbind(collectionsDT, collectionDT);
+		collectionsDT = rbind(collectionsDT, collectionDT)
 	}
 	if (nrow(collectionsDT) < 1) {
 		stop("No regions found. Are you sure '", dbLocation, "' is a region database?")
 	}
 	setkey(collectionsDT, "collectionname")
-	setcolorder(collectionsDT, c("collectionname", collectionColNames));
+	setcolorder(collectionsDT, c("collectionname", collectionColNames))
 	collectionsDT
 }
 
@@ -106,14 +106,14 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 	size=NULL # Silence R CMD check Notes.
 	#Build a data.table annotating the beds.
 	#Should give collections
-	annoDT = data.table();
+	annoDT = data.table()
 	dbLocation = enforceTrailingSlash(dbLocation)
 	collectionList = list.dirs(path=dbLocation, full.names=FALSE, recursive=FALSE)
 	if (! is.null(collections)) {
 		# Restrict the list if parameter is passed.
 		collectionList = intersect(collections, collectionList)
 	}
-	message("Reading region annotations...");
+	message("Reading region annotations...")
 	if (length(collectionList) == 0) {
 		stop(paste0("No collections were found in ", dbLocation, ". Check your path."))
 	}
@@ -122,10 +122,10 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 			simpleCache::simpleCache(paste0(collection, "_files"), { readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)}, cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)), buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
 		} else {
 			warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
-			assign(paste0(collection, "_files"), readCollectionFiles(dbLocation, collection, refreshSizes=TRUE));
+			assign(paste0(collection, "_files"), readCollectionFiles(dbLocation, collection, refreshSizes=TRUE))
 		}
 
-		annoDT = rbind(annoDT, get(paste0(collection, "_files")));
+		annoDT = rbind(annoDT, get(paste0(collection, "_files")))
 	} #end loop through collections
 
 
@@ -157,8 +157,8 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 		#	files = files [ -specialFileInd]
 		#}
 		if (length(files) <1) {
-			message("\tIn '", collection, "', no files found.");
-			return();
+			message("\tIn '", collection, "', no files found.")
+			return()
 		}
 
 		collectionAnnoDT = data.table(collection=collection, filename=files, size=-1); #preserve new ones
@@ -167,30 +167,30 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 		#look for index file
 		indexFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "index.txt")
 		if (file.exists(indexFile)) {
-			message("\tIn '", collection, "', found index file:", indexFile);
-			indexDT = fread(indexFile);
+			message("\tIn '", collection, "', found index file:", indexFile)
+			indexDT = fread(indexFile)
 			indexDT[,filename:=as.character(filename)]
-			setnames(indexDT, tolower(colnames(indexDT)));
+			setnames(indexDT, tolower(colnames(indexDT)))
 		} else {
-			message("\tIn '", collection, "', no index file. Found ", length(files), " files to load with defaults (filename only)");
-#			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames));
+			message("\tIn '", collection, "', no index file. Found ", length(files), " files to load with defaults (filename only)")
+#			indexDT = as.data.table(setNames(replicate(length(annotationColNames),character(0), simplify = F), annotationColNames))
 			indexDT= data.table(filename=files)
 		}
-			missCols = setdiff(tolower(annotationColNames), colnames(indexDT));
+			missCols = setdiff(tolower(annotationColNames), colnames(indexDT))
 
 			# Populate any missing columns with NAs (of character type):
-			for (col in missCols) indexDT[, col:=as.character(NA), with=FALSE];
+			for (col in missCols) indexDT[, col:=as.character(NA), with=FALSE]
 			indexDT = indexDT[,tolower(annotationColNames), with=FALSE]
  #subset
 			# Revert back to camelCase
-			setnames(indexDT, tolower(annotationColNames), annotationColNames);
+			setnames(indexDT, tolower(annotationColNames), annotationColNames)
 		setkey(indexDT, "filename")
 		#look for size file
 		sizeFile = paste0(enforceTrailingSlash(dbLocation), enforceTrailingSlash(collection), "sizes.txt")
 		if (file.exists(sizeFile) & !refreshSizes) {
 			groupSizes = fread(sizeFile)
 			#collectionAnnoDT[,size:=-1]
-			setkey(groupSizes, "filename");
+			setkey(groupSizes, "filename")
 			groupSizes[, size_int:=as.double(size)]
 			collectionAnnoDT[groupSizes, size:=size_int]
 		}
@@ -208,22 +208,22 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 		description = collection
 		# First, try either a generic cellType or tissue
 		if (any(!is.na(cellType))) {
-			description[!is.na(cellType)] = paste(description[!is.na(cellType)], cellType[!is.na(cellType)]);
+			description[!is.na(cellType)] = paste(description[!is.na(cellType)], cellType[!is.na(cellType)])
 		} else if (any(!is.na(tissue))) {
-			description[!is.na(tissue)] = paste(description[!is.na(tissue)], tissue[!is.na(tissue)]);
+			description[!is.na(tissue)] = paste(description[!is.na(tissue)], tissue[!is.na(tissue)])
 		}
 
 		# Second, try either a generic antibody or treatment
 		if (any(!is.na(antibody))) {
-			description[!is.na(antibody)] = paste(description[!is.na(antibody)], antibody[!is.na(antibody)]);
+			description[!is.na(antibody)] = paste(description[!is.na(antibody)], antibody[!is.na(antibody)])
 		}  else if (any(!is.na(treatment))) {
-			description[!is.na(treatment)] = paste(description[!is.na(treatment)], treatment[!is.na(treatment)]);
+			description[!is.na(treatment)] = paste(description[!is.na(treatment)], treatment[!is.na(treatment)])
 		}
-		return(description);
+		return(description)
 	}
 	collectionAnnoDT[is.na(description), description:=buildGenericDescription(cellType, tissue, antibody, treatment, collection)]
 
-	return(collectionAnnoDT);
+	return(collectionAnnoDT)
 }
 
 
@@ -245,16 +245,16 @@ readCollectionFiles = function(dbLocation, collection, refreshSizes=FALSE) {
 #' regionGRL = readRegionGRL(dbLocation= dbPath, regionAnno, useCache=FALSE)
 readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE, limit=NULL) {
 	grl = GRangesList()
-	dbLocation = enforceTrailingSlash(dbLocation);
+	dbLocation = enforceTrailingSlash(dbLocation)
 
 	for (iCol in unique(annoDT$collection)) {
-	message(iCol);
+	message(iCol)
 	filesToRead = annoDT[collection==iCol,list(fullFilename=paste0(dbLocation, sapply(collection, enforceTrailingSlash), "regions/", filename)), by=filename]$fullFilename
 	if (useCache & requireNamespace("simpleCache", quietly=TRUE)) {
 		simpleCache::simpleCache(iCol, {readCollection(filesToRead)}, cacheDir=paste0(dbLocation, iCol), buildEnvir=nlist(filesToRead), recreate=refreshCaches)
 	} else {
 		warning("You don't have simpleCache installed, so you won't be able to cache the regionDB after reading it in. Install simpleCache to speed up later database loading.")
-		assign(iCol, readCollection(filesToRead, limit));
+		assign(iCol, readCollection(filesToRead, limit))
 	}
 	grl = c(grl, get(iCol))
 	}
@@ -277,31 +277,31 @@ readRegionGRL = function(dbLocation, annoDT, refreshCaches=FALSE, useCache=TRUE,
 readCollection = function(filesToRead, limit=NULL) {
 	grl = GRangesList()
 	if (is.null(limit)) {
-		limit = length(filesToRead);
+		limit = length(filesToRead)
 	}	else {
-		message("limit files: ", limit);
+		message("limit files: ", limit)
 	}
 	message("Reading ", length(filesToRead), " files...")
 	for (i in 1:limit) {
-		message(i, ": ", filesToRead[i]);
+		message(i, ": ", filesToRead[i])
 		filename = filesToRead[i]
 		if (file.exists(filename)) {
 			success = tryCatch( {
 				DT = fread(paste0(filename))
 				cn = colnames(DT)
 				cn[1]
-				tfbsgr = dtToGr(DT, cn[1], cn[2], cn[3]);
-				grl[[i]] = tfbsgr;
+				tfbsgr = dtToGr(DT, cn[1], cn[2], cn[3])
+				grl[[i]] = tfbsgr
 				TRUE
 			},
 			error = function(e) { message(i, " ERR:", filename); print(e); return(FALSE); } )
 			if (!success) { grl[[i]] = GRanges(); }
 		} else {
-			message("Skipping (file not found):", filename);
-			grl[[i]] = GRanges();
+			message("Skipping (file not found):", filename)
+			grl[[i]] = GRanges()
 		}
 	}
-	return(grl);
+	return(grl)
 }
 
 

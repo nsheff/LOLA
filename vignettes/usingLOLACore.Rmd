@@ -68,7 +68,7 @@ To make it easier to look at results for individual region sets or databases, yo
 
 
 ```{r, eval = FALSE}
-writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE);
+writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE)
 ```
 
 By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
@@ -80,6 +80,3 @@ The results we found fit perfectly with the identity of the region sets:
 * region set A: EWS-FLI1 binding sites in A673 cell line from Bilke et al. (2008). These correspond primarily to active promoters, and Ewing sarcoma regulatory elements.
 * region set B: H3K27ac peaks that disappear when EWS-FLI1 is knocked out in the same cell line (A673) from Tomazou et al. (2015). These overlap significantly with EWS-FLI1 binding sites, and also with Ewing-specific regulatory elements, as we discovered.
 * region set C: H3K27ac peaks that are suppressed by EWS-FLI1 in A673 (from Tomazou et al. 2015). These correspond mostly to enhancer elements with AP-1 enrichment.
-
-
-

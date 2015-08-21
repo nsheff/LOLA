@@ -28,26 +28,26 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	setkey(annotationDT, dbSet)
 	### Data sanity checks ###
 	#Confirm we received GRangesList objects, convert from list if possible.
-	userSets = listToGRangesList(userSets);
-	testSetsGRL = listToGRangesList(testSetsGRL);
-	setLapplyAlias(cores);
+	userSets = listToGRangesList(userSets)
+	testSetsGRL = listToGRangesList(testSetsGRL)
+	setLapplyAlias(cores)
 
 	if (any(is.null(names(testSetsGRL)))) {
-		names(testSetsGRL) = 1:length(testSetsGRL);
+		names(testSetsGRL) = 1:length(testSetsGRL)
 	}
 
 	if (redefineUserSets) { #redefine user sets in terms of universe?
-		userSets =	redefineUserSets(userSets, userUniverse, cores=cores);
-		userSets = listToGRangesList(userSets);
+		userSets =	redefineUserSets(userSets, userUniverse, cores=cores)
+		userSets = listToGRangesList(userSets)
 	}
-	userSetsLength = unlist(lapplyAlias(as.list(userSets), length));
+	userSetsLength = unlist(lapplyAlias(as.list(userSets), length))
 
 	if (! any( isDisjoint( userSets) ) ) {
-		message("You have non-disjoint userSets.");
+		message("You have non-disjoint userSets.")
 	}
 
 	### Construct significance tests ###
-	message("Calculating unit set overlaps...");
+	message("Calculating unit set overlaps...")
 	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL); #Returns for each userSet, a vector of length length(testSetsGRL), with total number of regions in that set overlapping anything in each testSetsGRL; this is then lapplied across each userSet.
 	#geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL); #This is WRONG
 
@@ -56,38 +56,38 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	# in the universe) that overlap anything in each database set.
 	# Turn results into an overlap matrix. It is
 	# dbSets (rows) by userSets (columns), counting overlap.
-	olmat = do.call(cbind, geneSetDatabaseOverlap);
+	olmat = do.call(cbind, geneSetDatabaseOverlap)
 
 
-	message("Calculating universe set overlaps...");
+	message("Calculating universe set overlaps...")
 	# Now for each test set, how many items *in the universe* does
 	# it overlap? This will go into the calculation for c
 	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse) #faster #returns number of items in userUniverse.
 	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse) #returns number of items in test set
 	# Total size of the universe
-	universeLength = length(userUniverse);
+	universeLength = length(userUniverse)
 
-	# To build the fisher matrix, support is 'a';
+	# To build the fisher matrix, support is 'a'
 	scoreTable = data.table(melt(t(olmat)))
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
-	message("Calculating Fisher scores...");
+	message("Calculating Fisher scores...")
 	# b = the # of items *in the universe* that overlap each dbSet,
 	# less the support; This is the number of items in the universe
 	# that are in the dbSet ONLY (not in userSet)
 	# c = the size of userSet, less the support; This is the opposite:
-	# Items in the userSet ONLY (not in the dbSet);
+	# Items in the userSet ONLY (not in the dbSet)
 	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet, names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
-	# d = total universe size, less all other categories;
+	# d = total universe size, less all other categories
 	# This is the regions in the universe, but not in dbSet nor userSet.
 	scoreTable[,d:=universeLength-support-b-c]
 	if( scoreTable[,any(b<0)] ) { #inappropriate universe.
-		print(scoreTable[which(b<0),]);
-		warning("Negative b entry in table. This means either: 1) Your user sets contain items outside your universe; or 2) your universe has a region that overlaps multiple user set regions, interfering with the universe set overlap calculation.");
-		return(scoreTable);
+		print(scoreTable[which(b<0),])
+		warning("Negative b entry in table. This means either: 1) Your user sets contain items outside your universe; or 2) your universe has a region that overlaps multiple user set regions, interfering with the universe set overlap calculation.")
+		return(scoreTable)
 	}
 	if( scoreTable[,any(c<0)] ) {
-		warning("Negative c entry in table. Bug with userSetsLength; this should not happen.");
-		return(scoreTable);
+		warning("Negative c entry in table. Bug with userSetsLength; this should not happen.")
+		return(scoreTable)
 	}
 	scoreTable[,c("pValueLog", "logOddsRatio") := fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value", "estimate")], by=list(userSet,dbSet)]
 	scoreTable[, pValueLog:=-log(pValueLog)]
@@ -108,7 +108,7 @@ runLOLA = function(userSets, userUniverse, regionDB, cores=1, redefineUserSets=F
 	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "logOddsRatio", "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d", "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
-	setcolorder(scoreTable,  c(orderedCols, unorderedCols));
+	setcolorder(scoreTable,  c(orderedCols, unorderedCols))
 	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
 	scoreTable[order(pValueLog, -meanRnk, decreasing=TRUE),]
 }

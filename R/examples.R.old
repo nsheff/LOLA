@@ -43,14 +43,14 @@ userUniverse =userSets
 
 #To do a comprehensive location enrichment (using all 3 databases)
 #First, you can check to see if your universe is appropriate:
-checkUniverseAppropriateness(userSets, userUniverse);
-locResults = locationEnrichment(userSets, userUniverse);
+checkUniverseAppropriateness(userSets, userUniverse)
+locResults = locationEnrichment(userSets, userUniverse)
 
 #View results in R:
 locResults[order(pValue),][1:30,]
 
 #Output your results:
-writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
+writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE)
 
 
 
@@ -61,10 +61,10 @@ regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19", limit=10)
 regionDB = loadRegionDB(dbLocation= "~/fhgfs/share/regionDB/hg19")
 regionDB
 
-locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB);
+locResults = enrichmentLocationCalcGen(userSets, userUniverse, regionDB)
 locResults
 
-writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE);
+writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=TRUE)
 
 
 
@@ -76,8 +76,8 @@ writeCombinedEnrichment(locResults, outFolder= "locationResults", includeSplits=
 #To do location enrichment analysis on each database individually:
 
 #cistrome
-cistromeAnnotation <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
-	cistromeGRL <<- simpleCache("cistromeGRL", "cistromeGRL = readCistrome(cistromeAnnotation);", cacheDir=getOption("SHARE.RCACHE.DIR"));
+cistromeAnnotation <<- readCistromeAnnotation(shareDir=getOption("SHARE.DATA.DIR"))
+	cistromeGRL <<- simpleCache("cistromeGRL", "cistromeGRL = readCistrome(cistromeAnnotation);", cacheDir=getOption("SHARE.RCACHE.DIR"))
 	cistromeAnnotation <<- appendAnnotations(cistromeAnnotation, cistromeGRL, "hg19"); #OPTIONAL
 #cistromeGRL = readCistrome(cistromeAnnotation); #non-cached version
 cistromeResults = enrichmentLocationCalc(userSets, userUniverse, cistromeAnnotation, cistromeGRL, dbTitle="CISTROME", mc.cores=6)
@@ -90,7 +90,7 @@ writeDataTableSplitByColumn(cistromeResults, splitFactor="userSet", filePrepend=
 
 
 #encode
-encodeTFBSannotation = readEncodeTFBSannotation("encodeTFBS/");
+encodeTFBSannotation = readEncodeTFBSannotation("encodeTFBS/")
 encodeGRL = simpleCache("encodeGRL", "encodeGRL = readEncodeTFBS(encodeTFBSannotation);", cacheDir=getOption("SHARE.RCACHE.DIR")); #cached version
 encodeResults = enrichmentLocationCalc(userSets, userUniverse, encodeTFBSannotation, encodeGRL, dbTitle="ENCODE")
 
@@ -101,11 +101,11 @@ encodeResults[order(pValue),]
 writeDataTableSplitByColumn(encodeResults, splitFactor="userSet", filePrepend="encode")
 
 #dnase hypersensitivity
-dhsAnnotation = readDhsAnnotation();
+dhsAnnotation = readDhsAnnotation()
 #dhsGRL = readDhs();#non-cached version
 
-dhsAnnotation <<- readDhsAnnotation(shareDir=getOption("SHARE.DATA.DIR"));
-dhsGRL <<- simpleCache("dhsGRL", "dhsGRL = readDhs()", cacheDir=getOption("SHARE.RCACHE.DIR"));
+dhsAnnotation <<- readDhsAnnotation(shareDir=getOption("SHARE.DATA.DIR"))
+dhsGRL <<- simpleCache("dhsGRL", "dhsGRL = readDhs()", cacheDir=getOption("SHARE.RCACHE.DIR"))
 dhsAnnotation <<- appendAnnotations(dhsAnnotation, dhsGRL, "hg19") #optional
 
 dhsResults = enrichmentLocationCalc(userSets, userUniverse, dhsAnnotation, dhsGRL, dbTitle="DHS", mc.cores=6)
