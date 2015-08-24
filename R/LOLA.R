@@ -10,7 +10,6 @@
 #' @references \url{http://github.com/sheffien}
 #' @import data.table
 #' @import GenomicRanges
-#' @import IRanges
 #' @importFrom reshape2 melt
 NULL
 
