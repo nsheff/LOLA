@@ -10,8 +10,9 @@
 #'
 #' @param userSets		Regions of interest
 #' @param userUniverse	Regions tested for inclusion in userSets
-#' @param cores	Number of processors
 #' @param regionDB	Region DB to check for overlap, from loadRegionDB()
+#' @param minOverlap (Default:1) Minimum bases required to count an overlap
+#' @param cores	Number of processors
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #'
 #' @return Data.table with enrichment results. Rows correspond to individual
@@ -28,7 +29,7 @@
 #' @export
 #' @example
 #' R/examples/example.R
-runLOLA = function(userSets, userUniverse, regionDB, cores=1,
+runLOLA = function(userSets, userUniverse, regionDB, minOverlap=1, cores=1,
 redefineUserSets=FALSE) {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
@@ -66,7 +67,7 @@ redefineUserSets=FALSE) {
 	# is then lapplied across each userSet.
 
 
-	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL);
+	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minOverlap=minoverlap);
 
 	# This is WRONG:
 	#geneSetDatabaseOverlap =
@@ -85,7 +86,8 @@ redefineUserSets=FALSE) {
 	# it overlap? This will go into the calculation for c
 
 	#faster. Returns number of items in userUniverse.
-	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse)
+	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse,
+		minOverlap=minoverlap)
 	# Returns number of items in test set (not used:)
 	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse)
 	# Total size of the universe

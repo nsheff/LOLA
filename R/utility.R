@@ -173,8 +173,8 @@ dtToGr = function(DT, chr="chr", start="start", end=NA, strand=NA, name=NA,
 # the order of the arguments.
 # This is used in the enrichment calculations (originally from the EWS
 # project; 2014, CeMM).
-countOverlapsRev = function(query, subject) {
-	return(countOverlaps(subject, query))
+countOverlapsRev = function(query, subject, ...) {
+	return(countOverlaps(subject, query, ...))
 }
 
 
