@@ -18,9 +18,4 @@ List of data.table objects, split by column
 \description{
 Efficiently split a data.table by a column in the table
 }
-\examples{
-DT = data.table(letters, grp = rep(c("group1", "group2"), 13))
-splitDataTable(DT, "grp")
-splitDataTable(DT, 2)
-}
 

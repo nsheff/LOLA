@@ -5,8 +5,10 @@ Title: Location OverLap Analysis
 Description: Provides functions for testing overlap of sets of genomic regions with public and custom databases.
 Author: Nathan Sheffield <http://www.databio.org>
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
+Depends:
+	GenomicRanges
 Imports:
-	GenomicRanges, data.table, reshape2
+	IRanges, data.table, reshape2
 Suggests:
 	knitr, parallel, BiocGenerics, testthat
 Enhances: simpleCache

@@ -30,11 +30,10 @@ extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
 #' @param splitFactor Column to split, which can be a character vector
 #'	or an integer.
 #' @return	List of data.table objects, split by column
-#' @export
-#' @examples
-#' DT = data.table(letters, grp = rep(c("group1", "group2"), 13))
-#' splitDataTable(DT, "grp")
-#' splitDataTable(DT, 2)
+# @examples
+# DT = data.table(letters, grp = rep(c("group1", "group2"), 13))
+# splitDataTable(DT, "grp")
+# splitDataTable(DT, 2)
 splitDataTable = function(DT, splitFactor) {
 	if (is.numeric(splitFactor)) {
 		splitFactor = colnames(DT)[splitFactor]
