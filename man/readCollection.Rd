@@ -2,24 +2,25 @@
 % Please edit documentation in R/loadRegionDB.R
 \name{readCollection}
 \alias{readCollection}
-\title{Given a bunch of region set files, read in all those flat (bed) files and create a
-GRangesList object holding all the region sets. This function is used by readRegionGRL
-to process annotation objects.}
+\title{Given a bunch of region set files, read in all those flat (bed) files and
+create a GRangesList object holding all the region sets. This function is
+used by readRegionGRL to process annotation objects.}
 \usage{
 readCollection(filesToRead, limit = NULL)
 }
 \arguments{
 \item{filesToRead}{a vector containing bed files}
 
-\item{limit}{for testing purposes, limit the number of files read. NULL for no limit (default).}
+\item{limit}{for testing purposes, limit the number of files read.
+NULL for no limit (default).}
 }
 \value{
 A GRangesList with the GRanges in the filesToRead.
 }
 \description{
-Given a bunch of region set files, read in all those flat (bed) files and create a
-GRangesList object holding all the region sets. This function is used by readRegionGRL
-to process annotation objects.
+Given a bunch of region set files, read in all those flat (bed) files and
+create a GRangesList object holding all the region sets. This function is
+used by readRegionGRL to process annotation objects.
 }
 \examples{
 files = list.files(system.file("extdata", "hg19/ucsc_example/regions",

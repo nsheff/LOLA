@@ -2,11 +2,11 @@
 % Please edit documentation in R/LOLA.R
 \name{redefineUserSets}
 \alias{redefineUserSets}
-\title{this function will take the user sets, overlap with the universe,
+\title{This function will take the user sets, overlap with the universe,
 and redefine the user sets as the set of regions in the user
 universe that overlap at least one region in user sets. this makes
 for a more appropriate statistical enrichment comparison, as the user
-sets are actually exactly the same regions found in the universe;
+sets are actually exactly the same regions found in the universe
 otherwise, you can get some weird artifacts from the many-to-many
 relationship between user set regions and universe regions.}
 \usage{
@@ -23,11 +23,11 @@ redefineUserSets(userSets, userUniverse, cores = 1)
 userSets redefined in terms of userUniverse
 }
 \description{
-this function will take the user sets, overlap with the universe,
+This function will take the user sets, overlap with the universe,
 and redefine the user sets as the set of regions in the user
 universe that overlap at least one region in user sets. this makes
 for a more appropriate statistical enrichment comparison, as the user
-sets are actually exactly the same regions found in the universe;
+sets are actually exactly the same regions found in the universe
 otherwise, you can get some weird artifacts from the many-to-many
 relationship between user set regions and universe regions.
 }
@@ -41,9 +41,7 @@ locResult = res[2,]
 extractEnrichmentOverlaps(locResult, userSet, regionDB)
 writeCombinedEnrichment(locResult, "temp_outfolder")
 
-userSetsRedefined =	redefineUserSets(list(userSet), userUniverse);
+userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
 resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
-
-
 }
 

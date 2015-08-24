@@ -67,7 +67,7 @@ redefineUserSets=FALSE) {
 	# is then lapplied across each userSet.
 
 
-	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minOverlap=minoverlap);
+	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap);
 
 	# This is WRONG:
 	#geneSetDatabaseOverlap =
@@ -87,7 +87,7 @@ redefineUserSets=FALSE) {
 
 	#faster. Returns number of items in userUniverse.
 	testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse,
-		minOverlap=minoverlap)
+		minoverlap=minOverlap)
 	# Returns number of items in test set (not used:)
 	#testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse)
 	# Total size of the universe

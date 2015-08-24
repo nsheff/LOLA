@@ -12,7 +12,8 @@ replaceFileExtension(filename, extension)
 \item{extension}{new extension}
 }
 \value{
-Filename with original extension deleted, replaced by provided extension
+Filename with original extension deleted, replaced by provided
+extension
 }
 \description{
 This will change the string in filename to have a new extension

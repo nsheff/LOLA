@@ -12,7 +12,8 @@ readRegionSetAnnotation(dbLocation, collections = NULL, filePattern = "",
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}
 
-\item{collections}{Restrict the database loading to this list of collections. Leave NULL to load the entire database (Default).}
+\item{collections}{Restrict the database loading to this list of collections
+Leave NULL to load the entire database (Default).}
 
 \item{filePattern}{passed to list.files; you can use this
 to select only certain file names in your folders.}

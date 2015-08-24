@@ -4,7 +4,7 @@
 \alias{runLOLA}
 \title{Enrichment Calculation}
 \usage{
-runLOLA(userSets, userUniverse, regionDB, cores = 1,
+runLOLA(userSets, userUniverse, regionDB, minOverlap = 1, cores = 1,
   redefineUserSets = FALSE)
 }
 \arguments{
@@ -14,12 +14,24 @@ runLOLA(userSets, userUniverse, regionDB, cores = 1,
 
 \item{regionDB}{Region DB to check for overlap, from loadRegionDB()}
 
+\item{minOverlap}{(Default:1) Minimum bases required to count an overlap}
+
 \item{cores}{Number of processors}
 
 \item{redefineUserSets}{run redefineUserSets() on your userSets?}
 }
 \value{
-Data.table with enrichment results. Rows correspond to individual pairwise fisher's tests comparing a single userSet with a single databaseSet. The columns in this data.table are: userSet and dbSet: index into their respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact result; logOddsRatio: result from the fisher's exact test; support: number of regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this table of p-value, logOddsRatio, and Support respectively. The --value is the negative natural log of the p-value returned from a one-sided fisher's exact test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a combined ranking system. b, c, d: 3 other values completing the 2x2 contingency table (with support). The remaining columns describe the dbSet for the row.
+Data.table with enrichment results. Rows correspond to individual
+pairwise fisher's tests comparing a single userSet with a single databaseSet.
+The columns in this data.table are: userSet and dbSet: index into their
+respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact
+result; logOddsRatio: result from the fisher's exact test; support: number of
+regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
+table of p-value, logOddsRatio, and Support respectively. The --value is the
+negative natural log of the p-value returned from a one-sided fisher's exact
+test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
+combined ranking system. b, c, d: 3 other values completing the 2x2 contingency
+table (with support). The remaining columns describe the dbSet for the row.
 }
 \description{
 Workhorse function that calculates overlaps between userSets,
@@ -36,9 +48,7 @@ locResult = res[2,]
 extractEnrichmentOverlaps(locResult, userSet, regionDB)
 writeCombinedEnrichment(locResult, "temp_outfolder")
 
-userSetsRedefined =	redefineUserSets(list(userSet), userUniverse);
+userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
 resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
-
-
 }
 

@@ -20,7 +20,6 @@ splitFileIntoCollection = function(filename, splitCol) {
 	nDT = names(sDT)
 	for (i in seq_along(sDT)) {
 		message(nDT[[i]])
-		print(sDT[[i]])
 		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))
 	}
 	message("Collection written to ", collectionFolder)

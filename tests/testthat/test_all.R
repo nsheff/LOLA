@@ -32,12 +32,16 @@ test_that( "runLOLA", {
 	data("sample_universe", package="LOLA") # load userUniverse
 	locResults = runLOLA(userSet, userUniverse, regionDB, cores=1)
 
+
 	expect_equal(nrow(locResults), 5)
 	expect_true(all(locResults[,support] == c(662, 121, 121, 4, 3006)))
 	expect_true(all(locResults[,filename] ==
 	c("laminB1Lads.bed", "vistaEnhancers.bed", "vistaEnhancers_colNames.bed", "numtSAssembled.bed", "cpgIslandExt.bed")))
 	expect_equal(nrow(locResults), 5)
 
+	# Test minoverlaps:
+	locResults1500 = runLOLA(userSet, userUniverse, regionDB, cores=1, minOverlap=1500)
+	expect_true(all(locResults1500[,support] == c(361, 394, 60, 60, 2)))
 	locResult = locResults[2,]
 	# Test post-enrichment functions:
 	eeo = extractEnrichmentOverlaps(locResult, userSet, regionDB)
@@ -100,7 +104,7 @@ test_that("readBed", {
 	expect_equal(length(rb), 16)
 	# Make sure strand is getting picked up correctly:
 	expect_false("*" %in% as.character(strand(rb)))
-	splitFileIntoCollection(cr, 4)
+	s = splitFileIntoCollection(cr, 4)
 	i = fread(paste0(cr, "_collection/insulator.bed"))
 	p = fread(paste0(cr, "_collection/promoter.bed"))
 	e = fread(paste0(cr, "_collection/enhancer.bed"))

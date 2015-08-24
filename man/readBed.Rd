@@ -18,6 +18,7 @@ Imports bed files and creates GRanges objects, using the fread()
 function from data.table.
 }
 \examples{
-a = readBed(system.file("extdata", "examples/combined_regions.bed", package="LOLA"))
+a = readBed(system.file("extdata", "examples/combined_regions.bed",
+package="LOLA"))
 }
 

@@ -9,7 +9,8 @@ sampleGRL(GRL, prop)
 \arguments{
 \item{GRL}{GRangesList from which to sample}
 
-\item{prop}{vector with same length as GRL, of values between 0-1, proportion of the list to select}
+\item{prop}{vector with same length as GRL, of values between 0-1,
+proportion of the list to select}
 }
 \value{
 A sampled subset of original GRangesList object.
