@@ -1,5 +1,7 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
 
+[![Join the chat at https://gitter.im/sheffien/LOLA](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sheffien/LOLA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The public-facing website for LOLA can be found at [http://databio.org/lola](http://databio.org/lola).
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. You can think of it as testing your `bed file` (genome regions of interest) against a database of other `bed files` (regions from various previous studies) to look for enrichment of overlaps. This enables you to draw connections between newly generated data, and the growing public databases, leading to new hypotheses and annotation sharing.
