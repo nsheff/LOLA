@@ -23,10 +23,20 @@
 
 loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL,
 collections=NULL) {
-	collectionAnno = readCollectionAnnotation(dbLocation, collections)
-	regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern)
-	regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit)
-	return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL))
+	# Base case
+	if (length(dbLocation) == 1) {
+		collectionAnno = readCollectionAnnotation(dbLocation, collections)
+		regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern)
+		regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit)
+		return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL))
+	} else {
+		return(
+			mergeRegionDBs(
+				loadRegionDB(dbLocation[1]),
+				loadRegionDB(dbLocation[-1])
+			)
+		)
+	}
 }
 
 #' Read collection annotation
@@ -343,7 +353,7 @@ readCollection = function(filesToRead, limit=NULL) {
 }
 
 
-#' Given two regionDBs, (lists returned from readRegionDB()),
+#' Given two regionDBs, (lists returned from loadRegionDB()),
 #' This function will combine them into a single regionDB. This
 #' will enable you to combine, for example, LOLA Core databases
 #' with custom databases into a single analysis.
