@@ -24,7 +24,7 @@ The universe is a bit open-ended, and it's reasonable to try a few different thi
 
 ```{r, eval = FALSE}
 activeDHS = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
-activeDHS = disjoin(myuniv)
+activeDHS = disjoin(activeDHS)
 activeDHS
 ```
 
