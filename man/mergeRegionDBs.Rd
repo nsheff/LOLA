@@ -2,7 +2,7 @@
 % Please edit documentation in R/loadRegionDB.R
 \name{mergeRegionDBs}
 \alias{mergeRegionDBs}
-\title{Given two regionDBs, (lists returned from readRegionDB()),
+\title{Given two regionDBs, (lists returned from loadRegionDB()),
 This function will combine them into a single regionDB. This
 will enable you to combine, for example, LOLA Core databases
 with custom databases into a single analysis.}
@@ -18,7 +18,7 @@ mergeRegionDBs(dbA, dbB)
 A combined regionDB.
 }
 \description{
-Given two regionDBs, (lists returned from readRegionDB()),
+Given two regionDBs, (lists returned from loadRegionDB()),
 This function will combine them into a single regionDB. This
 will enable you to combine, for example, LOLA Core databases
 with custom databases into a single analysis.
