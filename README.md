@@ -43,7 +43,7 @@ The latest LOLA Core and Extended databases can be downloaded here:
 
 * [LOLACore Full database](http://big.databio.org/regionDB/LOLACore_latest.tgz) (Raw source and processed caches, ~1GB)
 * [LOLACore Cached database](http://big.databio.org/regionDB/LOLACoreCaches_latest.tgz) (Processed cache files only, ~200Mb)
-* [LOLAExtFull database](http://big.databio.org/regionDB/LOLAExt_latest.tgz) (Raw source and processed caches, ~1GB)
+* [LOLAExt Full database](http://big.databio.org/regionDB/LOLAExt_latest.tgz) (Raw source and processed caches, ~1GB)
 * [LOLAExt Cached database](http://big.databio.org/regionDB/LOLAExtCaches_latest.tgz) (Processed cache files only, ~200Mb)
 * [Vignette example data](http://big.databio.org/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
