@@ -11,7 +11,7 @@ Imports:
 	IRanges, data.table, reshape2
 Suggests:
 	knitr, parallel, BiocGenerics, testthat
-Enhances: simpleCache
+Enhances: simpleCache, qvalue
 VignetteBuilder: knitr
 License: GPL-3
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology, FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing

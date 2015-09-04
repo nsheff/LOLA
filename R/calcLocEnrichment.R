@@ -128,7 +128,16 @@ redefineUserSets=FALSE) {
 	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value",
 	"estimate")], by=list(userSet,dbSet)]
 
-		scoreTable[, pValueLog:=-log(pValueLog)]
+	# Include qvalue if package exists.
+	if (requireNamespace("qvalue", quietly=TRUE)) {
+		scoreTable[,qValue:=qvalue::qvalue(pValueLog)$qvalue] #if you want qvalues...			
+	} else {
+		# Another possibility for the future:
+		# scoreTable[,qValue:=qValues = pmin(pValues*length(pValues),1)]
+	}
+
+
+	scoreTable[, pValueLog:=-log(pValueLog)]
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
 	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
@@ -148,7 +157,8 @@ redefineUserSets=FALSE) {
 "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
+	
 	setcolorder(scoreTable,  c(orderedCols, unorderedCols))
-	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
+	
 	scoreTable[order(pValueLog, -meanRnk, decreasing=TRUE),]
 }
