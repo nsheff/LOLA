@@ -135,8 +135,6 @@ redefineUserSets=FALSE) {
 		# Another possibility for the future:
 		# scoreTable[,qValue:=qValues = pmin(pValues*length(pValues),1)]
 	}
-
-
 	scoreTable[, pValueLog:=-log(pValueLog)]
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
