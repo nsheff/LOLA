@@ -26,6 +26,9 @@
 #' test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
 #' combined ranking system. b, c, d: 3 other values completing the 2x2 contingency
 #' table (with support). The remaining columns describe the dbSet for the row.
+#'
+#' If you have the qvalue package installed from bioconductor, runLOLA will add
+#' a q-value transformation to provide FDR scores automatically. 
 #' @export
 #' @example
 #' R/examples/example.R
