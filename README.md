@@ -35,7 +35,7 @@ For examples and workflows for LOLA, please check out the following [R vignettes
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently  contains region sets from hg19 and mm10. We are in the process of adding hg38, among others.
+You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently  contains region sets from hg19/hg38 and mm10.
 
 In addition to the LOLA Core database, we also maintain a second database, LOLA Exended, which has additional region sets, which are not as well curated as the Core database (detailed contents are listed below)
 
@@ -56,7 +56,7 @@ devtools::install_github("sheffien/simpleCache")
 
 Current contents of LOLA core:
 
-* hg19
+* hg19/hg38
   1. Transcription Factor binding sites from  [ENCODE](http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/)
   2. Tissue clustered DNase hypersensitive sites from [Sheffield et al. (2013)](http://dnase.genome.duke.edu)
   3. [Codex database](http://codex.stemcells.cam.ac.uk/)
@@ -65,14 +65,13 @@ Current contents of LOLA core:
   6. Epigenome databases from [Cistrome](http://dx.doi.org/10.1186/gb-2011-12-8-r83)
 * mm10
   1. [Codex database](http://codex.stemcells.cam.ac.uk/)
-  2. Cistrome database (in process)
-  3. Encode TFBS (in process)
+  2. Cistrome database
+  3. Encode TFBS
 
 Current contents of LOLA Extended:
-* hg19
+* hg19/hg38
   1. Roadmap epigenomics regions
   2. JASPAR motif matches
-
 
 We're actively adding new collections, so stay tuned. Please contribute! LOLA Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
 
