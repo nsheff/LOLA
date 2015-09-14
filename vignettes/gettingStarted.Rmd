@@ -1,0 +1,100 @@
+---
+title: "Getting Started with LOLA"
+author: "Nathan Sheffield"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Getting Started with LOLA}
+output: knitr:::html_vignette
+---
+
+# Getting started with LOLA
+
+In this vignette, you'll use small example datasets that come with the LOLA package to get a first look at the most common functions in a LOLA workflow.
+
+You need 3 things to run a LOLA analysis:
+
+2. userSets: Regions of interest (at least 1 set of regions, a GRanges object, or multiple sets of regions of interest as a GRangesList object)
+3. userUniverse: The set of regions tested for inclusion in your sets of regions of interest (a single GRanges object)
+
+Let's load an example regionDB with `loadRegionDB()`. Here's a small example that comes with LOLA. The database location should point to a folder that contains collection subfolders:
+
+```{r Load a regionDB}
+library("LOLA")
+dbPath = system.file("extdata", "hg19", package="LOLA")
+regionDB = loadRegionDB(dbPath)
+```
+
+The regionDB is an R (list) object that has a few elements:
+
+```{r}
+names(regionDB)
+```
+
+* dbLocation: A string recording the location of the database folder you passed to `loadRegionDB()`.
+* collectionAnno: A `data.table` annotating the collections, with rows corresponding to the rows in your `collection` annotation files in the database.
+* regionAnno: A `data.table` annotating each region set, with rows corresponding to bed files in the database (there is also a `collection` column recording which collection each region set belongs to).
+* regionGRL: A `GRangesList` object holding the actual regions, with one list element per region set, ordered as in `regionAnno`.
+
+Now with the database loaded, let's load up some sample data (the regions of interest, and the tested universe):
+
+```{r Load sample user sets and universe}
+data("sample_input", package="LOLA") # load userSet
+data("sample_universe", package="LOLA") # load userUniverse
+```
+
+Now we have a GRanges object called `userSet` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSet, and each region set in the regionDB.
+
+```{r Run the calculation}
+locResults = runLOLA(userSet, userUniverse, regionDB, cores=1)
+```
+
+runLOLA tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess signficance of the overlap. The results are a `data.table` with several columns:
+
+```{r}
+colnames(locResults)
+head(locResults)
+```
+
+If you're not familiar with how `data.table` works in R, it's worth reading some of the [documentation of this powerful package](http://cran.r-project.org/web/packages/data.table/index.html).
+Columns `userSet` and `dbSet` are indexes into the respective GRangeList objects, identifying each pairwise comparison. There are a series of columns describing the results of the statistical test, such as `pValueLog`, `logOdds`, and the actual values from the contingency table (`support` is the overlap, and `b`, `c`, and `d` complete the 2x2 table). Rank columns simply rank the tests by `pValueLog`, `logOdds`, or `support`; following these are a series of columns annotating the database regions, depending on how you populated the `index` table in the regionDB folder.
+
+You can explore these results in R by, for example, ranking with different orders:
+
+```{r}
+locResults[order(support, decreasing=TRUE),]
+```
+
+You can order by one of the rank columns:
+
+```{r}
+locResults[order(maxRnk, decreasing=TRUE),]
+```
+
+
+And finally, record the results to file like this:
+
+4. Write out results:
+
+```{r Write results}
+writeCombinedEnrichment(locResults, outFolder= "lolaResults")
+```
+
+By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
+
+```{r Write split results}
+writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE)
+```
+
+
+# Exploring LOLA Results
+
+Say you'd like to know which regions are responsible for the enrichment we see; or, in other words, you'd like to extract the regions that are actually overlapping a particular database. For this, you can use the function `extractEnrichmentOverlaps()`:
+
+```{r Extracting overlaps}
+oneResult = locResults[2,]
+extractEnrichmentOverlaps(oneResult, userSet, regionDB)
+```
+
+
+Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.

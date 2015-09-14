@@ -1,0 +1,54 @@
+---
+title: "Choosing a LOLA Universe"
+author: "Nathan Sheffield"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Choosing a LOLA Universe}
+output: knitr:::html_vignette
+---
+
+# Choosing a LOLA Universe
+(__This vignette is unevaluated because it relies on loading huge database files__)
+
+
+### What's the universe?
+
+One of the key questions when you run LOLA is what your background set, or "universe" is. You should think of the universe as the set of regions you tested for possible inclusion in your user sets; or, in other words, it is the restricted background set of regions that were tested, including everything in your regions of interest as well as those that did not get included.
+
+For example, if you test a bunch of genes for differential expression, then the genes of interest could be those that are differentially expressed (in one direction, or the other, independently), and the universe would be the set of all genes you tested for differences (perhaps all polyadenylated genes, or all genes above some expression threshold). In the genomic location space employed by LOLA, perhaps your regions of interest are differential H3K27ac peaks, and the universe could be all H3K27ac peaks in your cell type. The universe set is tested for overlap with the database, and the counts are used in the contingency tables that determine significance for your user sets. The reason this is important is that if you have some regions which were never really possible to end up in a region set of interest, it's unfair to penalize your regions for not overlapping those regions in the database, changing the results of the signficance test.
+
+In the case of DNA methylation: all regions that had reasonable coverage of methylation reads are your universe, and those that were either highly methylated or lowly methylated (or differentially methylated) would be your subsets of interest. It's the set including all genes that had enough reads that they *could* have been differentially methylated, even if they weren't.
+
+The universe is a bit open-ended, and it's reasonable to try a few different things. Changing the universe isn't right or wrong, it just changes the question you are asking. Here, we'll make 2 different universes to illustrate how they differ. First, we'll create a general universe using the union of all dnase hypersensitive sites in 112 samples from Sheffield et al. (2013). With this as our universe, we're essentially testing for what our regions of interest are overlapping among any known active regulatory elements, since this is quite a broad universe. Here's how I created the universe:
+
+```{r, eval = FALSE}
+activeDHS = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
+activeDHS = disjoin(myuniv)
+activeDHS
+```
+
+Equally valid is to consider a more restricted universe. For instance, if we make a universe that is the union of regionSetB and regionSetC (from the Using LOLA Core vignette), then what we're testing is for enrichment in one set vs. the others.
+
+So let's create that universe, too:
+```{r, eval = FALSE}
+restrictedUniverse = unlist(userSets)
+```
+
+Check out how the results for userSetB and userSetC differ, depending on the universe used:
+
+```{r, eval = FALSE}
+locResults = runLOLA(userSets, activeDHS, regionDB, cores=1)
+locResultsRestricted = runLOLA(userSets, restrictedUniverse, regionDB, cores=1)
+```
+
+```{r, eval = FALSE}
+locResults[userSet==2,][order(maxRnk, decreasing=FALSE),][1:10,]
+locResultsRestricted[userSet==2,][order(maxRnk, decreasing=FALSE),][1:10,]
+
+locResults[userSet==3,][order(maxRnk, decreasing=FALSE),][1:10,]
+locResultsRestricted[userSet==3,][order(maxRnk, decreasing=FALSE),][1:10,]
+```
+
+The restricted universe tell us that, __relative to the set of all changing H3K27ac peaks in the experiment__, the increasing ones are enriched for c-Fos binding, while the decreasing ones are enriched for CTCF binding.
+
