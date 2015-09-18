@@ -6,7 +6,7 @@
 #' Helper function to annotate and load a regionDB, a folder with
 #' subfolder collections of regions.
 #'
-#' @param dbLocation	folder where your regionDB is stored.
+#' @param dbLocation	folder where your regionDB is stored, or list of such folders
 #' @param filePattern	passed to list.files; you can use this to select
 #'	only certain file names in your folders.
 #' @param useCache	uses simpleCache to cache and load the results
@@ -295,9 +295,10 @@ by=filename]$fullFilename
 			cacheDir=paste0(dbLocation, iCol),
 			buildEnvir=nlist(filesToRead), recreate=refreshCaches)
 	} else {
-		warning("You don't have simpleCache installed, so you won't be able to cache the
-regionDB after reading it in. Install simpleCache to speed up later database
-loading.")
+		if (length(filesToRead) > 100) {
+			# Notify user of caching possibility on large databases
+			message("Install simpleCache to speed up future database loading.")
+		}
 		assign(iCol, readCollection(filesToRead, limit))
 	}
 	grl = c(grl, get(iCol))
