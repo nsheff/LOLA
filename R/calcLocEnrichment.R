@@ -18,7 +18,7 @@
 #' @return Data.table with enrichment results. Rows correspond to individual
 #' pairwise fisher's tests comparing a single userSet with a single databaseSet.
 #' The columns in this data.table are: userSet and dbSet: index into their
-#' respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact
+#' respective input region sets. pvalueLog: -log10(pvalue) from the fisher's exact
 #' result; logOddsRatio: result from the fisher's exact test; support: number of
 #' regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
 #' table of p-value, logOddsRatio, and Support respectively. The --value is the
@@ -138,7 +138,7 @@ redefineUserSets=FALSE) {
 		# Another possibility for the future:
 		# scoreTable[,qValue:=qValues = pmin(pValues*length(pValues),1)]
 	}
-	scoreTable[, pValueLog:=-log(pValueLog)]
+	scoreTable[, pValueLog:=-log10(pValueLog)]
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
 	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
