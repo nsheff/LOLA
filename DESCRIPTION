@@ -1,9 +1,13 @@
 Package: LOLA
 Version: 0.99.7
 Date: 2015-05-18
-Title: Location OverLap Analysis
-Description: Provides functions for testing overlap of sets of genomic regions with public and custom databases.
-Author: Nathan Sheffield <http://www.databio.org>
+Title: Location overlap analysis for enrichment of genomic ranges
+Description: Provides functions for testing overlap of sets of genomic regions with public 
+	and custom region set (genomic ranges) databases. 
+	This make is possible to do automated enrichment analysis for genomic region sets, 
+	thus facilitating interpretation of functional genomics and epigenomics data.
+Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
+	Christoph Bock [cre]
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Depends:
 	GenomicRanges
@@ -15,4 +19,5 @@ Enhances: simpleCache, qvalue
 VignetteBuilder: knitr
 License: GPL-3
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology, FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
+URL: http://databio.org/lola
 BugReports: http://github.com/sheffien/LOLA
