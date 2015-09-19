@@ -207,30 +207,30 @@ sampleGRL = function(GRL, prop) {
 	mapply(sampleGRanges, GRL, prop)
 }
 
-
-#' To make parallel processing a possibility but not required,
+#' To make parallel processing a possibility but not required, 
 #' I use an lapply alias which can point at either the base lapply
-#' (for no multicore), or it can point to mclapply,
+#' (for no multicore), or it can point to mclapply, 
 #' and set the options for the number of cores (what mclapply uses).
+#' With no argument given, returns intead the number of cpus currently selected.
 #'
 #' @param cores	Number of cpus
-#' @return No return value
-#' @export
 #' @examples
 #' setLapplyAlias(4)
 #' setLapplyAlias(1)
-setLapplyAlias = function(cores) {
+setLapplyAlias = function(cores=0) {
+	if (cores < 1) {
+		return(getOption("mc.cores"))
+	}
 	if(cores > 1) { #use multicore?
-	if (requireNamespace("parallel", quietly = TRUE)) {
-		options(mc.cores=cores)
-	} else {
-		warning("You don't have package parallel installed. Setting cores to 1.")
-		options(mc.cores=1); #reset cores option.
-		}
+		if (requireNamespace("parallel", quietly = TRUE)) {
+	      		options(mc.cores=cores);
+   		} else {
+     		warning("You don't have package parallel installed. Setting cores to 1.")
+			options(mc.cores=1); #reset cores option.
+  		}
 	} else {
 		options(mc.cores=1); #reset cores option.
 	}
-	return()
 }
 
 #' Function to run lapply or mclapply, depending on the option set in
@@ -238,19 +238,14 @@ setLapplyAlias = function(cores) {
 #'
 #' @param ... Arguments passed lapply() or mclapply()
 #' @return Result from lapply 0r parallel::mclapply
-#' @export
-#' @examples
-#' lapplyAlias(letters, paste0, ".")
-lapplyAlias = function(...) {
+lapplyAlias = function(..., mc.preschedule=TRUE) {
+	if (is.null(getOption("mc.cores"))) { setLapplyAlias(1) }
 	if(getOption("mc.cores") > 1) {
-		return(parallel::mclapply(...))
+		return(parallel::mclapply(..., mc.preschedule=mc.preschedule))
 	} else {
 		return(lapply(...))
 	}
 }
-
-
-
 
 
 #check for, and fix, trailing slash. if necessary
