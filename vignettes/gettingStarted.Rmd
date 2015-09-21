@@ -96,5 +96,21 @@ oneResult = locResults[2,]
 extractEnrichmentOverlaps(oneResult, userSet, regionDB)
 ```
 
+# Extracting certain region sets from a database
+
+If you have a large database, you may be interested in using the LOLA database format for other projects, or for additional follow-up analysis. In this case, you may be interested in just a single region set within a database, or perhaps just a few of them. LOLA provides a function to extract certain region sets from either a loaded or an unloaded database.
+
+Say you just want an object with regions from the "vistaEnhancers" region set. You can grab it from a loaded database like this:
+
+```{r Grabbing individual region sets}
+getRegionSet(regionDB, collections="ucsc_example", filenames="vistaEnhancers.bed")
+```
+
+Or, if you haven't already loaded the database, you can just give the path to the database and LOLA will only load the specific region set(s) you are interested in. This can take more than one filename or collection:
+
+```{r Grabbing individual region sets from disk}
+getRegionSet(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")
+```
+
 
 Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.

@@ -385,3 +385,47 @@ mergeRegionDBs = function(dbA, dbB) {
 	}
 	return(combinedRegionDB)
 }
+
+
+
+#' Grab a single region set from a database, specified by filename.
+#'
+#' If you want to work with a LOLA regionDB region set individually,
+#' this function can help you. It can extract individual (or subsets of)
+#' region sets from either loaded regionDBs, loaded with loadRegionDB(), or
+#' from a database on disk, where only the region sets of interest will
+#' be loaded.
+#'
+#' @param regionDB A region database loaded with loadRegionDB().
+#' @param fn Filename of a particular region set to grab.
+#'
+#' @return A GRanges object derived from the specified file in the regionDB.
+#' @export
+#' @examples
+#' examples/example.R
+getRegionSet = function(regionDB, filenames, collections=NULL) {
+	if ("regionAnno" %in% names(regionDB)) {
+		# it's a loaded regionDB object, we just extract the region set.
+	
+		ind = regionDB$regionAnno[,which(filename %in% filenames)]
+		if (length(ind) < 1) {
+			stop("That filename was not found in the database.")
+		}
+		return(regionDB$regionGRL[ind])
+	} else {
+		dbLocation = regionDB
+		dbLocation = enforceTrailingSlash(dbLocation)
+		collectionAnno =
+			readCollectionAnnotation(dbLocation, collections)
+		regionAnno =
+			readRegionSetAnnotation(dbLocation, collections, filePattern)
+		filesToRead =
+			regionAnno[filename %in% filenames, list(fullFilename = paste0(dbLocation, 
+            sapply(collection, enforceTrailingSlash), "regions/", 
+            filename)), by = filename]$fullFilename
+		grl = readCollection(filesToRead)
+		return(grl)
+	}
+}
+
+
