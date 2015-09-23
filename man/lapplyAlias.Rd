@@ -5,7 +5,7 @@
 \title{Function to run lapply or mclapply, depending on the option set in
 getOption("mc.cores"), which can be set with setLapplyAlias().}
 \usage{
-lapplyAlias(...)
+lapplyAlias(..., mc.preschedule = TRUE)
 }
 \arguments{
 \item{...}{Arguments passed lapply() or mclapply()}
@@ -16,8 +16,5 @@ Result from lapply 0r parallel::mclapply
 \description{
 Function to run lapply or mclapply, depending on the option set in
 getOption("mc.cores"), which can be set with setLapplyAlias().
-}
-\examples{
-lapplyAlias(letters, paste0, ".")
 }
 

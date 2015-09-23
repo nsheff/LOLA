@@ -9,7 +9,7 @@ loadRegionDB(dbLocation, filePattern = "", useCache = TRUE, limit = NULL,
   collections = NULL)
 }
 \arguments{
-\item{dbLocation}{folder where your regionDB is stored.}
+\item{dbLocation}{folder where your regionDB is stored, or list of such folders}
 
 \item{filePattern}{passed to list.files; you can use this to select
 only certain file names in your folders.}
