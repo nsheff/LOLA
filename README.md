@@ -9,13 +9,17 @@ This README provides a package overview, motivation, and installation instructio
 --------------------------------------------------------------------------------
 ### Installing LOLA
 
-Make sure you have [GenomicRanges](http://www.bioconductor.org/packages/release/bioc/html/GenomicRanges.html) (bioconductor package) installed:
+The release version of LOLA can be installed directly from Bioconductor:
+
+```{r}
+source("http://bioconductor.org/biocLite.R")
+biocLite("LOLA")
+```
+
+To install the development version directly from github, make sure you have [GenomicRanges](http://www.bioconductor.org/packages/release/bioc/html/GenomicRanges.html) (bioconductor package) installed, then install LOLA with devtools:
 ```{r}
 source("http://bioconductor.org/biocLite.R")
 biocLite("GenomicRanges")
-```
-Then, install the development version directly from github with devtools:
-```{r}
 devtools::install_github("sheffien/LOLA")
 ```
 
