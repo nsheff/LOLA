@@ -67,7 +67,7 @@ writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="",
 	length(
 lapply( split(seq_len(nrow(DT)), DT[, get(splitFactor)]),
 		function(x) {
-			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".txt")
+			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".tsv")
 			if (file.exists(fileName)) {
 				message("Overwriting ", fileName , "...")
 			} else {
@@ -118,10 +118,10 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 			)
 		}
 	}
-	if (file.exists(paste0(outFolder, "allEnrichments.txt")))
-		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...")
+	if (file.exists(paste0(outFolder, "allEnrichments.tsv")))
+		message("Overwriting ", paste0(outFolder, "allEnrichments.tsv"), "...")
 	write.table(
 		combinedResults[order(pValueLog,decreasing=TRUE),], sep="\t",
-		file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE,
+		file=paste0(outFolder, "allEnrichments.tsv"), row.names=FALSE, quote=FALSE,
 	)
 }

@@ -113,3 +113,15 @@ test_that("readBed", {
 	expect_equal(nrow(i), 3)
 	unlink(paste0(cr, "_collection"), recursive=TRUE)
 })
+
+test_that("listRegionSets", {
+	dbPath = system.file("extdata", "hg19", package="LOLA")
+	a = listRegionSets(dbPath)
+	expect_equal(length(a), 5)
+
+	expect_equal(
+		length(getRegionSet(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")[[1]]), 1339)
+
+
+
+})

@@ -401,8 +401,8 @@ mergeRegionDBs = function(dbA, dbB) {
 #'
 #' @return A GRanges object derived from the specified file in the regionDB.
 #' @export
-#' @examples
-#' examples/example.R
+#' @example
+#' R/examples/example.R
 getRegionSet = function(regionDB, filenames, collections=NULL) {
 	if ("regionAnno" %in% names(regionDB)) {
 		# it's a loaded regionDB object, we just extract the region set.
@@ -427,5 +427,25 @@ getRegionSet = function(regionDB, filenames, collections=NULL) {
 		return(grl)
 	}
 }
+
+#' Lists the region sets for given collection(s) in a region database on disk.
+#'
+#' @param regionDB File path to region database
+#' @param collections (optional) subset of collections to list
+#'
+#' @return a list of files in the given collections
+#' @examples
+#' dbPath = system.file("extdata", "hg19", package="LOLA")
+#' listRegionSets(dbPath)
+listRegionSets = function(regionDB, collections=NULL) {
+	dbLocation = regionDB
+    dbLocation = enforceTrailingSlash(dbLocation)
+    collectionAnno = readCollectionAnnotation(dbLocation, 
+        collections)
+    regionAnno = readRegionSetAnnotation(dbLocation, collections, 
+        filePattern)
+	return(regionAnno$filename)
+}
+
 
 
