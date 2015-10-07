@@ -8,10 +8,9 @@
 #' @author Nathan Sheffield
 #'
 #' @references \url{http://github.com/sheffien}
-#' @import data.table
 #' @import GenomicRanges
 #' @import IRanges
-#' @importFrom reshape2 melt
+#' @import data.table
 NULL
 
 # Because of some issues with CRAN submission,

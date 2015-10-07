@@ -12,7 +12,7 @@ Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Depends:
 	GenomicRanges
 Imports:
-	IRanges, data.table, reshape2
+	IRanges, data.table
 Suggests:
 	knitr, parallel, BiocGenerics, testthat
 Enhances: simpleCache, qvalue
