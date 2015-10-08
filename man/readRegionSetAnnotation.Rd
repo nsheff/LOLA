@@ -6,7 +6,7 @@
 will either read the annotation file if one exists, or create a generic
 annotation file.}
 \usage{
-readRegionSetAnnotation(dbLocation, collections = NULL, filePattern = "",
+readRegionSetAnnotation(dbLocation, collections = NULL,
   refreshCaches = FALSE, useCache = TRUE)
 }
 \arguments{
@@ -14,9 +14,6 @@ readRegionSetAnnotation(dbLocation, collections = NULL, filePattern = "",
 
 \item{collections}{Restrict the database loading to this list of collections
 Leave NULL to load the entire database (Default).}
-
-\item{filePattern}{passed to list.files; you can use this
-to select only certain file names in your folders.}
 
 \item{refreshCaches}{should I recreate the caches?}
 

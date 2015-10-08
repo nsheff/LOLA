@@ -7,8 +7,6 @@
 #' subfolder collections of regions.
 #'
 #' @param dbLocation	folder where your regionDB is stored, or list of such folders
-#' @param filePattern	passed to list.files; you can use this to select
-#'	only certain file names in your folders.
 #' @param useCache	uses simpleCache to cache and load the results
 #' @param limit 	You can limit the number of regions for testing.
 #'	Default: NULL (no limit)
@@ -21,12 +19,12 @@
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation=dbPath)
 
-loadRegionDB = function(dbLocation, filePattern="", useCache=TRUE, limit=NULL,
+loadRegionDB = function(dbLocation, useCache=TRUE, limit=NULL,
 collections=NULL) {
 	# Base case
 	if (length(dbLocation) == 1) {
 		collectionAnno = readCollectionAnnotation(dbLocation, collections)
-		regionAnno = readRegionSetAnnotation(dbLocation, collections, filePattern)
+		regionAnno = readRegionSetAnnotation(dbLocation, collections)
 		regionGRL = readRegionGRL(dbLocation, regionAnno, useCache=useCache, limit=limit)
 		return(nlist(dbLocation, regionAnno, collectionAnno, regionGRL))
 	} else {
@@ -107,8 +105,6 @@ enforceTrailingSlash(collection), "collection.txt")
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param collections Restrict the database loading to this list of collections
 #' Leave NULL to load the entire database (Default).
-#' @param filePattern	passed to list.files; you can use this
-#'	to select only certain file names in your folders.
 #' @param refreshCaches	should I recreate the caches?
 #' @param useCache Use simpleCache to store results and load them?
 #'
@@ -118,7 +114,6 @@ enforceTrailingSlash(collection), "collection.txt")
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 readRegionSetAnnotation = function(dbLocation, collections = NULL,
-					filePattern = "",
 					refreshCaches=FALSE,
 					useCache=TRUE) {
 	size=NULL # Silence R CMD check Notes.
@@ -205,7 +200,7 @@ to load with defaults (filename only)")
 			# Populate any missing columns with NAs (of character type):
 			for (col in missCols) indexDT[, col:=as.character(NA), with=FALSE]
 			indexDT = indexDT[,tolower(annotationColNames), with=FALSE]
- 			# Subset
+			# Subset
 			# Revert back to camelCase
 			setnames(indexDT, tolower(annotationColNames), annotationColNames)
 		setkey(indexDT, "filename")
@@ -342,9 +337,10 @@ readCollection = function(filesToRead, limit=NULL) {
 			},
 			error = function(e) {
 				message(i, " ERR:", filename)
-				message(e); return(FALSE)
+				message(e)
+				return(FALSE)
 			})
-			if (!success) { grl[[i]] = GRanges(); }
+			if (!success) { grl[[i]] = GRanges() }
 		} else {
 			message("Skipping (file not found):", filename)
 			grl[[i]] = GRanges()
@@ -397,7 +393,8 @@ mergeRegionDBs = function(dbA, dbB) {
 #' be loaded.
 #'
 #' @param regionDB A region database loaded with loadRegionDB().
-#' @param fn Filename of a particular region set to grab.
+#' @param filenames Filename(s) of a particular region set to grab.
+#' @param collections (optional) subset of collections to list
 #'
 #' @return A GRanges object derived from the specified file in the regionDB.
 #' @export
@@ -418,11 +415,11 @@ getRegionSet = function(regionDB, filenames, collections=NULL) {
 		collectionAnno =
 			readCollectionAnnotation(dbLocation, collections)
 		regionAnno =
-			readRegionSetAnnotation(dbLocation, collections, filePattern)
+			readRegionSetAnnotation(dbLocation, collections)
 		filesToRead =
-			regionAnno[filename %in% filenames, list(fullFilename = paste0(dbLocation, 
-            sapply(collection, enforceTrailingSlash), "regions/", 
-            filename)), by = filename]$fullFilename
+			regionAnno[filename %in% filenames, list(fullFilename = paste0(dbLocation,
+			sapply(collection, enforceTrailingSlash), "regions/",
+			filename)), by = filename]$fullFilename
 		grl = readCollection(filesToRead)
 		return(grl)
 	}
@@ -434,16 +431,16 @@ getRegionSet = function(regionDB, filenames, collections=NULL) {
 #' @param collections (optional) subset of collections to list
 #'
 #' @return a list of files in the given collections
+#' @export
 #' @examples
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' listRegionSets(dbPath)
 listRegionSets = function(regionDB, collections=NULL) {
 	dbLocation = regionDB
-    dbLocation = enforceTrailingSlash(dbLocation)
-    collectionAnno = readCollectionAnnotation(dbLocation, 
-        collections)
-    regionAnno = readRegionSetAnnotation(dbLocation, collections, 
-        filePattern)
+	dbLocation = enforceTrailingSlash(dbLocation)
+	collectionAnno = readCollectionAnnotation(dbLocation,
+		collections)
+	regionAnno = readRegionSetAnnotation(dbLocation, collections)
 	return(regionAnno$filename)
 }
 

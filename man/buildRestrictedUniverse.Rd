@@ -24,7 +24,7 @@ This function helps you build just such a restricted
 universe
 }
 \examples{
-data("sample_input", package="LOLA") # load userSet
-restrictedUniverse = buildRestrictedUniverse(userSet)
+data("sample_input", package="LOLA") # load userSets
+restrictedUniverse = buildRestrictedUniverse(userSets)
 }
 

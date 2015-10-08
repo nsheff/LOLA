@@ -6,6 +6,13 @@ context("Testthat context...")
 test_that("loadRegionDB",  {
 	dbPath = system.file("extdata", "hg19", package="LOLA")
 	regionDB = loadRegionDB(dbPath)
+	regionDB_col = loadRegionDB(dbPath, collections="ucsc_example")
+		regionDB_col
+	expect_identical(regionDB, regionDB_col)
+
+	expect_error(loadRegionDB(paste(dbPath, "badfolder"), collections="ucsc_example"))
+
+
 	expect_equal(length(regionDB$regionGRL), 5)
 	expect_equal(length(unlist(regionDB$regionGRL)), 32749)
 	expect_identical(regionDB$regionGRL[[4]], regionDB$regionGRL[[5]])
@@ -14,45 +21,75 @@ test_that("loadRegionDB",  {
 
 	data("sample_input", package="LOLA") # load userSet
 	data("sample_universe", package="LOLA") # load userUniverse
+	userSet = userSets[[1]]
 	# Test redefined user sets:
 	userSetsRedefined =	redefineUserSets(list(userSet), userUniverse)
 	fo = findOverlaps(userSetsRedefined[[1]], userUniverse, type='equal')
-	expect_equal(length(fo), 3045)
+	expect_equal(length(fo), 3043)
 
 	# Test restricted universe:
 	ru = buildRestrictedUniverse(GRangesList(userSet[1:50], userSet[51:100]))
 	expect_equal(length(ru), 100)
 
+	dbPathMulti = system.file("extdata", "multi", package="LOLA")
+	dbPathEmpty = system.file("extdata", "empty", package="LOLA")
+
+	expect_equal(length(listRegionSets(dbPath)), 5)
+	expect_equal(length(listRegionSets(dbPathMulti)), 6)
+
+	expect_equal(sapply(getRegionSet(dbPath, c("cpgIslandExt.bed", "vistaEnhancers.bed")), length), c(28691, 1339))
+
+	expect_error(loadRegionDB(dbPathEmpty))
+
+	# check auto annotation file:
+	rdb = loadRegionDB(dbPathMulti, collections=c("collection2"))
+	expect_equal(rdb$collectionAnno$collectionname, "collection2")
+	mergedDB = loadRegionDB(c(dbPathMulti, dbPath))
+	expect_equal(nrow(mergedDB$collectionAnno), 3)
 })
 
 test_that( "runLOLA", {
 	dbPath = system.file("extdata", "hg19", package="LOLA")
 	regionDB = loadRegionDB(dbPath)
 	data("sample_input", package="LOLA") # load userSet
+	userSet = userSets[[1]]
 	data("sample_universe", package="LOLA") # load userUniverse
 	locResults = runLOLA(userSet, userUniverse, regionDB, cores=1)
 
 
 	expect_equal(nrow(locResults), 5)
-	expect_true(all(locResults[,support] == c(662, 121, 121, 4, 3006)))
+	expect_true(all(locResults[,support] == c(632, 124, 124, 8, 3002)))
 	expect_true(all(locResults[,filename] ==
 	c("laminB1Lads.bed", "vistaEnhancers.bed", "vistaEnhancers_colNames.bed", "numtSAssembled.bed", "cpgIslandExt.bed")))
 	expect_equal(nrow(locResults), 5)
 
 	# Test minoverlaps:
 	locResults1500 = runLOLA(userSet, userUniverse, regionDB, cores=1, minOverlap=1500)
-	expect_true(all(locResults1500[,support] == c(361, 394, 60, 60, 2)))
+locResults1500[,support]	
+	expect_true(all(locResults1500[,support] == c(358, 425, 73, 73, 8)))
 	locResult = locResults[2,]
 	# Test post-enrichment functions:
 	eeo = extractEnrichmentOverlaps(locResult, userSet, regionDB)
-	expect_equal(length(eeo), 179)
+	expect_equal(length(eeo), 307)
 
 	# Test writing results:
+	# Make sure checkUniverseAppropriateness can run:
+	checkUniverseAppropriateness(userSets, userUniverse)
+	checkUniverseAppropriateness(userSets, userUniverse, fast=TRUE)
+	locResultsMult = runLOLA(userSets, userUniverse, regionDB, cores=1, minOverlap=1500)
+
+	# check bad universe:
+	expect_warning(runLOLA(userSets, userUniverse[1:100], regionDB, cores=1, minOverlap=1500), "Negative b")
+
 	extData = system.file("extdata", package="LOLA")
 	tmpFolder= paste0(extData, "/test_temp")
-	writeCombinedEnrichment(locResult, tmpFolder)
-	locResultRead = fread(paste0(tmpFolder, "/allEnrichments.txt"))
-	expect_equal(nrow(locResultRead), 1)
+	writeCombinedEnrichment(locResultsMult, tmpFolder)
+
+	locResultRead = fread(paste0(tmpFolder, "/userSet_setA.tsv"))
+	expect_equal(nrow(locResultRead), 5)
+	locResultRead = fread(paste0(tmpFolder, "/userSet_setB.tsv"))
+	expect_equal(nrow(locResultRead), 5)
+
 	unlink(tmpFolder, recursive=TRUE)
 })
 
@@ -114,14 +151,3 @@ test_that("readBed", {
 	unlink(paste0(cr, "_collection"), recursive=TRUE)
 })
 
-test_that("listRegionSets", {
-	dbPath = system.file("extdata", "hg19", package="LOLA")
-	a = listRegionSets(dbPath)
-	expect_equal(length(a), 5)
-
-	expect_equal(
-		length(getRegionSet(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")[[1]]), 1339)
-
-
-
-})

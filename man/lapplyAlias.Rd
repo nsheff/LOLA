@@ -9,9 +9,11 @@ lapplyAlias(..., mc.preschedule = TRUE)
 }
 \arguments{
 \item{...}{Arguments passed lapply() or mclapply()}
+
+\item{mc.preschedule}{Argument passed to mclapply}
 }
 \value{
-Result from lapply 0r parallel::mclapply
+Result from lapply or parallel::mclapply
 }
 \description{
 Function to run lapply or mclapply, depending on the option set in

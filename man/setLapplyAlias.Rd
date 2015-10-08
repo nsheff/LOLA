@@ -13,6 +13,9 @@ setLapplyAlias(cores = 0)
 \arguments{
 \item{cores}{Number of cpus}
 }
+\value{
+None
+}
 \description{
 To make parallel processing a possibility but not required,
 I use an lapply alias which can point at either the base lapply

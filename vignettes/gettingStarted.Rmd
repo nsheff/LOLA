@@ -3,8 +3,8 @@ title: "Getting Started with LOLA"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Getting Started with LOLA}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteIndexEntry{Getting Started with LOLA}
 output: knitr:::html_vignette
 ---
 
@@ -39,14 +39,14 @@ names(regionDB)
 Now with the database loaded, let's load up some sample data (the regions of interest, and the tested universe):
 
 ```{r Load sample user sets and universe}
-data("sample_input", package="LOLA") # load userSet
+data("sample_input", package="LOLA") # load userSets
 data("sample_universe", package="LOLA") # load userUniverse
 ```
 
-Now we have a GRanges object called `userSet` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSet, and each region set in the regionDB.
+Now we have a GRanges object called `userSets` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSets, and each region set in the regionDB.
 
 ```{r Run the calculation}
-locResults = runLOLA(userSet, userUniverse, regionDB, cores=1)
+locResults = runLOLA(userSets, userUniverse, regionDB, cores=1)
 ```
 
 runLOLA tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess signficance of the overlap. The results are a `data.table` with several columns:
@@ -93,7 +93,7 @@ Say you'd like to know which regions are responsible for the enrichment we see; 
 
 ```{r Extracting overlaps}
 oneResult = locResults[2,]
-extractEnrichmentOverlaps(oneResult, userSet, regionDB)
+extractEnrichmentOverlaps(oneResult, userSets, regionDB)
 ```
 
 # Extracting certain region sets from a database

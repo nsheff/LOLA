@@ -3,8 +3,8 @@ title: "Choosing a LOLA Universe"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Choosing a LOLA Universe}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteIndexEntry{Choosing a LOLA Universe}
 output: knitr:::html_vignette
 ---
 
