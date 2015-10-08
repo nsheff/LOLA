@@ -2,6 +2,7 @@ Package: LOLA
 Version: 0.99.7
 Date: 2015-05-18
 Title: Location OverLap Analysis
+<<<<<<< HEAD
 Description: Provides functions for testing overlap of sets of genomic
         regions with public and custom databases.
 Author: Nathan Sheffield <http://www.databio.org>
