@@ -1,6 +1,8 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
-
-The public-facing website for LOLA can be found at [http://databio.org/lola](http://databio.org/lola).
+Links to LOLA websites:
+* Public-facing permanent info page: [http://databio.org/lola](http://databio.org/lola).
+* Bioconductor: [http://bioconductor.org/packages/LOLA/](http://bioconductor.org/packages/LOLA/).
+* GitHub repository: [http://github.com/sheffien/LOLA](http://github.com/sheffien/LOLA).
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. You can think of it as testing your `bed file` (genome regions of interest) against a database of other `bed files` (regions from various previous studies) to look for enrichment of overlaps. This enables you to draw connections between newly generated data, and the growing public databases, leading to new hypotheses and annotation sharing.
 
@@ -9,13 +11,17 @@ This README provides a package overview, motivation, and installation instructio
 --------------------------------------------------------------------------------
 ### Installing LOLA
 
-Make sure you have [GenomicRanges](http://www.bioconductor.org/packages/release/bioc/html/GenomicRanges.html) (bioconductor package) installed:
+The release version of LOLA can be installed directly from Bioconductor:
+
+```{r}
+source("http://bioconductor.org/biocLite.R")
+biocLite("LOLA")
+```
+
+To install the development version directly from github, make sure you have [GenomicRanges](http://www.bioconductor.org/packages/release/bioc/html/GenomicRanges.html) (bioconductor package) installed, then install LOLA with devtools:
 ```{r}
 source("http://bioconductor.org/biocLite.R")
 biocLite("GenomicRanges")
-```
-Then, install the development version directly from github with devtools:
-```{r}
 devtools::install_github("sheffien/LOLA")
 ```
 
@@ -35,12 +41,16 @@ For examples and workflows for LOLA, please check out the following [R vignettes
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently **only contains region sets from hg19, but we will be adding mm10 at some point**.
+You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently  contains region sets from hg19/hg38 and mm10.
 
-The latest LOLA Core database can be downloaded here:
+In addition to the LOLA Core database, we also maintain a second database, LOLA Exended, which has additional region sets, which are not as well curated as the Core database (detailed contents are listed below)
 
-* [Full database](http://big.databio.org/regionDB/LOLACore_latest.tgz) (Raw source and processed caches, ~1GB)
-* [Cached database](http://big.databio.org/regionDB/LOLACoreCaches_latest.tgz) (Processed cache files only, ~200Mb)
+The latest LOLA Core and Extended databases can be downloaded here:
+
+* [LOLACore Full database](http://big.databio.org/regionDB/LOLACore_latest.tgz) (Raw source and processed caches, ~1GB)
+* [LOLACore Cached database](http://big.databio.org/regionDB/LOLACoreCaches_latest.tgz) (Processed cache files only, ~200Mb)
+* [LOLAExt Full database](http://big.databio.org/regionDB/LOLAExt_latest.tgz) (Raw source and processed caches, ~1GB)
+* [LOLAExt Cached database](http://big.databio.org/regionDB/LOLAExtCaches_latest.tgz) (Processed cache files only, ~200Mb)
 * [Vignette example data](http://big.databio.org/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else.
@@ -52,7 +62,7 @@ devtools::install_github("sheffien/simpleCache")
 
 Current contents of LOLA core:
 
-* hg19
+* hg19/hg38
   1. Transcription Factor binding sites from  [ENCODE](http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/)
   2. Tissue clustered DNase hypersensitive sites from [Sheffield et al. (2013)](http://dnase.genome.duke.edu)
   3. [Codex database](http://codex.stemcells.cam.ac.uk/)
@@ -61,8 +71,13 @@ Current contents of LOLA core:
   6. Epigenome databases from [Cistrome](http://dx.doi.org/10.1186/gb-2011-12-8-r83)
 * mm10
   1. [Codex database](http://codex.stemcells.cam.ac.uk/)
-  2. Cistrome database (in process)
-  3. Encode TFBS (in process)
+  2. Cistrome database
+  3. Encode TFBS
+
+Current contents of LOLA Extended:
+* hg19/hg38
+  1. Roadmap epigenomics regions
+  2. JASPAR motif matches
 
 We're actively adding new collections, so stay tuned. Please contribute! LOLA Core is just the beginning: you can add your own region sets to test enrichment with whatever you like. Here's how to build a custom database:
 

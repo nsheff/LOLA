@@ -8,10 +8,9 @@
 #' @author Nathan Sheffield
 #'
 #' @references \url{http://github.com/sheffien}
-#' @import data.table
 #' @import GenomicRanges
 #' @import IRanges
-#' @importFrom reshape2 melt
+#' @import data.table
 NULL
 
 # Because of some issues with CRAN submission,
@@ -22,7 +21,7 @@ if(getRversion() >= "2.15.1") {
 	utils::globalVariables(c(
 	"collectionname", "collection", "filename", "size_int", "pValueLog",
 	"userSet", "size", "cellType", "description", "tissue", "antibody",
-	"treatment"))
+	"treatment", "qValue"))
 }
 
 # This function calculates enrichment for two sets of genomic ranges intervals
@@ -120,8 +119,7 @@ redefineUserSets = function(userSets, userUniverse, cores=1) {
 #' @examples
 #' data("sample_input", package="LOLA") # load userSet
 #' data("sample_universe", package="LOLA") # load userUniverse
-#' universe = disjoin(c(userSet, (userUniverse)))
-#' checkUniverseAppropriateness(list(userSet), universe)
+#' checkUniverseAppropriateness(userSets, userUniverse)
 checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = FALSE) {
 	message("Confirming universe appropriateness")
 	userSets = listToGRangesList(userSets)
@@ -136,26 +134,26 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 		userSetsPercentInUniverseAny = userSetsOlUserUniverseAny/ userSetsLength
 		message("any:", signif(userSetsPercentInUniverseAny, 6), "\n")
 	} else {
-		userSetsPercentInUniverseAny = 1; #skip the any test
+		userSetsPercentInUniverseAny = 1 #skip the any test
 	}
 
 	message("sum:", signif(userSetsPercentInUniverseSum, 6), "\n")
 
 	if (any(userSetsPercentInUniverseSum < 1)) {
 		message(signif(userSetsPercentInUniverseSum, 6), "\n")
-		warning(gsub('\\s',"",
-		"Your user sets contain ranges that are not in your universe. You need to
+		warning(cleanws("Your user sets contain ranges that are not in your universe.
+		You need to
 		expand your universe. OR: your universe contains overlapping regions.
 		You should reduce it. OR: your universe contains regions that overlap
 		multiple regions in your user sets, You should disjoin your universe."))
 #		I can check with isDisjoint)
-	} else { message("PASSED"); }
+	} else { message("PASSED") }
 
 	if (any(userSetsPercentInUniverseAny > 1)) {
 		message(signif(userSetsPercentInUniverseAny, 6), "\n")
-		warning("Your user sets contain multiple regions mapping to individual
-		regions in the universe. Try redefineUserSets()")
-	} else { message("PASSED"); }
+		warning(cleanws("Your user sets contain multiple regions mapping to individual
+		regions in the universe. Try redefineUserSets()"))
+	} else { message("PASSED") }
 }
 
 
@@ -169,8 +167,9 @@ checkUniverseAppropriateness = function(userSets, userUniverse, cores=1, fast = 
 #' @return A restricted universe
 #' @export
 #' @examples
-#' data("sample_input", package="LOLA") # load userSet
-#' restrictedUniverse = buildRestrictedUniverse(userSet)
+
+#' data("sample_input", package="LOLA") # load userSets
+#' restrictedUniverse = buildRestrictedUniverse(userSets)
 buildRestrictedUniverse = function(userSets) {
 	disjoin(unlist(userSets))
 }

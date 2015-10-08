@@ -3,8 +3,8 @@ title: "Choosing a LOLA Universe"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Choosing a LOLA Universe}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteIndexEntry{Choosing a LOLA Universe}
 output: knitr:::html_vignette
 ---
 
@@ -24,7 +24,7 @@ The universe is a bit open-ended, and it's reasonable to try a few different thi
 
 ```{r, eval = FALSE}
 activeDHS = unlist(regionDB$regionGRL[which(regionDB$regionAnno$collection == "sheffield_dnase")])
-activeDHS = disjoin(myuniv)
+activeDHS = disjoin(activeDHS)
 activeDHS
 ```
 

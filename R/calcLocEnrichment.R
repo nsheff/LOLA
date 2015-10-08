@@ -18,7 +18,7 @@
 #' @return Data.table with enrichment results. Rows correspond to individual
 #' pairwise fisher's tests comparing a single userSet with a single databaseSet.
 #' The columns in this data.table are: userSet and dbSet: index into their
-#' respective input region sets. pvalueLog: -log(pvalue) from the fisher's exact
+#' respective input region sets. pvalueLog: -log10(pvalue) from the fisher's exact
 #' result; logOddsRatio: result from the fisher's exact test; support: number of
 #' regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
 #' table of p-value, logOddsRatio, and Support respectively. The --value is the
@@ -26,6 +26,9 @@
 #' test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
 #' combined ranking system. b, c, d: 3 other values completing the 2x2 contingency
 #' table (with support). The remaining columns describe the dbSet for the row.
+#'
+#' If you have the qvalue package installed from bioconductor, runLOLA will add
+#' a q-value transformation to provide FDR scores automatically.
 #' @export
 #' @example
 #' R/examples/example.R
@@ -67,11 +70,12 @@ redefineUserSets=FALSE) {
 	# is then lapplied across each userSet.
 
 
-	geneSetDatabaseOverlap =lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap);
+	geneSetDatabaseOverlap =
+		lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap)
 
 	# This is WRONG:
 	#geneSetDatabaseOverlap =
-	#lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL);
+	#lapplyAlias( as.list(userSets), countOverlapsAnyRev, testSetsGRL)
 
 	# This will become "support" -- the number of regions in the
 	# userSet (which I implicitly assume is ALSO the number of regions
@@ -94,8 +98,17 @@ redefineUserSets=FALSE) {
 	universeLength = length(userUniverse)
 
 	# To build the fisher matrix, support is 'a'
-	scoreTable = data.table(melt(t(olmat)))
+	scoreTable = data.table(melt(t(olmat), variable.factor=FALSE))
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
+
+	# reshape2 has an annoying habit of converting strings into factors, which
+	# is undesirable. If the userSets are named with strings, make sure they stay
+	# character. Integers are already handled appropriately.
+
+	if ("factor" %in% class(scoreTable[, userSet])) {
+		scoreTable$userSet = as.character(scoreTable$userSet)
+	}
+
 	message("Calculating Fisher scores...")
 	# b = the # of items *in the universe* that overlap each dbSet,
 	# less the support; This is the number of items in the universe
@@ -106,16 +119,13 @@ redefineUserSets=FALSE) {
 	scoreTable[,c("b", "c"):=list(b=testSetsOverlapUniverse[match(dbSet,
 	names(testSetsOverlapUniverse))]-support, c=userSetsLength-support)]
 
-	# d = total universe size, less all other categories
 	# This is the regions in the universe, but not in dbSet nor userSet.
 	scoreTable[,d:=universeLength-support-b-c]
 	if( scoreTable[,any(b<0)] ) { # Inappropriate universe.
-		message(scoreTable[which(b<0),])
-
-		warning("Negative b entry in table. This means either: 1) Your user sets
+		warning(cleanws("Negative b entry in table. This means either: 1) Your user sets
 		contain items outside your universe; or 2) your universe has a region that
 		overlaps multiple user set regions, interfering with the universe set overlap
-		calculation.")
+		calculation."))
 
 		return(scoreTable)
 	}
@@ -128,7 +138,18 @@ redefineUserSets=FALSE) {
 	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value",
 	"estimate")], by=list(userSet,dbSet)]
 
-		scoreTable[, pValueLog:=-log(pValueLog)]
+	# Include qvalue if package exists.
+	if (requireNamespace("qvalue", quietly=TRUE)) {
+		# Wrap in try block since this is not vital.
+		# if you want qvalues...
+		tryCatch( {
+			scoreTable[,qValue:=qvalue::qvalue(pValueLog)$qvalue]
+		}, error = function(e) { warning("Problem in FDR calculation with qvalue.") })
+	} else {
+		# Another possibility for the future:
+		# scoreTable[,qValue:=qValues = pmin(pValues*length(pValues),1)]
+	}
+	scoreTable[, pValueLog:=-log10(pValueLog)]
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
 	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
@@ -148,7 +169,8 @@ redefineUserSets=FALSE) {
 "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
+
 	setcolorder(scoreTable,  c(orderedCols, unorderedCols))
-	#scoreTable[,qValue:=qvalue(pValue)$qvalue] #if you want qvalues...
+
 	scoreTable[order(pValueLog, -meanRnk, decreasing=TRUE),]
 }

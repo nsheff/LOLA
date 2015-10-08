@@ -3,8 +3,8 @@ title: "Using LOLA Core"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Using LOLA Core}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteIndexEntry{Using LOLA Core}
 output: knitr:::html_vignette
 ---
 # Using LOLA Core

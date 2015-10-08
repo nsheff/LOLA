@@ -28,7 +28,7 @@ overlap the same region in the universe
 \examples{
 data("sample_input", package="LOLA") # load userSet
 data("sample_universe", package="LOLA") # load userUniverse
-universe = disjoin(c(userSet, (userUniverse)))
-checkUniverseAppropriateness(list(userSet), universe)
+universe = disjoin(c(userSets, (userUniverse)))
+checkUniverseAppropriateness(userSets, universe)
 }
 

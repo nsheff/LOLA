@@ -2,13 +2,7 @@
 % Please edit documentation in R/utility.R
 \name{nlist}
 \alias{nlist}
-\title{Nathan's magical named list function.
-This function is a drop-in replacement for the base list() function,
-which automatically names your list according to the names of the
-variables used to construct it.
-It seemlessly handles lists with some names and others absent,
-not overwriting specified names while naming any unnamed parameters.
-Took me awhile to figure this out.}
+\title{Named list function.}
 \usage{
 nlist(...)
 }
@@ -19,7 +13,6 @@ nlist(...)
 A named list object.
 }
 \description{
-Nathan's magical named list function.
 This function is a drop-in replacement for the base list() function,
 which automatically names your list according to the names of the
 variables used to construct it.

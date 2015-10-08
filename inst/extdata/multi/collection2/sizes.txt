@@ -1,0 +1,4 @@
+filename	size
+cpgIslandExt.bed	5
+laminB1Lads.bed	6
+vistaEnhancers.bed	5

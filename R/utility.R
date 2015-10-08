@@ -34,6 +34,16 @@ countOverlapsAny = function(subj, quer, cores=1) {
 # INTERNAL FUNCTIONS - not exported
 ################################################################################
 
+#' cleanws takes multi-line, code formatted strings and just formats them
+#' as simple strings
+#' @param string string to clean
+#' @return A string with all consecutive whitespace characters, including
+#' tabs and newlines, merged into a single space.
+cleanws = function(string) {
+	return(gsub('\\s+'," ", string))
+}
+
+
 #' This will change the string in filename to have a new extension
 #' @param filename	string to convert
 #' @param extension	new extension
@@ -64,12 +74,10 @@ listToGRangesList = function(lst) {
 	if(! "GRangesList" %in% class(lst)) {
 		if ("list" %in% class(lst)) {
 			#strip elementMetadata
-			lst = lapply(lst, function(x) { values(x) <- NULL; x; } )
+			lst = lapply(lst, function(x) { values(x) <- NULL; return(x) } )
 			lst = GRangesList(lst)
 		} else {
-			warning("in listToGRangesList (funcGenomeLocations), input list must be
-			a list object. I've taken the liberty of converting yours to a list; I
-			hope this is OK.")
+			message(cleanws("Converting GRanges to GRangesList."))
 			lst = GRangesList(list(lst))
 		}
 	}
@@ -183,7 +191,8 @@ countOverlapsRev = function(query, subject, ...) {
 # in a file into R.
 countFileLines = function(filename) {
 	if (!file.exists(filename)) {
-		warning("File does not exist:", filename); return(0);
+		warning("File does not exist:", filename)
+		return(0)
 	}
 	as.numeric(
 		strsplit(sub("^\\s+", "",
@@ -207,50 +216,44 @@ sampleGRL = function(GRL, prop) {
 	mapply(sampleGRanges, GRL, prop)
 }
 
-
 #' To make parallel processing a possibility but not required,
 #' I use an lapply alias which can point at either the base lapply
 #' (for no multicore), or it can point to mclapply,
 #' and set the options for the number of cores (what mclapply uses).
+#' With no argument given, returns intead the number of cpus currently selected.
 #'
 #' @param cores	Number of cpus
-#' @return No return value
-#' @export
-#' @examples
-#' setLapplyAlias(4)
-#' setLapplyAlias(1)
-setLapplyAlias = function(cores) {
+#' @return None
+setLapplyAlias = function(cores=0) {
+	if (cores < 1) {
+		return(getOption("mc.cores"))
+	}
 	if(cores > 1) { #use multicore?
-	if (requireNamespace("parallel", quietly = TRUE)) {
-		options(mc.cores=cores)
-	} else {
-		warning("You don't have package parallel installed. Setting cores to 1.")
-		options(mc.cores=1); #reset cores option.
+		if (requireNamespace("parallel", quietly = TRUE)) {
+	      		options(mc.cores=cores)
+		} else {
+			warning("You don't have package parallel installed. Setting cores to 1.")
+			options(mc.cores=1) #reset cores option.
 		}
 	} else {
-		options(mc.cores=1); #reset cores option.
+		options(mc.cores=1) #reset cores option.
 	}
-	return()
 }
 
 #' Function to run lapply or mclapply, depending on the option set in
 #' getOption("mc.cores"), which can be set with setLapplyAlias().
 #'
 #' @param ... Arguments passed lapply() or mclapply()
-#' @return Result from lapply 0r parallel::mclapply
-#' @export
-#' @examples
-#' lapplyAlias(letters, paste0, ".")
-lapplyAlias = function(...) {
+#' @param mc.preschedule Argument passed to mclapply
+#' @return Result from lapply or parallel::mclapply
+lapplyAlias = function(..., mc.preschedule=TRUE) {
+	if (is.null(getOption("mc.cores"))) { setLapplyAlias(1) }
 	if(getOption("mc.cores") > 1) {
-		return(parallel::mclapply(...))
+		return(parallel::mclapply(..., mc.preschedule=mc.preschedule))
 	} else {
 		return(lapply(...))
 	}
 }
-
-
-
 
 
 #check for, and fix, trailing slash. if necessary
@@ -275,7 +278,8 @@ enforceEdgeCharacter = function(string, prependChar="", appendChar="") {
 }
 
 
-#' Nathan's magical named list function.
+#' Named list function.
+#'
 #' This function is a drop-in replacement for the base list() function,
 #' which automatically names your list according to the names of the
 #' variables used to construct it.

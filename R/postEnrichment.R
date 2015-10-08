@@ -19,7 +19,8 @@ extractEnrichmentOverlaps = function(locResult, userSets, regionDB) {
 	regionGRLID = which(regionDB$regionAnno$filename %in% locResult$filename &
 	regionDB$regionAnno$collection %in% locResult$collection)
 
-	userSet = userSets[[locResult[,userSet]]]
+	userSetString = locResult[,userSet]
+	userSet = userSets[[userSetString]]
 	userSet[queryHits(findOverlaps(userSet,regionDB$regionGRL[[regionGRLID]]))]
 }
 
@@ -62,12 +63,12 @@ writeDataTableSplitByColumn = function(DT, splitFactor, filePrepend="",
 	oldScipen = options(scipen = 4) #use scientific notation for pvalues.
 	on.exit(options(oldScipen), add = TRUE)
 	if (is.null(orderColumn)) {
-		orderColumn = colnames(DT)[1];	#default order by first col.
+		orderColumn = colnames(DT)[1]	#default order by first col.
 	}
 	length(
 lapply( split(seq_len(nrow(DT)), DT[, get(splitFactor)]),
 		function(x) {
-			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".txt")
+			fileName = paste0(filePrepend, DT[x,get(splitFactor)][1], ".tsv")
 			if (file.exists(fileName)) {
 				message("Overwriting ", fileName , "...")
 			} else {
@@ -118,10 +119,10 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 			)
 		}
 	}
-	if (file.exists(paste0(outFolder, "allEnrichments.txt")))
-		message("Overwriting ", paste0(outFolder, "allEnrichments.txt"), "...")
+	if (file.exists(paste0(outFolder, "allEnrichments.tsv")))
+		message("Overwriting ", paste0(outFolder, "allEnrichments.tsv"), "...")
 	write.table(
 		combinedResults[order(pValueLog,decreasing=TRUE),], sep="\t",
-		file=paste0(outFolder, "allEnrichments.txt"), row.names=FALSE, quote=FALSE,
+		file=paste0(outFolder, "allEnrichments.tsv"), row.names=FALSE, quote=FALSE,
 	)
 }

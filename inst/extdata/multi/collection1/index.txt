@@ -1,0 +1,2 @@
+filename	description
+cpgIslandExt.bed	CpG islands from UCSC annotation
