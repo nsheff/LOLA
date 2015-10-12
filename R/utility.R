@@ -145,11 +145,12 @@ dtToGrInternal = function(DT, chr, start, end=NA,
 	} else {
 		names(gr) = seq_along(gr)
 	}
-	if(! is.na(metaCols)) {
-		for(x in metaCols) {
-			elementMetadata(gr)[[`x`]]=DT[[`x`]]
-		}
-	}
+	# This code is not used in LOLA:
+	#if(! is.na(metaCols)) {
+	#	for(x in metaCols) {
+	#		elementMetadata(gr)[[`x`]]=DT[[`x`]]
+	#	}
+	#}
 	gr
 }
 
