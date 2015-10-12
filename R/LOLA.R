@@ -8,9 +8,9 @@
 #' @author Nathan Sheffield
 #'
 #' @references \url{http://github.com/sheffien}
-#' @import GenomicRanges
+#' @importFrom GenomicRanges GRanges GRangesList elementMetadata
 #' @import IRanges
-#' @import data.table
+#' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder melt setkeyv
 NULL
 
 # Because of some issues with CRAN submission,
