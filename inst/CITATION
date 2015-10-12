@@ -3,7 +3,7 @@ note <- sprintf("R package version %s", meta$Version)
 
 bibentry(bibtype = "Manual",
          title = "{LOLA}: Enrichment analysis for genomic region sets and regulatory elements in R and Bioconductor",
-         author = c(person("Nathan", "C", "Sheffield"),
+         author = c(person("Nathan", "Sheffield", middle="C"),
                     person("Christoph", "Bock")),
          year = year,
          note = note,
