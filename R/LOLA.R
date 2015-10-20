@@ -1,5 +1,5 @@
 # PACKAGE DOCUMENTATION
-#' Provides functions for genome location overlap analysis.
+#' Genome locus overlap analysis.
 #'
 #' Run, Lola!
 #'
