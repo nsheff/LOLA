@@ -1,10 +1,10 @@
 Package: LOLA
 Version: 0.99.9
 Date: 2015-05-18
-Title: Location overlap analysis for enrichment of genomic ranges
+Title: Locus overlap analysis for enrichment of genomic ranges
 Description: Provides functions for testing overlap of sets of genomic regions with public 
 	and custom region set (genomic ranges) databases. 
-	This make is possible to do automated enrichment analysis for genomic region sets, 
+	This makes it possible to do automated enrichment analysis for genomic region sets, 
 	thus facilitating interpretation of functional genomics and epigenomics data.
 Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
 	Christoph Bock [cre]
