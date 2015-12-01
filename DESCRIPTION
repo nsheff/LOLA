@@ -1,5 +1,5 @@
 Package: LOLA
-Version: 1.1.0
+Version: 1.1.1
 Date: 2015-05-18
 Title: Location overlap analysis for enrichment of genomic ranges
 Description: Provides functions for testing overlap of sets of genomic regions with public 
@@ -10,9 +10,9 @@ Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
 	Christoph Bock [cre]
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Imports:
-	GenomicRanges, IRanges, data.table
+	BiocGenerics, S4Vectors, IRanges, GenomicRanges, data.table
 Suggests:
-	knitr, parallel, BiocGenerics, testthat
+	knitr, parallel, testthat
 Enhances: simpleCache, qvalue
 VignetteBuilder: knitr
 License: GPL-3
