@@ -9,7 +9,7 @@
 #'
 #' @references \url{http://github.com/sheffien}
 #' @importFrom GenomicRanges GRanges GRangesList elementMetadata strand
-#' @import IRanges
+#' @import BiocGenerics S4Vectors IRanges
 #' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder melt setkeyv
 NULL
 
