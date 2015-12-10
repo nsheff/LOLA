@@ -4,7 +4,7 @@
 \name{LOLA}
 \alias{LOLA}
 \alias{LOLA-package}
-\title{Provides functions for genome location overlap analysis.}
+\title{Genome locus overlap analysis.}
 \description{
 Run, Lola!
 }

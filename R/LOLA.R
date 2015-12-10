@@ -8,7 +8,7 @@
 #' @author Nathan Sheffield
 #'
 #' @references \url{http://github.com/sheffien}
-#' @importFrom GenomicRanges GRanges GRangesList elementMetadata
+#' @importFrom GenomicRanges GRanges GRangesList elementMetadata strand
 #' @import IRanges
 #' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder melt setkeyv
 NULL
