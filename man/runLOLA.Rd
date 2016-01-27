@@ -25,9 +25,9 @@ Data.table with enrichment results. Rows correspond to individual
 pairwise fisher's tests comparing a single userSet with a single databaseSet.
 The columns in this data.table are: userSet and dbSet: index into their
 respective input region sets. pvalueLog: -log10(pvalue) from the fisher's exact
-result; logOddsRatio: result from the fisher's exact test; support: number of
+result; oddsRatio: result from the fisher's exact test; support: number of
 regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
-table of p-value, logOddsRatio, and Support respectively. The --value is the
+table of p-value, oddsRatio, and Support respectively. The --value is the
 negative natural log of the p-value returned from a one-sided fisher's exact
 test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
 combined ranking system. b, c, d: 3 other values completing the 2x2 contingency
