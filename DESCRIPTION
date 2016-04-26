@@ -1,21 +1,29 @@
 Package: LOLA
-Version: 1.1.2
-Date: 2015-05-18
+Version: 1.1.3
+Date: 2015-06-26
 Title: Locus overlap analysis for enrichment of genomic ranges
-Description: Provides functions for testing overlap of sets of genomic regions with public 
-	and custom region set (genomic ranges) databases. 
-	This makes it possible to do automated enrichment analysis for genomic region sets, 
-	thus facilitating interpretation of functional genomics and epigenomics data.
+Description: Provides functions for testing overlap of sets of genomic regions
+    with public and custom region set (genomic ranges) databases. This makes it
+    possible to do automated enrichment analysis for genomic region sets, thus
+    facilitating interpretation of functional genomics and epigenomics data.
 Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
-	Christoph Bock [cre]
+    Christoph Bock [cre]
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Imports:
-	BiocGenerics, S4Vectors, IRanges, GenomicRanges, data.table
+    BiocGenerics,
+    S4Vectors,
+    IRanges,
+    GenomicRanges,
+    data.table
 Suggests:
-	knitr, parallel, testthat
+    knitr,
+    parallel,
+    testthat
 Enhances: simpleCache, qvalue
 VignetteBuilder: knitr
 License: GPL-3
-biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology, FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
+biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology,
+    FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
 URL: http://databio.org/lola
 BugReports: http://github.com/sheffien/LOLA
+RoxygenNote: 5.0.1
