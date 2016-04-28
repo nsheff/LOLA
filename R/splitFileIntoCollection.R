@@ -28,7 +28,7 @@ splitFileIntoCollection = function(filename, splitCol, collectionFolder=NULL,
 	nDT = paste0(filenamePrepend, nDT)
 	for (i in seq_along(sDT)) {
 		message(nDT[[i]])
-		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"))
+		write.tsv(sDT[[i]], paste0(collectionFolder, "/", nDT[[i]], ".bed"), col.names=FALSE)
 	}
 	message("Collection written to ", collectionFolder)
 }
