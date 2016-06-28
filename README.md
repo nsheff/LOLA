@@ -2,7 +2,7 @@
 Links to LOLA websites:
 * Public-facing permanent info page: [http://databio.org/lola](http://databio.org/lola).
 * Bioconductor: [http://bioconductor.org/packages/LOLA/](http://bioconductor.org/packages/LOLA/).
-* GitHub repository: [http://github.com/sheffien/LOLA](http://github.com/sheffien/LOLA).
+* GitHub repository: [http://github.com/nsheff/LOLA](http://github.com/nsheff/LOLA).
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. You can think of it as testing your `bed file` (genome regions of interest) against a database of other `bed files` (regions from various previous studies) to look for enrichment of overlaps. This enables you to draw connections between newly generated data, and the growing public databases, leading to new hypotheses and annotation sharing.
 
@@ -22,7 +22,7 @@ To install the development version directly from github, make sure you have [Gen
 ```{r}
 source("http://bioconductor.org/biocLite.R")
 biocLite("GenomicRanges")
-devtools::install_github("sheffien/LOLA")
+devtools::install_github("nsheff/LOLA")
 ```
 
 Or, clone the repo and install from there:
@@ -41,7 +41,7 @@ For examples and workflows for LOLA, please check out the following [R vignettes
 --------------------------------------------------------------------------------
 ### LOLA Core Database
 
-You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/sheffien/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently  contains region sets from hg19/hg38 and mm10.
+You can download a core region set database, or (`regionDB`). There are two download options: you can download pre-cached `.RData` files, which LOLA can load in about 30 seconds (requires the [simpleCache R package](http://github.com/nsheff/simpleCache)); or the complete database which additionally includes raw text region files, which LOLA can load and cache in about 30 minutes. LOLA Core currently  contains region sets from hg19/hg38 and mm10.
 
 In addition to the LOLA Core database, we also maintain a second database, LOLA Exended, which has additional region sets, which are not as well curated as the Core database (detailed contents are listed below)
 
@@ -54,10 +54,10 @@ The latest LOLA Core and Extended databases can be downloaded here:
 * [Vignette example data](http://big.databio.org/regionDB/lola_vignette_data_150505.tgz) (For testing LOLA Core, ~20Mb)
 
 I recommend using the cached version, unless you need the raw files for something else.
-To do this, you'll need to grab [simpleCache](http://github.com/sheffien/simpleCache) (which you may find it useful for other projects, too), also installable with devtools.
+To do this, you'll need to grab [simpleCache](http://github.com/nsheff/simpleCache) (which you may find it useful for other projects, too), also installable with devtools.
 
 ```{r}
-devtools::install_github("sheffien/simpleCache")
+devtools::install_github("nsheff/simpleCache")
 ```
 
 Current contents of LOLA core:
