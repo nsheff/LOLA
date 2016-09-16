@@ -126,3 +126,20 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 		file=paste0(outFolder, "allEnrichments.tsv"), row.names=FALSE, quote=FALSE,
 	)
 }
+
+#' Given some results (you grab the top ones on your own), 
+#' this plots a barplot visualizing their odds ratios.
+#' @param data
+#'
+#' @export
+#' @example
+#' R/examples/example.R
+plotTopLOLAEnrichments = function(data) {
+	data = data[!duplicated(description),]
+	g = ggplot(data, aes(x=factor(description, levels=rev(unique(description))), y=oddsRatio)) +
+		geom_bar(stat="identity") + coord_flip() + ggtitle("Top LOLA Enrichments") + xlab("Database set") + 
+		ylab("Odds ratio") + theme_ns()
+	return(g)
+}
+
+

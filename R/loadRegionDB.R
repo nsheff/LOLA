@@ -400,7 +400,7 @@ mergeRegionDBs = function(dbA, dbB) {
 #' @export
 #' @example
 #' R/examples/example.R
-getRegionSet = function(regionDB, filenames, collections=NULL) {
+getRegionSet = function(regionDB, filenames, collections = NULL, nameOnly = FALSE) {
 	if ("regionAnno" %in% names(regionDB)) {
 		# it's a loaded regionDB object, we just extract the region set.
 	
@@ -410,19 +410,36 @@ getRegionSet = function(regionDB, filenames, collections=NULL) {
 		}
 		return(regionDB$regionGRL[ind])
 	} else {
-		dbLocation = regionDB
-		dbLocation = enforceTrailingSlash(dbLocation)
-		collectionAnno =
-			readCollectionAnnotation(dbLocation, collections)
-		regionAnno =
-			readRegionSetAnnotation(dbLocation, collections)
-		filesToRead =
-			regionAnno[filename %in% filenames, list(fullFilename = paste0(dbLocation,
-			sapply(collection, enforceTrailingSlash), "regions/",
-			filename)), by = filename]$fullFilename
+		filesToRead = getRegionFile(regionDB, filenames, collections)
 		grl = readCollection(filesToRead)
 		return(grl)
 	}
+}
+
+#' Grab the filename for a a single region set from a database specified by filename.
+#'
+#' Like getRegionSet but returns a filename instead of a GRanges object. Given a local
+#' filename, returns a complete absolulte path so you can read that file in.
+#'
+#' @param regionDB A region database loaded with loadRegionDB().
+#' @param filenames Filename(s) of a particular region set to grab.
+#' @param collections (optional) subset of collections to list
+#'
+#' @return A filename the specified file in the regionDB.
+#' @export
+#' @example
+#' R/examples/example.R
+getRegionFile = function(dbLocation, filenames, collections = NULL) {
+	dbLocation = enforceTrailingSlash(dbLocation)
+	collectionAnno =
+		readCollectionAnnotation(dbLocation, collections)
+	regionAnno =
+		readRegionSetAnnotation(dbLocation, collections)
+	filesToRead =
+		regionAnno[filename %in% filenames, list(fullFilename = paste0(dbLocation,
+		sapply(collection, enforceTrailingSlash), "regions/",
+		filename)), by = filename]$fullFilename
+	return(filesToRead)
 }
 
 #' Lists the region sets for given collection(s) in a region database on disk.
