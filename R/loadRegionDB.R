@@ -400,7 +400,7 @@ mergeRegionDBs = function(dbA, dbB) {
 #' @export
 #' @example
 #' R/examples/example.R
-getRegionSet = function(regionDB, filenames, collections = NULL, nameOnly = FALSE) {
+getRegionSet = function(regionDB, filenames, collections = NULL) {
 	if ("regionAnno" %in% names(regionDB)) {
 		# it's a loaded regionDB object, we just extract the region set.
 	
