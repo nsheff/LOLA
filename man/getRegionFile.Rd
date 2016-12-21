@@ -7,11 +7,11 @@
 getRegionFile(dbLocation, filenames, collections = NULL)
 }
 \arguments{
+\item{dbLocation}{folder of regionDB}
+
 \item{filenames}{Filename(s) of a particular region set to grab.}
 
 \item{collections}{(optional) subset of collections to list}
-
-\item{regionDB}{A region database loaded with loadRegionDB().}
 }
 \value{
 A filename the specified file in the regionDB.

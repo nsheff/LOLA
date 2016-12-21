@@ -8,7 +8,10 @@ this plots a barplot visualizing their odds ratios.}
 plotTopLOLAEnrichments(data)
 }
 \arguments{
-\item{data}{}
+\item{data}{A results table returned from runLOLA()}
+}
+\value{
+Returns a ggplot2 plot object.
 }
 \description{
 Given some results (you grab the top ones on your own), 

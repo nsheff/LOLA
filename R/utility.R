@@ -112,8 +112,11 @@ readBed = function(file) {
 	cn = rep(NA, 6)
 	readCols = colnames(DT)
 	cn[seq_along(readCols)] = readCols
+	# BED files are 0-based, but internal bioc representations use 1-based coords.
+	DT[, (colnames(DT)[2]) := (get(colnames(DT)[2]) + 1)]
 	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3],
 		name=cn[4], strand=cn[6])
+
 	return(tfbsgr)
 }
 
@@ -231,7 +234,7 @@ setLapplyAlias = function(cores=0) {
 	}
 	if(cores > 1) { #use multicore?
 		if (requireNamespace("parallel", quietly = TRUE)) {
-	      		options(mc.cores=cores)
+			options(mc.cores=cores)
 		} else {
 			warning("You don't have package parallel installed. Setting cores to 1.")
 			options(mc.cores=1) #reset cores option.

@@ -170,7 +170,7 @@ redefineUserSets=FALSE) {
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 
 
-	setcolorder(scoreTable,  c(orderedCols, unorderedCols))
+	setcolorder(scoreTable, c(orderedCols, unorderedCols))
 
 	scoreTable[order(pValueLog, -meanRnk, decreasing=TRUE),]
 }

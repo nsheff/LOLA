@@ -11,6 +11,8 @@
 #' @importFrom GenomicRanges GRanges GRangesList elementMetadata strand
 #' @import BiocGenerics S4Vectors IRanges
 #' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder melt setkeyv
+#' @importFrom stats fisher.test setNames
+#' @importFrom utils write.table
 NULL
 
 # Because of some issues with CRAN submission,
@@ -21,7 +23,7 @@ if(getRversion() >= "2.15.1") {
 	utils::globalVariables(c(
 	"collectionname", "collection", "filename", "size_int", "pValueLog",
 	"userSet", "size", "cellType", "description", "tissue", "antibody",
-	"treatment", "qValue"))
+	"treatment", "qValue", "oddsRatio"))
 }
 
 # This function calculates enrichment for two sets of genomic ranges intervals

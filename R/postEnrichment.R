@@ -129,16 +129,22 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 
 #' Given some results (you grab the top ones on your own), 
 #' this plots a barplot visualizing their odds ratios.
-#' @param data
+#' @param data A results table returned from runLOLA()
+#' @return Returns a ggplot2 plot object.
 #'
 #' @export
 #' @example
 #' R/examples/example.R
 plotTopLOLAEnrichments = function(data) {
+	if ( ! requireNamespace("ggplot2")) {
+		message("This function requires ggplot2")
+		return()
+	}
 	data = data[!duplicated(description),]
-	g = ggplot(data, aes(x=factor(description, levels=rev(unique(description))), y=oddsRatio)) +
-		geom_bar(stat="identity") + coord_flip() + ggtitle("Top LOLA Enrichments") + xlab("Database set") + 
-		ylab("Odds ratio") + theme_ns()
+	g = ggplot2::ggplot(data, ggplot2::aes(x=factor(description, levels=rev(unique(description))), y=oddsRatio)) +
+		ggplot2::geom_bar(stat="identity") + ggplot2::coord_flip() + ggplot2::ggtitle("Top LOLA Enrichments") + 
+		ggplot2::xlab("Database set") + 
+		ggplot2::ylab("Odds ratio") + ggplot2::theme_classic()
 	return(g)
 }
 

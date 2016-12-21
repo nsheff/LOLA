@@ -14,12 +14,14 @@ Imports:
     S4Vectors,
     IRanges,
     GenomicRanges,
-    data.table
+    data.table,
+    utils,
+    stats
 Suggests:
     knitr,
     parallel,
     testthat
-Enhances: simpleCache, qvalue
+Enhances: simpleCache, qvalue, ggplot2
 VignetteBuilder: knitr
 License: GPL-3
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology,

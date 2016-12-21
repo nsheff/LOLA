@@ -8,7 +8,6 @@
 #' @format A GRanges object
 #' @return No return value.
 NULL
-
 #' An example set of regions, sampled from the example database.
 #'
 #' A dataset containing a few sample regions.
@@ -21,7 +20,7 @@ NULL
 #' @return No return value.
 #' @examples
 #' \dontrun{
-#'  This is how I produced the sample data sets:
+#' This is how I produced the sample data sets:
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionDB = loadRegionDB(dbLocation= dbPath)
 #' userSetA = reduce(do.call(c, (sampleGRL(regionDB$regionGRL,

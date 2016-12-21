@@ -1,5 +1,5 @@
 ######################################################################
-# Generic Region DB Loading  Functions
+# Generic Region DB Loading Functions
 ######################################################################
 
 
@@ -69,8 +69,8 @@ enforceTrailingSlash(collection), "collection.txt")
 			collectionDT = fread(collectionFile)
 			setnames(collectionDT, tolower(colnames(collectionDT)))
 			missCols = setdiff(collectionColNames, colnames(collectionDT))
-			for (col in missCols) collectionDT[, col:=NA, with=FALSE]
-			collectionDT = collectionDT[,collectionColNames, with=FALSE] #subset
+			for (col in missCols) collectionDT[, (col) := NA]
+			collectionDT = collectionDT[, collectionColNames, with=FALSE] #subset
 
 		} else {
 			regionFiles = list.files(paste0(dbLocation,"/",collection, "/regions"))
@@ -244,7 +244,7 @@ to load with defaults (filename only)")
 		if (any(!is.na(antibody))) {
 			description[!is.na(antibody)] =
 				paste(description[!is.na(antibody)], antibody[!is.na(antibody)])
-		}  else if (any(!is.na(treatment))) {
+		} else if (any(!is.na(treatment))) {
 			description[!is.na(treatment)] =
 				paste(description[!is.na(treatment)], treatment[!is.na(treatment)])
 		}
@@ -328,10 +328,11 @@ readCollection = function(filesToRead, limit=NULL) {
 		filename = filesToRead[i]
 		if (file.exists(filename)) {
 			success = tryCatch( {
-				DT = fread(paste0(filename))
-				cn = colnames(DT)
-				cn[1]
-				tfbsgr = dtToGr(DT, cn[1], cn[2], cn[3])
+				tfbsgr = readBed(filename)
+				# DT = fread(paste0(filename))
+				# cn = colnames(DT)
+				# cn[1]
+				# tfbsgr = dtToGr(DT, cn[1], cn[2], cn[3])
 				grl[[i]] = tfbsgr
 				TRUE
 			},
@@ -421,7 +422,7 @@ getRegionSet = function(regionDB, filenames, collections = NULL) {
 #' Like getRegionSet but returns a filename instead of a GRanges object. Given a local
 #' filename, returns a complete absolulte path so you can read that file in.
 #'
-#' @param regionDB A region database loaded with loadRegionDB().
+#' @param dbLocation	folder of regionDB
 #' @param filenames Filename(s) of a particular region set to grab.
 #' @param collections (optional) subset of collections to list
 #'
