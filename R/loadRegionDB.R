@@ -198,7 +198,7 @@ to load with defaults (filename only)")
 			missCols = setdiff(tolower(annotationColNames), colnames(indexDT))
 
 			# Populate any missing columns with NAs (of character type):
-			for (col in missCols) indexDT[, col:=as.character(NA), with=FALSE]
+			for (col in missCols) indexDT[, (col) := as.character(NA)]
 			indexDT = indexDT[,tolower(annotationColNames), with=FALSE]
 			# Subset
 			# Revert back to camelCase
