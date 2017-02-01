@@ -114,6 +114,9 @@ readBed = function(file) {
 	cn[seq_along(readCols)] = readCols
 	# BED files are 0-based, but internal bioc representations use 1-based coords.
 	DT[, (colnames(DT)[2]) := (get(colnames(DT)[2]) + 1)]
+
+	# Convert any unknown strands to '*'
+	DT[, (cn[3])]
 	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3],
 		name=cn[4], strand=cn[6])
 
@@ -136,6 +139,12 @@ dtToGrInternal = function(DT, chr, start, end=NA,
 				strand="*"
 			)
 	} else {
+		# GRanges can only handle '*' for no strand, so replace any non-accepted
+		# characters with '*'
+		DT[,strand:=as.character(strand)]
+		DT[strand=="1", strand:="+"]
+		DT[strand=="-1", strand:="-"]
+		DT[[`strand`]] =  gsub("[^+-]", "*", DT[[`strand`]])
 		gr=GRanges(
 			seqnames=DT[[`chr`]],
 			ranges=IRanges(start=DT[[`start`]],
