@@ -144,7 +144,7 @@ dtToGrInternal = function(DT, chr, start, end=NA,
 		DT[,strand:=as.character(strand)]
 		DT[strand=="1", strand:="+"]
 		DT[strand=="-1", strand:="-"]
-		DT[[`strand`]] =  gsub("[^+-]", "*", DT[[`strand`]])
+		DT[[`strand`]] =  gsub("[^+-].*", "*", DT[[`strand`]])
 		gr=GRanges(
 			seqnames=DT[[`chr`]],
 			ranges=IRanges(start=DT[[`start`]],
