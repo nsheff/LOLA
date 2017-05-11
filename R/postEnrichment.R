@@ -108,13 +108,13 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 	if (includeSplits) {
 		if (combinedResults[,length(unique(userSet))] > 1) {
 			writeDataTableSplitByColumn(
-				combinedResults[order(pValueLog,decreasing=TRUE),],
+				combinedResults[order(pValueLog, decreasing=TRUE),],
 				splitFactor="userSet", filePrepend=paste0(outFolder, "userSet_")
 			)
 		}
 		if (combinedResults[,length(unique(collection))] > 1) {
 			writeDataTableSplitByColumn(
-				combinedResults[order(pValueLog,decreasing=TRUE),],
+				combinedResults[order(pValueLog, decreasing=TRUE),],
 				splitFactor="collection", filePrepend=paste0(outFolder, "col_")
 			)
 		}
@@ -122,7 +122,7 @@ writeCombinedEnrichment = function(combinedResults, outFolder=NULL,
 	if (file.exists(paste0(outFolder, "allEnrichments.tsv")))
 		message("Overwriting ", paste0(outFolder, "allEnrichments.tsv"), "...")
 	write.table(
-		combinedResults[order(pValueLog,decreasing=TRUE),], sep="\t",
+		combinedResults[order(pValueLog, decreasing=TRUE),], sep="\t",
 		file=paste0(outFolder, "allEnrichments.tsv"), row.names=FALSE, quote=FALSE,
 	)
 }

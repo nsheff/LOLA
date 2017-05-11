@@ -2,13 +2,13 @@
 title: "Getting Started with LOLA"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
+output: 
+  BiocStyle::html_document
 vignette: >
-    %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteIndexEntry{Getting Started with LOLA}
-output: knitr:::html_vignette
+  %\VignetteIndexEntry{Getting Started with LOLA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
-# Getting started with LOLA
 
 In this vignette, you'll use small example datasets that come with the LOLA package to get a first look at the most common functions in a LOLA workflow.
 

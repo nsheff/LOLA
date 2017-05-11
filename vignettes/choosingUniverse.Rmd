@@ -8,7 +8,6 @@ vignette: >
 output: knitr:::html_vignette
 ---
 
-# Choosing a LOLA Universe
 (__This vignette is unevaluated because it relies on loading huge database files__)
 
 

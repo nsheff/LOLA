@@ -1,0 +1,19 @@
+
+template:
+  params:
+    bootswatch: yeti
+
+navbar:
+  left:
+  - text: Vignettes
+    href: articles/index.html
+  - text: Documentation
+    href: reference/index.html
+  - text: GitHub
+    icon: fa-github fa-lg
+    href: https://github.com/nsheff/LOLA
+  right:
+  - text: Databio.org
+    href: http://databio.org
+  - text: Software & Data
+    href: http://databio.org/software/

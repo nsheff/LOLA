@@ -7,7 +7,6 @@ vignette: >
     %\VignetteIndexEntry{Using LOLA Core}
 output: knitr:::html_vignette
 ---
-# Using LOLA Core
 (__This vignette is unevaluated because it relies on loading huge database files__)
 
 Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database (LOLA core) which we curate from many sources. Since LOLA core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. For this vignette you need to download and unpack either the complete or the cached LOLA core database; a download link is kept in the README file at the [LOLA github page](http://github.com/nsheff/LOLA). Download and unpack the LOLA core archive into your current working directory.
