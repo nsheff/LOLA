@@ -31,4 +31,3 @@ annotation file.
 dbPath = system.file("extdata", "hg19", package="LOLA")
 regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 }
-

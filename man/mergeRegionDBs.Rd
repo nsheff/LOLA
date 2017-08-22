@@ -28,4 +28,3 @@ dbPath = system.file("extdata", "hg19", package="LOLA")
 regionDB = loadRegionDB(dbPath)
 combinedRegionDB = mergeRegionDBs(regionDB, regionDB)
 }
-

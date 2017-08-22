@@ -23,4 +23,3 @@ I use an lapply alias which can point at either the base lapply
 and set the options for the number of cores (what mclapply uses).
 With no argument given, returns intead the number of cpus currently selected.
 }
-

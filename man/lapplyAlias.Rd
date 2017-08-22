@@ -19,4 +19,3 @@ Result from lapply or parallel::mclapply
 Function to run lapply or mclapply, depending on the option set in
 getOption("mc.cores"), which can be set with setLapplyAlias().
 }
-

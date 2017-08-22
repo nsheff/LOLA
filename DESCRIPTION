@@ -32,4 +32,4 @@ biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology,
     FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
 URL: http://databio.org/lola
 BugReports: http://github.com/nsheff/LOLA
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

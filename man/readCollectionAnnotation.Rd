@@ -22,4 +22,3 @@ Read collection annotation
 dbPath = system.file("extdata", "hg19", package="LOLA")
 collectionAnno = readCollectionAnnotation(dbLocation=dbPath)
 }
-

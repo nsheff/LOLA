@@ -21,4 +21,3 @@ Lists the region sets for given collection(s) in a region database on disk.
 dbPath = system.file("extdata", "hg19", package="LOLA")
 listRegionSets(dbPath)
 }
-

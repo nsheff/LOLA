@@ -21,4 +21,3 @@ function from data.table.
 a = readBed(system.file("extdata", "examples/combined_regions.bed",
 package="LOLA"))
 }
-

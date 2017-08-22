@@ -20,4 +20,3 @@ Sets global variable specifying the default data directory.
 \examples{
 setSharedDataDir("project/data")
 }
-

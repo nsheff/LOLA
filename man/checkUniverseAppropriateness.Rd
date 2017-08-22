@@ -30,4 +30,3 @@ data("sample_input", package="LOLA") # load userSet
 data("sample_universe", package="LOLA") # load userUniverse
 checkUniverseAppropriateness(userSets, userUniverse)
 }
-

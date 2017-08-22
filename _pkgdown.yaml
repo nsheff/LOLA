@@ -6,12 +6,26 @@ template:
 navbar:
   left:
   - text: Vignettes
+    icon: fa-play-circle
     href: articles/index.html
   - text: Documentation
+    icon: fa-pencil
     href: reference/index.html
   - text: GitHub
     icon: fa-github fa-lg
     href: https://github.com/nsheff/LOLA
+  - text: Bioconductor
+    href: http://bioconductor.org/packages/LOLA/
+  - text: Support
+    icon: fa-question-circle-o
+    href: https://support.bioconductor.org/
+  - text: Tarball
+    icon: fa-file-archive-o
+    href: https://github.com/nsheff/LOLA/tarball/master
+  - text: Manuscript
+    icon: fa-file-text-o
+    href: http://dx.doi.org/10.1093/bioinformatics/btv612
+  
   right:
   - text: Databio.org
     href: http://databio.org

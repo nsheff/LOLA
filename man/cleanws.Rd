@@ -18,4 +18,3 @@ tabs and newlines, merged into a single space.
 cleanws takes multi-line, code formatted strings and just formats them
 as simple strings
 }
-

@@ -30,4 +30,3 @@ subfolder collections of regions.
 dbPath = system.file("extdata", "hg19", package="LOLA")
 regionDB = loadRegionDB(dbLocation=dbPath)
 }
-

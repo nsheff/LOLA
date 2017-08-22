@@ -50,4 +50,3 @@ resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
 g = plotTopLOLAEnrichments(resRedefined)
 
 }
-

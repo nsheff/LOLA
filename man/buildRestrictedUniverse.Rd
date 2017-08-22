@@ -27,4 +27,3 @@ universe
 data("sample_input", package="LOLA") # load userSets
 restrictedUniverse = buildRestrictedUniverse(userSets)
 }
-

@@ -15,4 +15,3 @@ a GRangesList object
 \description{
 converts a list of GRanges into a GRangesList; strips all metadata.
 }
-
