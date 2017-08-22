@@ -31,4 +31,3 @@ and split it into separate files for use with the LOLA collection format.
 combFile = system.file("extdata", "examples/combined_regions.bed", package="LOLA")
 splitFileIntoCollection(combFile, 4)
 }
-

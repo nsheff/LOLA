@@ -28,8 +28,8 @@ data("sample_input", package="LOLA")
 
 getRegionSet(regionDB, collections="ucsc_example", filenames="vistaEnhancers.bed")
 getRegionSet(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")
-
 getRegionFile(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")
+
 
 res = runLOLA(userSets, userUniverse, regionDB, cores=1)
 locResult = res[2,]
@@ -42,4 +42,3 @@ resRedefined = runLOLA(userSetsRedefined, userUniverse, regionDB, cores=1)
 g = plotTopLOLAEnrichments(resRedefined)
 
 }
-

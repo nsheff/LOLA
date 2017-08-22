@@ -1,5 +1,5 @@
 Package: LOLA
-Version: 1.1.3
+Version: 1.7.1
 Date: 2015-06-26
 Title: Locus overlap analysis for enrichment of genomic ranges
 Description: Provides functions for testing overlap of sets of genomic regions
@@ -32,4 +32,4 @@ biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology,
     FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
 URL: http://databio.org/lola
 BugReports: http://github.com/nsheff/LOLA
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

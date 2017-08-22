@@ -9,6 +9,7 @@
 #' 	should be an integer.
 #' @param collectionFolder	name of folder to place the new split files.
 #' @param filenamePrepend	string to prepend to the filenames. Defaults to blank.
+
 #'
 #' @return No return value.
 #' @export

@@ -15,4 +15,3 @@ No return value.
 A reduced GRanges object from the example regionDB database
 }
 \keyword{datasets}
-

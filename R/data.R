@@ -8,6 +8,7 @@
 #' @format A GRanges object
 #' @return No return value.
 NULL
+
 #' An example set of regions, sampled from the example database.
 #'
 #' A dataset containing a few sample regions.

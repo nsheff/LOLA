@@ -98,7 +98,9 @@ redefineUserSets=FALSE) {
 	universeLength = length(userUniverse)
 
 	# To build the fisher matrix, support is 'a'
+
 	scoreTable = data.table(data.table::melt(t(olmat), variable.factor=FALSE))
+
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
 
 	# reshape2 has an annoying habit of converting strings into factors, which
@@ -134,7 +136,9 @@ redefineUserSets=FALSE) {
 		return(scoreTable)
 	}
 
+
 	scoreTable[,c("pValueLog", "oddsRatio") :=
+
 	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value",
 	"estimate")], by=list(userSet,dbSet)]
 
@@ -168,7 +172,6 @@ redefineUserSets=FALSE) {
 "support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d",
 "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
-
 
 	setcolorder(scoreTable, c(orderedCols, unorderedCols))
 

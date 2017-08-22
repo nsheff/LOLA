@@ -147,5 +147,3 @@ plotTopLOLAEnrichments = function(data) {
 		ggplot2::ylab("Odds ratio") + ggplot2::theme_classic()
 	return(g)
 }
-
-

@@ -32,4 +32,3 @@ dbPath = system.file("extdata", "hg19", package="LOLA")
 regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 regionGRL = readRegionGRL(dbLocation= dbPath, regionAnno, useCache=FALSE)
 }
-

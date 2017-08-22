@@ -148,9 +148,12 @@ test_that("readBed", {
 	expect_equal(nrow(e), 5)
 	expect_equal(nrow(p), 8)
 	expect_equal(nrow(i), 3)
+<<<<<<< HEAD
 
 	# Make sure the bed reading is switching to 1-based coordinates
 	expect_equal(start(ranges(rb))[1], 28736)
+=======
+>>>>>>> upstream/master
 	unlink(paste0(cr, "_collection"), recursive=TRUE)
 })
 

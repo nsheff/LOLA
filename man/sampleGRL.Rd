@@ -18,4 +18,3 @@ A sampled subset of original GRangesList object.
 \description{
 Function to sample regions from a GRangesList object, in specified proportion
 }
-

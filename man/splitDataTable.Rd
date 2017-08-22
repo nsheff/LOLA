@@ -18,4 +18,3 @@ List of data.table objects, split by column
 \description{
 Efficiently split a data.table by a column in the table
 }
-

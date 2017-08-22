@@ -120,6 +120,7 @@ readBed = function(file) {
 	tfbsgr = dtToGr(DT, chr=cn[1], start=cn[2], end=cn[3],
 		name=cn[4], strand=cn[6])
 
+
 	return(tfbsgr)
 }
 
@@ -145,6 +146,7 @@ dtToGrInternal = function(DT, chr, start, end=NA,
 		DT[strand=="1", strand:="+"]
 		DT[strand=="-1", strand:="-"]
 		DT[[`strand`]] =  gsub("[^+-].*", "*", DT[[`strand`]])
+
 		gr=GRanges(
 			seqnames=DT[[`chr`]],
 			ranges=IRanges(start=DT[[`start`]],

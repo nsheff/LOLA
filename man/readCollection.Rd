@@ -27,4 +27,3 @@ files = list.files(system.file("extdata", "hg19/ucsc_example/regions",
  package="LOLA"), pattern="*.bed")
 regionAnno = readCollection(files)
 }
-

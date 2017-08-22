@@ -15,6 +15,7 @@ Most likely, your first goal will be to test your regions of interest for enrich
 
 You'll also need a few region sets of interest. Typically, this will be data you've generated or downloaded and you'll know something about it already; for this vignette, you can download some [example data](http://github.com/nsheff/LOLA) from the same page as LOLA Core. Just for fun, in this vignette I'll call these mystery sets, and the point will be to see what LOLA tells us about them if we have no previous knowledge. Then I'll reveal their true identity at the end of the vignette.
 
+
 *To load the mystery region sets:* LOLA requires the data in GRanges objects. LOLA now comes with a `readBed` function, which is fast and convenient. You also need to come up with a "region universe" for the calculation. This can be quite tricky, so there's another vignette dedicated to choosing an appropriate universe. For this vignette, I've provided a reasonable universe (it will likely be applicable elsewhere, too). This is just a combined set of all active DNase hypersensitive sites in the genome. This would be a reasonable universe to use for a set of some specific active regulatory elements, like in a ChIP-seq experiment. Since the mystery data in this vignette is all active ChIP-seq data, it's a reasonable universe here.
 
 Load up the database and query regions like this (this should take under a minute or so on a modern machine).

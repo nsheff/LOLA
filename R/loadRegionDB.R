@@ -1,5 +1,6 @@
 ######################################################################
 # Generic Region DB Loading Functions
+
 ######################################################################
 
 
@@ -71,7 +72,6 @@ enforceTrailingSlash(collection), "collection.txt")
 			missCols = setdiff(collectionColNames, colnames(collectionDT))
 			for (col in missCols) collectionDT[, (col) := NA]
 			collectionDT = collectionDT[, collectionColNames, with=FALSE] #subset
-
 		} else {
 			regionFiles = list.files(paste0(dbLocation,"/",collection, "/regions"))
 			if (length(regionFiles) < 1) {
@@ -401,7 +401,7 @@ mergeRegionDBs = function(dbA, dbB) {
 #' @export
 #' @example
 #' R/examples/example.R
-getRegionSet = function(regionDB, filenames, collections = NULL) {
+getRegionSet = function(regionDB, filenames, collections=NULL) {
 	if ("regionAnno" %in% names(regionDB)) {
 		# it's a loaded regionDB object, we just extract the region set.
 	
@@ -442,6 +442,7 @@ getRegionFile = function(dbLocation, filenames, collections = NULL) {
 		filename)), by = filename]$fullFilename
 	return(filesToRead)
 }
+
 
 #' Lists the region sets for given collection(s) in a region database on disk.
 #'

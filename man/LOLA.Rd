@@ -8,10 +8,9 @@
 \description{
 Run, Lola!
 }
-\author{
-Nathan Sheffield
-}
 \references{
 \url{http://github.com/sheffien}
 }
-
+\author{
+Nathan Sheffield
+}

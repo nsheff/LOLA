@@ -1,4 +1,5 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
+
 * Public-facing permanent info page: [http://databio.org/lola](http://databio.org/lola).
 * Bioconductor: [http://bioconductor.org/packages/LOLA/](http://bioconductor.org/packages/LOLA/).
 * GitHub repository: [http://github.com/nsheff/LOLA](http://github.com/nsheff/LOLA).
@@ -21,7 +22,9 @@ To install the development version directly from github, make sure you have [Gen
 ```{r}
 source("http://bioconductor.org/biocLite.R")
 biocLite("GenomicRanges")
+
 devtools::install_github("nsheff/LOLA")
+
 ```
 
 Or, clone the repo and install from there:

@@ -19,4 +19,3 @@ Results from countOverlaps
 Just a reverser. Reverses the order of arguments and passes them
 untouched to countOverlapsAny -- so you can use it with lapply.
 }
-

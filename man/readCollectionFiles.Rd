@@ -28,4 +28,3 @@ reading in the annotation data.
 dbPath = system.file("extdata", "hg19", package="LOLA")
 regionAnno = readCollectionFiles(dbLocation=dbPath, "ucsc_example")
 }
-
