@@ -84,7 +84,6 @@ redefineUserSets=FALSE) {
 	# dbSets (rows) by userSets (columns), counting overlap.
 	olmat = do.call(cbind, geneSetDatabaseOverlap)
 
-
 	message("Calculating universe set overlaps...")
 	# Now for each test set, how many items *in the universe* does
 	# it overlap? This will go into the calculation for c
@@ -99,7 +98,7 @@ redefineUserSets=FALSE) {
 
 	# To build the fisher matrix, support is 'a'
 
-	scoreTable = data.table(data.table::melt.data.table(t(olmat), variable.factor=FALSE))
+	scoreTable = data.table(reshape2::melt(t(olmat), variable.factor=FALSE))
 
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
 

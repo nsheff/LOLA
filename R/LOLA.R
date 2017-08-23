@@ -10,7 +10,8 @@
 #' @references \url{http://github.com/sheffien}
 #' @importFrom GenomicRanges GRanges GRangesList elementMetadata strand
 #' @import BiocGenerics S4Vectors IRanges
-#' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder melt.data.table setkeyv
+#' @importFrom reshape2 melt
+#' @importFrom data.table ":=" setDT data.table setkey fread setnames as.data.table setcolorder setkeyv
 #' @importFrom stats fisher.test setNames
 #' @importFrom utils write.table
 NULL
