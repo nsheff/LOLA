@@ -99,7 +99,7 @@ redefineUserSets=FALSE) {
 
 	# To build the fisher matrix, support is 'a'
 
-	scoreTable = data.table(data.table::melt(t(olmat), variable.factor=FALSE))
+	scoreTable = data.table(data.table::melt.data.table(t(olmat), variable.factor=FALSE))
 
 	setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
 
