@@ -14,7 +14,10 @@
 #' @param minOverlap (Default:1) Minimum bases required to count an overlap
 #' @param cores	Number of processors
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
-#'
+#' @param direction    Defaults to "enrichment", but may also accept
+#'     "depletion", which will swap the direction of the fisher test (use
+#'     'greater' or less' value passed to the 'alternative' option of
+#'     fisher.test)
 #' @return Data.table with enrichment results. Rows correspond to individual
 #' pairwise fisher's tests comparing a single userSet with a single databaseSet.
 #' The columns in this data.table are: userSet and dbSet: index into their
@@ -33,12 +36,19 @@
 #' @example
 #' R/examples/example.R
 runLOLA = function(userSets, userUniverse, regionDB, minOverlap=1, cores=1,
-redefineUserSets=FALSE) {
+redefineUserSets=FALSE, direction="enrichment") {
 	# Silence R CMD check Notes:
 	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
 	oddsRatio=maxRnk=meanRnk=dbSet=description=NULL
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
+
+	if (direction == "depletion") {
+		fisherAlternative = "less"
+	} else {
+		fisherAlternative = "greater"
+	}
+
 	annotationDT[, dbSet := seq_len(nrow(annotationDT))]
 	setkey(annotationDT, dbSet)
 	### Data sanity checks ###
@@ -138,7 +148,7 @@ redefineUserSets=FALSE) {
 
 	scoreTable[,c("pValueLog", "oddsRatio") :=
 
-	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative='greater')[c("p.value",
+	fisher.test(matrix(c(support,b,c,d), 2, 2), alternative=fisherAlternative)[c("p.value",
 	"estimate")], by=list(userSet,dbSet)]
 
 	# Include qvalue if package exists.

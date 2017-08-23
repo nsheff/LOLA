@@ -5,7 +5,7 @@
 \title{Enrichment Calculation}
 \usage{
 runLOLA(userSets, userUniverse, regionDB, minOverlap = 1, cores = 1,
-  redefineUserSets = FALSE)
+  redefineUserSets = FALSE, direction = "enrichment")
 }
 \arguments{
 \item{userSets}{Regions of interest}
@@ -19,6 +19,11 @@ runLOLA(userSets, userUniverse, regionDB, minOverlap = 1, cores = 1,
 \item{cores}{Number of processors}
 
 \item{redefineUserSets}{run redefineUserSets() on your userSets?}
+
+\item{direction}{Defaults to "enrichment", but may also accept
+"depletion", which will swap the direction of the fisher test (use
+'greater' or less' value passed to the 'alternative' option of
+fisher.test)}
 }
 \value{
 Data.table with enrichment results. Rows correspond to individual
