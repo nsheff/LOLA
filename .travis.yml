@@ -3,3 +3,4 @@ sudo: false
 cache: packages
 use_bioc: true
 bioc_required: true
+r_packages: reshape2
