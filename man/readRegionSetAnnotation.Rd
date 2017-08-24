@@ -7,7 +7,7 @@ will either read the annotation file if one exists, or create a generic
 annotation file.}
 \usage{
 readRegionSetAnnotation(dbLocation, collections = NULL,
-  refreshCaches = FALSE, useCache = TRUE)
+  refreshCaches = FALSE, refreshSizes = TRUE, useCache = TRUE)
 }
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}
@@ -15,7 +15,9 @@ readRegionSetAnnotation(dbLocation, collections = NULL,
 \item{collections}{Restrict the database loading to this list of collections
 Leave NULL to load the entire database (Default).}
 
-\item{refreshCaches}{should I recreate the caches?}
+\item{refreshCaches}{should I recreate the caches? Default: FALSE}
+
+\item{refreshSizes}{should I refresh the size files? Default:TRUE}
 
 \item{useCache}{Use simpleCache to store results and load them?}
 }

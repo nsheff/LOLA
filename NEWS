@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 	- handle bed files with various styles of strand
 	- fixes issues with reshape2 and data.table melt function
 	- adds convenience functions for getRegionFile and plotTopLOLAEnrichments
+	- add refreshSizes option in readRegionSetAnnotation
 	
 ## [1.7.0] -- 2017-04-24
 
