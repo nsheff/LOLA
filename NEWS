@@ -1,1 +1,22 @@
-2016-12	Updated readBed to correct 0-based vs 1-based coordinates
+# Change log
+All notable changes to this project will be documented in this file.
+
+## [1.7.1] -- Unreleased
+
+	- merged all past updates from get dev version, into bioconductor git repository
+	- updated readBed to correct 0-based vs 1-based coordinates
+	- enabled testing for either enrichment or depletion via the 'direction' argument
+	- handle bed files with various styles of strand
+	- fixes issues with reshape2 and data.table melt function
+	- adds convenience functions for getRegionFile and plotTopLOLAEnrichments
+	
+## [1.7.0] -- 2017-04-24
+
+	- bioconductor branch
+
+
+## [1.0.0]
+
+	- First version released at Bioconductor
+
+
