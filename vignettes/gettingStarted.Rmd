@@ -10,6 +10,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Preparing analysis
+
 In this vignette, you'll use small example datasets that come with the LOLA package to get a first look at the most common functions in a LOLA workflow.
 
 You need 3 things to run a LOLA analysis:
@@ -44,13 +46,17 @@ data("sample_input", package="LOLA") # load userSets
 data("sample_universe", package="LOLA") # load userUniverse
 ```
 
-Now we have a GRanges object called `userSets` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. `calcLocEnrichemnt()` will test the overlap between your userSets, and each region set in the regionDB.
+Now we have a GRanges object called `userSets` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. 
+
+# Run the analysis
+
+`runLOLA()` will test the overlap between your userSets, and each region set in the regionDB.
 
 ```{r Run the calculation}
 locResults = runLOLA(userSets, userUniverse, regionDB, cores=1)
 ```
 
-runLOLA tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess significance of the overlap. The results are a `data.table` with several columns:
+`runLOLA` tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess significance of the overlap. The results are a `data.table` with several columns:
 
 ```{r}
 colnames(locResults)
@@ -81,7 +87,7 @@ And finally, record the results to file like this:
 writeCombinedEnrichment(locResults, outFolder= "lolaResults")
 ```
 
-By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
+By default, this function will write the entire table to a `tsv` file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
 
 ```{r Write split results}
 writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE)
@@ -112,6 +118,5 @@ Or, if you haven't already loaded the database, you can just give the path to th
 ```{r Grabbing individual region sets from disk}
 getRegionSet(dbPath, collections="ucsc_example", filenames="vistaEnhancers.bed")
 ```
-
 
 Now that you have a basic idea of what the functions are, you can follow some other vignettes, such as Using LOLA Core, to see how this works on a realistic dataset.

@@ -2,10 +2,12 @@
 title: "Using LOLA Core"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
+output:
+	BiocStyle::html_document
 vignette: >
-    %\VignetteEngine{knitr::rmarkdown}
     %\VignetteIndexEntry{Using LOLA Core}
-output: knitr:::html_vignette
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 (__This vignette is unevaluated because it relies on loading huge database files__)
 
