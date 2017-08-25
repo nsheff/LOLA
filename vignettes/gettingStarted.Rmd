@@ -50,14 +50,14 @@ Now we have a GRanges object called `userSets` and a GRanges object called `user
 locResults = runLOLA(userSets, userUniverse, regionDB, cores=1)
 ```
 
-runLOLA tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess signficance of the overlap. The results are a `data.table` with several columns:
+runLOLA tests for pairwise overlap between each user set and each region set in regionDB. It then uses a Fisher's exact test to assess significance of the overlap. The results are a `data.table` with several columns:
 
 ```{r}
 colnames(locResults)
 head(locResults)
 ```
 
-If you're not familiar with how `data.table` works in R, it's worth reading some of the [documentation of this powerful package](http://cran.r-project.org/web/packages/data.table/index.html).
+If you're not familiar with how `data.table` works in R, it's worth reading some of the [documentation of this powerful package](https://CRAN.R-project.org/package=data.table).
 Columns `userSet` and `dbSet` are indexes into the respective GRangeList objects, identifying each pairwise comparison. There are a series of columns describing the results of the statistical test, such as `pValueLog`, `logOdds`, and the actual values from the contingency table (`support` is the overlap, and `b`, `c`, and `d` complete the 2x2 table). Rank columns simply rank the tests by `pValueLog`, `logOdds`, or `support`; following these are a series of columns annotating the database regions, depending on how you populated the `index` table in the regionDB folder.
 
 You can explore these results in R by, for example, ranking with different orders:
