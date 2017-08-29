@@ -6,7 +6,7 @@ Description: Provides functions for testing overlap of sets of genomic regions
     with public and custom region set (genomic ranges) databases. This makes it
     possible to do automated enrichment analysis for genomic region sets, thus
     facilitating interpretation of functional genomics and epigenomics data.
-Authors@R: c(person("Nathan", "Sheffield", role=c("aut", "cre")),
+Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org", role=c("aut", "cre")),
             person("Christoph", "Bock", role=c("cre")))   
 Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
     Christoph Bock [cre]
