@@ -1,5 +1,8 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
 
+[![Build Status](https://travis-ci.org/databio/LOLA.svg?branch=master)](https://travis-ci.org/databio/LOLA)
+
+
 <img src="man/figures/LOLA-logo.png" alt="LOLA logo" width="200"/>
 
 * [Documentation](http://code.databio.org/LOLA).
@@ -36,11 +39,7 @@ install.packages("path/to/LOLA", repos=NULL)
 --------------------------------------------------------------------------------
 ### Running LOLA
 
-For examples and workflows for LOLA, please check out the following [R vignettes](vignettes/) to get you started:
-
-* [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
-* [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd) (Requires database files; see below)
-* [Choosing a Universe](vignettes/choosingUniverse.Rmd) (Requires database files; see below)
+For examples and workflows for LOLA, please check out the R vignettes.
 
 --------------------------------------------------------------------------------
 ### LOLA Databases
