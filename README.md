@@ -1,7 +1,6 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
 
-[![Build Status](https://travis-ci.org/databio/LOLA.svg?branch=master)](https://travis-ci.org/databio/LOLA)
-
+[![Build Status](https://travis-ci.org/nsheff/LOLA.svg?branch=master)](https://travis-ci.org/nsheff/LOLA) ![Release Build](http://bioconductor.org/shields/build/release/bioc/BiocGenerics.svg)
 
 <img src="man/figures/LOLA-logo.png" alt="LOLA logo" width="200"/>
 
