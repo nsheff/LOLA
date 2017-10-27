@@ -23,7 +23,7 @@
 #' The columns in this data.table are: userSet and dbSet: index into their
 #' respective input region sets. pvalueLog: -log10(pvalue) from the fisher's exact
 #' result; oddsRatio: result from the fisher's exact test; support: number of
-#' regions in userSet overlapping databaseSet; rnkPV, rnkLO, rnkSup: rank in this
+#' regions in userSet overlapping databaseSet; rnkPV, rnkOR, rnkSup: rank in this
 #' table of p-value, oddsRatio, and Support respectively. The --value is the
 #' negative natural log of the p-value returned from a one-sided fisher's exact
 #' test. maxRnk, meanRnk: max and mean of the 3 previous ranks, providing a
@@ -38,7 +38,7 @@
 runLOLA = function(userSets, userUniverse, regionDB, minOverlap=1, cores=1,
 redefineUserSets=FALSE, direction="enrichment") {
 	# Silence R CMD check Notes:
-	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkLO=NULL
+	support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkOR=NULL
 	oddsRatio=maxRnk=meanRnk=dbSet=description=NULL
 	annotationDT = regionDB$regionAnno
 	testSetsGRL = regionDB$regionGRL
@@ -166,9 +166,9 @@ redefineUserSets=FALSE, direction="enrichment") {
 	### Finalize and Rank results ###
 	scoreTable[, rnkSup:=rank(-support, ties.method="min"), by=userSet]
 	scoreTable[, rnkPV:=rank(-pValueLog, ties.method="min"), by=userSet]
-	scoreTable[, rnkLO:=rank(-oddsRatio, ties.method="min"), by=userSet]
-	scoreTable[, maxRnk:=max(c(rnkSup, rnkPV, rnkLO)), by=list(userSet,dbSet)]
-	scoreTable[, meanRnk:=signif(mean(c(rnkSup, rnkPV, rnkLO)), 3), by=list(userSet,dbSet)]
+	scoreTable[, rnkOR:=rank(-oddsRatio, ties.method="min"), by=userSet]
+	scoreTable[, maxRnk:=max(c(rnkSup, rnkPV, rnkOR)), by=list(userSet,dbSet)]
+	scoreTable[, meanRnk:=signif(mean(c(rnkSup, rnkPV, rnkOR)), 3), by=list(userSet,dbSet)]
 
 	# Append description column
 	setkeyv(scoreTable, "dbSet")
@@ -178,7 +178,7 @@ redefineUserSets=FALSE, direction="enrichment") {
 	scoreTable[,description:=substr(description, 0, 80)]
 
 	orderedCols = c("userSet", "dbSet", "collection", "pValueLog", "oddsRatio",
-"support", "rnkPV", "rnkLO", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d",
+"support", "rnkPV", "rnkOR", "rnkSup", "maxRnk", "meanRnk", "b", "c", "d",
 "description", "cellType", "tissue", "antibody", "treatment", "dataSource", "filename")
 	unorderedCols = setdiff(colnames(scoreTable), orderedCols)
 

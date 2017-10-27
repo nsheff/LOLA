@@ -3,7 +3,7 @@ title: "Choosing a LOLA Universe"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document
+  BiocStyle::html_document2
 vignette: >
   %\VignetteIndexEntry{Using LOLA Core}
   %\VignetteEngine{knitr::rmarkdown}
