@@ -71,7 +71,7 @@ countOverlapsAnyRev = function(subj, quer) {
 #' @param lst	a list of GRanges objects
 #' @return	a GRangesList object
 listToGRangesList = function(lst) {
-	if(! "GRangesList" %in% class(lst)) {
+	if(!is(lst, "GRangesList")) {
 		if ("list" %in% class(lst)) {
 			#strip elementMetadata
 			lst = lapply(lst, function(x) { values(x) <- NULL; return(x) } )
