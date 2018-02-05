@@ -376,7 +376,7 @@ mergeRegionDBs = function(dbA, dbB) {
 			combinedRegionDB[[item]] = c(dbA[[item]], dbB[[item]])
 		} else if ("data.table" %in% class(dbA[[item]])) {
 			combinedRegionDB[[item]] = rbind(dbA[[item]], dbB[[item]])
-		} else if ("GRangesList" %in% class(dbA[[item]])) {
+		} else if (is(dbA[[item]], "GRangesList")) {
 			combinedRegionDB[[item]] = c(dbA[[item]], dbB[[item]])
 		}
 	}
