@@ -25,3 +25,10 @@ navbar:
     href: http://databio.org
   - text: Software & Data
     href: http://databio.org/software/
+
+articles:
+  - title: Vignettes
+    contents:
+      - gettingStarted
+      - usingLOLACore
+      - choosingUniverse
