@@ -456,8 +456,15 @@ getRegionFile = function(dbLocation, filenames, collections = NULL) {
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' listRegionSets(dbPath)
 listRegionSets = function(regionDB, collections=NULL) {
-	dbLocation = regionDB
-	dbLocation = enforceTrailingSlash(dbLocation)
+	if ("character" %in% class(regionDB)){
+		dbLocation = regionDB
+		dbLocation = enforceTrailingSlash(dbLocation)
+	} else {
+		if ("dbLocation" %in% names(regionDB)) {
+			dbLocation = regionDB$dbLocation
+		}
+	}
+
 	collectionAnno = readCollectionAnnotation(dbLocation,
 		collections)
 	regionAnno = readRegionSetAnnotation(dbLocation, collections)
