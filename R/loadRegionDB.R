@@ -456,7 +456,7 @@ getRegionFile = function(dbLocation, filenames, collections = NULL) {
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' listRegionSets(dbPath)
 listRegionSets = function(regionDB, collections=NULL) {
-	if (is(regionDB, "character")){
+	if (is.character(regionDB)){
 		dbLocation = regionDB
 		dbLocation = enforceTrailingSlash(dbLocation)
 	} else {
