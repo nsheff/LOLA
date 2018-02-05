@@ -105,7 +105,8 @@ enforceTrailingSlash(collection), "collection.txt")
 #' @param dbLocation	folder where your regionDB is stored.
 #' @param collections Restrict the database loading to this list of collections
 #' Leave NULL to load the entire database (Default).
-#' @param refreshCaches	should I recreate the caches?
+#' @param refreshCaches	should I recreate the caches? Default: FALSE
+#' @param refreshSizes should I refresh the size files? Default:TRUE
 #' @param useCache Use simpleCache to store results and load them?
 #'
 #' @return Region set annotation (data.table)
@@ -114,7 +115,7 @@ enforceTrailingSlash(collection), "collection.txt")
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' regionAnno = readRegionSetAnnotation(dbLocation=dbPath)
 readRegionSetAnnotation = function(dbLocation, collections = NULL,
-					refreshCaches=FALSE,
+					refreshCaches=FALSE, refreshSizes=TRUE,
 					useCache=TRUE) {
 	size=NULL # Silence R CMD check Notes.
 	# Build a data.table annotating the beds.
@@ -133,7 +134,7 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 	for (collection in collectionList) {
 		if (useCache & requireNamespace("simpleCache", quietly=TRUE)) {
 			simpleCache::simpleCache(paste0(collection, "_files"), {
-				readCollectionFiles(dbLocation, collection, refreshSizes=TRUE)},
+				readCollectionFiles(dbLocation, collection, refreshSizes=refreshSizes)},
 				cacheDir=enforceTrailingSlash(paste0(dbLocation, collection)),
 				buildEnvir =nlist(dbLocation, collection), recreate=refreshCaches)
 		} else {
@@ -141,7 +142,7 @@ readRegionSetAnnotation = function(dbLocation, collections = NULL,
 regionDB after reading it in. Install simpleCache to speed up later database
 loading.")
 			assign(paste0(collection, "_files"),
-			readCollectionFiles(dbLocation, collection, refreshSizes=TRUE))
+			readCollectionFiles(dbLocation, collection, refreshSizes=refreshSizes))
 		}
 
 		annoDT = rbind(annoDT, get(paste0(collection, "_files")))
@@ -455,8 +456,15 @@ getRegionFile = function(dbLocation, filenames, collections = NULL) {
 #' dbPath = system.file("extdata", "hg19", package="LOLA")
 #' listRegionSets(dbPath)
 listRegionSets = function(regionDB, collections=NULL) {
-	dbLocation = regionDB
-	dbLocation = enforceTrailingSlash(dbLocation)
+	if (is(regionDB, "character")){
+		dbLocation = regionDB
+		dbLocation = enforceTrailingSlash(dbLocation)
+	} else {
+		if ("dbLocation" %in% names(regionDB)) {
+			dbLocation = regionDB$dbLocation
+		}
+	}
+
 	collectionAnno = readCollectionAnnotation(dbLocation,
 		collections)
 	regionAnno = readRegionSetAnnotation(dbLocation, collections)

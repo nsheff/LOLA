@@ -1,8 +1,14 @@
 # LOLA: Genomic Locus Overlap Enrichment Analysis
 
-* Public-facing permanent info page: [http://databio.org/lola](http://databio.org/lola).
-* Bioconductor: [http://bioconductor.org/packages/LOLA/](http://bioconductor.org/packages/LOLA/).
-* GitHub repository: [http://github.com/nsheff/LOLA](http://github.com/nsheff/LOLA).
+[![Build Status](https://travis-ci.org/nsheff/LOLA.svg?branch=master)](https://travis-ci.org/nsheff/LOLA)
+[![Release Build](http://bioconductor.org/shields/build/release/bioc/LOLA.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/LOLA/)
+[![Bioc Devel Build](http://bioconductor.org/shields/build/devel/bioc/LOLA.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/LOLA/)
+
+<img src="man/figures/LOLA-logo.png" alt="LOLA logo" width="200"/>
+
+* [Documentation](http://code.databio.org/LOLA).
+* [Release version at Bioconductor](http://bioconductor.org/packages/LOLA/).
+* [GitHub repository](http://github.com/nsheff/LOLA).
 
 LOLA is an R package providing functions for testing overlap of sets of genomic regions with public and custom databases. You can think of it as testing your `bed file` (genome regions of interest) against a database of other `bed files` (regions from various previous studies) to look for enrichment of overlaps. This enables you to draw connections between newly generated data, and the growing public databases, leading to new hypotheses and annotation sharing.
 
@@ -34,11 +40,7 @@ install.packages("path/to/LOLA", repos=NULL)
 --------------------------------------------------------------------------------
 ### Running LOLA
 
-For examples and workflows for LOLA, please check out the following [R vignettes](vignettes/) to get you started:
-
-* [Getting Started with LOLA](vignettes/gettingStarted.Rmd)
-* [Using the LOLA Core Database](vignettes/usingLOLACore.Rmd) (Requires database files; see below)
-* [Choosing a Universe](vignettes/choosingUniverse.Rmd) (Requires database files; see below)
+For examples and workflows for LOLA, please check out the R vignettes.
 
 --------------------------------------------------------------------------------
 ### LOLA Databases

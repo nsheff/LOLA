@@ -1,15 +1,15 @@
 Package: LOLA
-Version: 1.9.1
+Version: 1.9.2
 Date: 2015-06-26
 Title: Locus overlap analysis for enrichment of genomic ranges
 Description: Provides functions for testing overlap of sets of genomic regions
     with public and custom region set (genomic ranges) databases. This makes it
     possible to do automated enrichment analysis for genomic region sets, thus
     facilitating interpretation of functional genomics and epigenomics data.
-Authors@R: c(person("Nathan", "Sheffield", role=c("aut", "cre")),
-            person("Christoph", "Bock", role=c("cre")))   
+Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org", role=c("aut", "cre")),
+            person("Christoph", "Bock", role=c("ctb")))
 Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
-    Christoph Bock [cre]
+    Christoph Bock [ctb]
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Imports:
     BiocGenerics,
@@ -31,6 +31,6 @@ VignetteBuilder: knitr
 License: GPL-3
 biocViews: GeneSetEnrichment, GeneRegulation, GenomeAnnotation, SystemsBiology,
     FunctionalGenomics, ChIPSeq, MethylSeq, Sequencing
-URL: http://databio.org/lola
+URL: http://code.databio.org/LOLA
 BugReports: http://github.com/nsheff/LOLA
 RoxygenNote: 6.0.1
