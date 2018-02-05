@@ -2,9 +2,9 @@ note <- sprintf("R package version %s", meta$Version)
 
 bibentry(bibtype = "article",
          title = "{LOLA}: Enrichment analysis for genomic region sets and regulatory elements in R and Bioconductor",
-         author = c(person("Nathan", "Sheffield", middle="C"),
+         author = c(person(c("Nathan", "C."), "Sheffield"),
                     person("Christoph", "Bock")),
          journal = "Bioinformatics",
          year = 2016,
          note = note,
-         url = "http://databio.org/lola")
+         url = "http://code.databio.org/lola")
