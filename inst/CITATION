@@ -7,4 +7,4 @@ bibentry(bibtype = "article",
          journal = "Bioinformatics",
          year = 2016,
          note = note,
-         url = "http://code.databio.org/lola")
+         url = "http://code.databio.org/LOLA")
