@@ -459,15 +459,14 @@ listRegionSets = function(regionDB, collections=NULL) {
 	if (is(regionDB, "character")){
 		dbLocation = regionDB
 		dbLocation = enforceTrailingSlash(dbLocation)
+		collectionAnno = readCollectionAnnotation(dbLocation,
+			collections)
+		regionAnno = readRegionSetAnnotation(dbLocation, collections)
+	} else if ("dbLocation" %in% names(regionDB)) {
+		regionAnno = regionDB$regionAnno
 	} else {
-		if ("dbLocation" %in% names(regionDB)) {
-			dbLocation = regionDB$dbLocation
-		}
+		stop("This is not a proper regionDB or path to one.")
 	}
-
-	collectionAnno = readCollectionAnnotation(dbLocation,
-		collections)
-	regionAnno = readRegionSetAnnotation(dbLocation, collections)
 	return(regionAnno$filename)
 }
 
