@@ -10,7 +10,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Preparing analysis
+```{r, echo=FALSE}
+# These settings make the vignette prettier
+knitr::opts_chunk$set(results="hold", collapse=TRUE)
+```
+
+## Preparing analysis
 
 In this vignette, you'll use small example datasets that come with the LOLA package to get a first look at the most common functions in a LOLA workflow.
 
@@ -30,7 +35,7 @@ regionDB = loadRegionDB(dbPath)
 
 The regionDB is an R (list) object that has a few elements:
 
-```{r}
+```{r Look at the elements of a regionDB}
 names(regionDB)
 ```
 
@@ -48,7 +53,7 @@ data("sample_universe", package="LOLA") # load userUniverse
 
 Now we have a GRanges object called `userSets` and a GRanges object called `userUniverse`. This is all we need to run the enrichment calculation. 
 
-# Run the analysis
+## Run the analysis
 
 `runLOLA()` will test the overlap between your userSets, and each region set in the regionDB.
 
@@ -94,7 +99,7 @@ writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE
 ```
 
 
-# Exploring LOLA Results
+## Exploring LOLA Results
 
 Say you'd like to know which regions are responsible for the enrichment we see; or, in other words, you'd like to extract the regions that are actually overlapping a particular database. For this, you can use the function `extractEnrichmentOverlaps()`:
 
@@ -103,7 +108,7 @@ oneResult = locResults[2,]
 extractEnrichmentOverlaps(oneResult, userSets, regionDB)
 ```
 
-# Extracting certain region sets from a database
+## Extracting certain region sets from a database
 
 If you have a large database, you may be interested in using the LOLA database format for other projects, or for additional follow-up analysis. In this case, you may be interested in just a single region set within a database, or perhaps just a few of them. LOLA provides a function to extract certain region sets from either a loaded or an unloaded database.
 

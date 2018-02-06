@@ -3,7 +3,7 @@ title: "Choosing a LOLA Universe"
 author: "Nathan Sheffield"
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document2
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{3. Choosing a Universe}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,7 +13,7 @@ vignette: >
 (__This vignette is unevaluated because it relies on loading huge database files__)
 
 
-### What's the universe?
+## What's the universe?
 
 One of the key questions when you run LOLA is what your background set, or "universe" is. You should think of the universe as the set of regions you tested for possible inclusion in your user sets; or, in other words, it is the restricted background set of regions that were tested, including everything in your regions of interest as well as those that did not get included.
 

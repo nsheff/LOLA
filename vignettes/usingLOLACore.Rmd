@@ -9,11 +9,13 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+
 (__This vignette is unevaluated because it relies on loading large database files__)
 
 Most likely, your first goal will be to test your regions of interest for enrichment against as many public datasets as you can get your hands on. To make this easier on you, we've assembled a core database (LOLA core) which we curate from many sources. Since LOLA core is rather large, it's not possible to distribute with the package, and you'll need to download it on your own. For this vignette you need to download and unpack either the complete or the cached LOLA core database, which you can download at the [regionDB page](http://databio.org/regiondb). Download and unpack the LOLA core archive into your current working directory.
 
-### Loading full-scale example data
+## Loading full-scale example data
 
 You'll also need a few region sets of interest. Typically, this will be data you've generated or downloaded and you'll know something about it already; for this vignette, you can download some [vignette example data](http://cloud.databio.org/vignettes). Just for fun, in this vignette I'll call these mystery sets, and the point will be to see what LOLA tells us about them if we have no previous knowledge. Then I'll reveal their true identity at the end of the vignette.
 
@@ -33,7 +35,7 @@ regionSetC = readBed("lola_vignette_data/setC_100.bed")
 activeDHS = readBed("lola_vignette_data/activeDHS_universe.bed")
 ```
 
-### Running the enrichment
+## Running the enrichment
 
 We then need to combine these GRanges objects into a single GRangesList. This lets us calculate enrichments for all your region sets simultaneously. It's done independently, but it's faster to merge them and get a single result than to calculate for each set individually. Run the enrichment calculation:
 
@@ -42,7 +44,7 @@ userSets = GRangesList(regionSetA, regionSetB, regionSetC)
 locResults = runLOLA(userSets, activeDHS, regionDB, cores=1)
 ```
 
-### Exploring results
+## Exploring results
 
 ```{r, eval = FALSE}
 locResults[1:10,]
@@ -75,7 +77,7 @@ writeCombinedEnrichment(locResults, outFolder= "lolaResults", includeSplits=TRUE
 
 By default, this function will write the entire table to a tsv file. I recommend using the includeSplits parameter, which tells the function to also print out additional tables that are subsetted by userSet, so that each region set you test has its own result table. It just makes it a little easier to explore the results.
 
-### Mystery set identity
+## Mystery set identity
 
 The results we found fit perfectly with the identity of the region sets:
 
