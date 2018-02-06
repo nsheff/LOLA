@@ -1,6 +1,8 @@
 ---
 title: "Choosing a LOLA Universe"
-author: "Nathan Sheffield"
+author: 
+- name: Nathan Sheffield
+  affiliation: University of Virginia
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document

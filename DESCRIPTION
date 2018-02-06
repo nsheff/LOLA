@@ -21,9 +21,9 @@ Imports:
     utils,
     stats
 Suggests:
-    knitr,
     parallel,
     testthat,
+    knitr,
     BiocStyle,
     rmarkdown
 Enhances: simpleCache, qvalue, ggplot2

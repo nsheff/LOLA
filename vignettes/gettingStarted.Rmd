@@ -12,7 +12,7 @@ vignette: >
 
 ```{r, echo=FALSE}
 # These settings make the vignette prettier
-knitr::opts_chunk$set(results="hold", collapse=TRUE)
+knitr::opts_chunk$set(results="hold", message=FALSE)
 ```
 
 ## Preparing analysis
