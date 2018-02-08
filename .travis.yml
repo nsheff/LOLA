@@ -1,4 +1,4 @@
-language: R
+language: r
 r:
     - devel
     - release
