@@ -11,6 +11,7 @@ Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org", ro
 Author: Nathan Sheffield <http://www.databio.org> [aut, cre],
     Christoph Bock [ctb]
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
+Depends: R (>= 2.10)
 Imports:
     BiocGenerics,
     S4Vectors,
