@@ -1,4 +1,5 @@
 language: r
+# for bioc development, we should build off the R development version
 r:
     - devel
     - release

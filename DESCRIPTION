@@ -20,7 +20,8 @@ Imports:
     data.table,
     reshape2,
     utils,
-    stats
+    stats,
+    methods
 Suggests:
     parallel,
     testthat,
