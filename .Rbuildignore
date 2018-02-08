@@ -2,3 +2,5 @@
 .git/*
 .gitignore
 R/*.old
+.travis.yaml
+_pkgdown.yaml
