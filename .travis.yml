@@ -1,4 +1,7 @@
 language: R
+r:
+    - devel
+    - release
 sudo: false
 cache: packages
 use_bioc: true
