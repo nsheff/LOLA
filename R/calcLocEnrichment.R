@@ -65,7 +65,7 @@ redefineUserSets=FALSE, direction="enrichment") {
 		userSets =	redefineUserSets(userSets, userUniverse, cores=cores)
 		userSets = listToGRangesList(userSets)
 	}
-	userSetsLength = unlist(lapplyAlias(as.list(userSets), length))
+	userSetsLength = unlist(lapplyAlias((userSets), length))
 
 	if (! any( isDisjoint( userSets) ) ) {
 		message("You have non-disjoint userSets.")
@@ -81,7 +81,7 @@ redefineUserSets=FALSE, direction="enrichment") {
 
 
 	geneSetDatabaseOverlap =
-		lapplyAlias( as.list(userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap)
+		lapplyAlias( (userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap)
 
 	# This is WRONG:
 	#geneSetDatabaseOverlap =
