@@ -1,5 +1,5 @@
 Package: LOLA
-Version: 1.9.3
+Version: 1.9.4
 Date: 2015-06-26
 Title: Locus overlap analysis for enrichment of genomic ranges
 Description: Provides functions for testing overlap of sets of genomic regions
