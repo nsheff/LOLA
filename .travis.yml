@@ -1,8 +1,6 @@
 language: r
 # for bioc development, we should build off the R development version
-r:
-    - devel
-    - release
+r: devel
 sudo: false
 cache: packages
 use_bioc: true
