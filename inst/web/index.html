@@ -80,14 +80,15 @@ margin-bottom:0px;
 </style>
 
 </head>
-<body>
+<body onLoad="loadGrid('allEnrichments.tsv')">
 <script src="webComponents/SlickGrid/lib/jquery-1.7.min.js"></script>
 	<script src="webComponents/SlickGrid/lib/jquery.event.drag-2.2.js"></script>
 	<script src="webComponents/SlickGrid/slick.core.js"></script>
 	<script src="webComponents/SlickGrid/slick.grid.js"></script>
 	<script src="webComponents/d3.min.js"></script>
+	<script src="webComponents/enrich.js"></script>
 <script>
-	var myFileName = "allEnrich_downReg/allEnrichments.txt";
+	var myFileName = "allEnrichments.tsv";
 
 function loadGrid(myFileName) {
 	if (myFileName == '[Select an enrichment]' || myFileName == '') {
@@ -172,13 +173,9 @@ document.getElementById("notes").innerHTML = myFileName;
 </script>
 <div id="links" style="float:left">
 <h2>Enrichment results</h2>
-<div class="maindiv" >
-<a onClick="loadGrid('allEnrichments.txt')">LOAD DATA<br>
-</td>
-</div>
-
-<div class="maindiv" >
-<div style="margin:20px;font-size:14pt">Viewing experiment:<br><span id="notes">[Select an enrichment]</span><br><a href="" id="downloadlink">Download Raw Data</a>
+<div class="maindiv">
+<div style="margin:20px;font-size:14pt">Viewing experiment:<br><span id="notes">[Select an enrichment]</span><br>
+	<a href="" id="downloadlink">Download Raw Data</a>
 </div>
 Restrict to selected database: <select id="selectDB" onChange="loadGrid('')">
 <option value="" selected>All Databases</option>
