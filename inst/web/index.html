@@ -103,7 +103,7 @@ document.getElementById("downloadlink").href = myFileName;
  d3.tsv(myFileName, function(data) {
 <!--alert(myFileName+"loaded");-->
 document.getElementById("notes").innerHTML = myFileName;
-	data=data.slice(1,5000);
+	data=data.slice(0,5000);
 <!--	alert(JSON.stringify(data));-->
 	restrictDb = $('#selectDB option:selected').val();
 <!--	alert(restrictDb);-->
