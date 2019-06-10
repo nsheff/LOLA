@@ -1,0 +1,4 @@
+userSet	dbSet	collection	pValueLog	logOddsRatio	support	rnkPV	rnkLO	rnkSup	maxRnk	meanRnk	b	c	d	description	cellType	tissue	antibody	treatment	dataSource	filename	size
+1	3	collection	0	0.0265885219787848	2	1	1	1	1	1	110115	148	216656	collection	NA	NA	NA	NA	NA	dataset_918.dat	117684
+1	2	collection	0	0.0199656499431329	2	1	2	1	2	1.33	131898	148	194873	collection	NA	NA	NA	NA	NA	dataset_917.dat	132006
+1	1	collection	0	0.0103812228780056	2	1	3	1	3	1.67	184822	148	141949	collection	NA	NA	NA	NA	NA	dataset_916.dat	202266

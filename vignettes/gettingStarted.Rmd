@@ -14,6 +14,10 @@ vignette: >
 # These settings make the vignette prettier
 knitr::opts_chunk$set(results="hold", message=FALSE)
 ```
+# LOLA bioconductor package
+
+Biological data is often compared to reference databases and searching for interesting patterns of enrichment and depletion. For example, gene set analysis has been pivotal for making connections between diverse types of genomic data. However, it method suffers from one major limitation: it requires gene-centric data. This is becoming increasingly limiting as our understanding of gene regulation advances. It has become evident that gene expression and chromatin organization are controlled by hundreds of thousands of enhancers and other functional elements, which are often difficult to map to gene symbols. The increasing emphasis on genomic region sets has been propelled by next generation sequencing technology that produces data most naturally analyzed in the context of genomic regions -- as peaks and segmentations. The research community has now established large catalogs of regulatory elements and other genomic features across many cell types. LOLA makes use of these catalogs to perform enrichment analysis of genomic ranges.
+
 
 ## Preparing analysis
 
