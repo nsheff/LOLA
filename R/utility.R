@@ -200,7 +200,17 @@ countOverlapsRev = function(query, subject, ...) {
 	return(countOverlaps(subject, query, ...))
 }
 
-
+# For windows, let's try this.
+countFileLinesBackup = function(filename) {
+	# From https://stackoverflow.com/a/23456450/946721
+	f = file(filename, open="rb")
+	nlines <- 0L
+	while (length(chunk <- readBin(f, "raw", 65536)) > 0) {
+	   nlines = nlines + sum(chunk == as.raw(10L))
+	}
+	close(f)
+	return(as.numeric(nlines))
+}
 
 # Parses result of system "wc" wordcount to return the number of lines
 # in a file into R.
@@ -209,11 +219,17 @@ countFileLines = function(filename) {
 		warning("File does not exist:", filename)
 		return(0)
 	}
-	as.numeric(
-		strsplit(sub("^\\s+", "",
-		system(paste("wc -l ", filename),
-		intern=TRUE)), " ")[[1]][1]
+	nlines = tryCatch( {
+		return(as.numeric(
+			strsplit(sub("^\\s+", "",
+			system(paste("wc -l ", filename),
+			intern=TRUE)), " ")[[1]][1]
+		)) }, error= function(err) { return(NA) }
 	)
+	
+	if (is.na(nlines)) {
+		return(countFileLinesBackup(filename))
+	}
 }
 
 
