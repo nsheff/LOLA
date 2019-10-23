@@ -22,12 +22,12 @@ loadPEPdb = function(config_location){
       samples_df = as.data.frame(samples_annotation)
       chrom_ranges = lapply(samples_df$file_path, readBed) # need to make list into a GRanges list object
       regions = GRangesList(chrom_ranges)
-      return(list(config_loc, samples_annotation,config_file, regions))
+      return(list(dblocation = config_loc, regionAnno = samples_annotation, regionGRL = regions))
   } else {
       stop("could not find .yaml config file")
   }
 }
 
-#pep_object = loadPEPdb("/project/shefflab/resources/regions/LOLAHema/LOLAHema_PEP/project_config.yaml")
+pep_object = loadPEPdb("/project/shefflab/resources/regions/LOLAHema/LOLAHema_PEP/project_config.yaml")
 
 
