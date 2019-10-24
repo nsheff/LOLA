@@ -1,0 +1,6 @@
+sample_name, genome,description, file_path 
+cpgIslandExt.bed, hg19, CpGislands from UCSC annotation, source1
+laminB1Lads.bed, hg19, laminB1 data from UCSC annotation, source1
+numtSAssembled.bed, hg19, numt data from UCSC annotation, source1
+vistaEnhancers.bed, hg19, enhancers data from UCSC annotation, source1
+vistaEnhancers_colNames.bed, hg19, enhancers col_names data, source1 

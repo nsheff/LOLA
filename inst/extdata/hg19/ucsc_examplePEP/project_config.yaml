@@ -1,0 +1,7 @@
+metadata:
+        sample_table: samples_annotation.csv
+
+derived_attributes: [file_path]
+data_sources:
+        source1: LOLA/inst/extdata/hg19/regions/{sample_name}
+
