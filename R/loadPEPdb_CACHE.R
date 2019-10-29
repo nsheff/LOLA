@@ -6,7 +6,8 @@
 
 #' Helper function that allows LOLA to read PEP-formatted databases 
 #' 
-#' @param config_location     folder where the project_config.yaml file is located
+#' @param configFolder     folder where the config.yaml file is located
+#' @param configName       Name of the config.yaml file 
 #' @param useCache            uses simpleCache to cache and load the results    
 #' @return PEPdB contains database location, samples annotation sheet, .yaml config file 
 #' and the regions Granges list 
@@ -17,36 +18,32 @@
 #' 
 
 
-loadPEPdb_CACHE = function(configLocation, useCache=TRUE){
-    configLoc = file.path(path=configLocation)  
+loadPEPdb_CACHE = function(configFolder, configName, useCache=TRUE){
+    configLoc = file.path(path=paste0(configFolder, configName))
     if (file.exists(configLoc)) {
         # Use pepr to read in the PEP metadata
-        pep_obj = pepr::Project(file = configLoc)
-        configFile = pepr::config(pep_obj)
-        #Output the samples annotation and make it a dataframe so that we can lapply through each file path
+        pepObject = pepr::Project(file = configLoc)
+        configFile = pepr::config(pepObject)
+        samplesAnnotation = pepr::samples(pepObject)
+        # Output the samples annotation and make it a dataframe so that we can lapply through each file path
+        samplesdf = as.data.frame(samplesAnnotation)
         if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
-            setCacheDir("RCACHE.DIR")
-            simpleCache::simpleCache("samplesAnnotation", {pepr::samples(pep_obj)}, 
-                                     #cacheDir=RCACHE.dir,
-                                     recreate=FALSE)  
-            samplesdf = as.data.frame(samplesAnnotation)  
-            simpleCache::simpleCache("chromRanges", {
-                lapply(samplesdf$file_path, LOLA::readBed)},
-                                     #cacheDir=RCACHE.dir,
-                                     recreate=FALSE) # need to make list into a GRanges and cache the region outputs
+            simpleCache::simpleCache("chromRanges", { # need to make regions GRanges objects and cache the data
+                lapply(samplesdf$file_path, LOLA::readBed)}, 
+                                     cacheDir=file.path(path=configFolder),
+                                     recreate=FALSE) 
          } else {
-             samplesAnnotation = pepr::samples(pep_obj)
-             chromRanges = lapply(samplesdf$file_path, LOLA::readBed)
              if (nrow(samplesAnnotation) > 100) {
-                 # tell the user they should install simplecache 
-                 message("You should istall simpleCache so that you save time next time you load your database")
-        }
+                 # tell the user they should install simpleCache 
+                 message("You should istall simpleCache so that you save time when loading your database next")
+          }
+             chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
       }
       regions = GRangesList(chromRanges)
-      return(list(dblocation = configLoc,
-                configYAML = configFile,
-                regionAnno = samplesAnnotation[, -c("genome")],
-                regionGRL = regions))
+      return(list(configLocation = configLoc,
+                  configYAML = configFile,
+                  regionAnno = samplesAnnotation[, -c("genome")],
+                  regionGRL = regions))
     } else {
         stop("could not find .yaml config file")
   }
