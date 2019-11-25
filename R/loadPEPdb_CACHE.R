@@ -35,7 +35,7 @@ loadPEPdb_CACHE = function(configFolder, configName, useCache=TRUE){
          } else {
              if (nrow(samplesAnnotation) > 100) {
                  # tell the user they should install simpleCache 
-                 message("You should istall simpleCache so that you save time when loading your database next")
+                 message("You should install simpleCache so that you save time when loading your database next")
           }
              chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
       }
