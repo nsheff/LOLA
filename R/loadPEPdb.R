@@ -18,13 +18,18 @@
 #' 
 
 
-loadPEPdb_CACHE = function(configFolder, configName, useCache=TRUE){
+loadPEPdb = function(configFolder, configName, useCache=TRUE){
     configLoc = file.path(path=paste0(configFolder, configName))
     if (file.exists(configLoc)) {
         # Use pepr to read in the PEP metadata
         pepObject = pepr::Project(file = configLoc)
         configFile = pepr::config(pepObject)
         samplesAnnotation = pepr::samples(pepObject)
+        # Rename columns to make annotation LOLA compatible 
+        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="file_name"] = "filename"
+        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="cell_type"] = "cellType"
+        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="exp_protocol"] = "collection"
+        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="data_source"] = "dataSource"
         # Output the samples annotation and make it a dataframe so that we can lapply through each file path
         samplesdf = as.data.frame(samplesAnnotation)
         if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
