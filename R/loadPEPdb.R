@@ -35,23 +35,23 @@ loadPEPdb = function(configFolder, configName, useCache=TRUE){
         if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
             simpleCache::simpleCache("chromRanges", { # need to make regions GRanges objects and cache the data
                 lapply(samplesdf$file_path, LOLA::readBed)}, 
-                                     cacheDir=file.path(path=configFolder),
-                                     recreate=FALSE) 
-         } else {
-             if (nrow(samplesAnnotation) > 100) {
-                 # tell the user they should install simpleCache 
-                 message("You should install simpleCache so that you save time when loading your database next")
-          }
-             chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
-      }
-      regions = GRangesList(chromRanges)
-      return(list(configLocation = configLoc,
-                  configYAML = configFile,
-                  regionAnno = samplesAnnotation[, -c("genome")],
-                  regionGRL = regions))
+                                cacheDir=file.path(path=configFolder),
+                                recreate=FALSE) 
+        } else {
+            if (nrow(samplesAnnotation) > 100) {
+                # tell the user they should install simpleCache 
+                message("You should install simpleCache so that you save time when loading your database next")
+        }
+            chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
+    }
+    regions = GRangesList(chromRanges)
+    return(list(configLocation = configLoc,
+                configYAML = configFile,
+                regionAnno = samplesAnnotation[, -c("genome")],
+                regionGRL = regions))
     } else {
         stop("could not find .yaml config file")
-  }
+    }
 }
 
 
