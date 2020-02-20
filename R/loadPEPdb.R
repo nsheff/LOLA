@@ -34,7 +34,7 @@ loadPEPdb = function(configFolder, configName, useCache=TRUE){
 		samplesdf = as.data.frame(samplesAnnotation)
 		if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
 			simpleCache::simpleCache("chromRanges", { # need to make regions GRanges objects and cache the data
-				lapply(samplesdf$file_path, LOLA::readBed)}, 
+				lapply(samplesdf$output_file_path, LOLA::readBed)}, 
 								cacheDir=file.path(path=configFolder),
 								recreate=FALSE) 
 		} else {
