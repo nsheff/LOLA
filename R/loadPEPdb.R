@@ -19,39 +19,39 @@
 
 
 loadPEPdb = function(configFolder, configName, useCache=TRUE){
-    configLoc = file.path(path=paste0(configFolder, configName))
-    if (file.exists(configLoc)) {
-        # Use pepr to read in the PEP metadata
-        pepObject = pepr::Project(file = configLoc)
-        configFile = pepr::config(pepObject)
-        samplesAnnotation = pepr::samples(pepObject)
-        # Rename columns to make annotation LOLA compatible 
-        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="file_name"] = "filename"
-        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="cell_type"] = "cellType"
-        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="exp_protocol"] = "collection"
-        colnames(samplesAnnotation)[colnames(samplesAnnotation)=="data_source"] = "dataSource"
-        # Output the samples annotation and make it a dataframe so that we can lapply through each file path
-        samplesdf = as.data.frame(samplesAnnotation)
-        if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
-            simpleCache::simpleCache("chromRanges", { # need to make regions GRanges objects and cache the data
-                lapply(samplesdf$file_path, LOLA::readBed)}, 
-                                cacheDir=file.path(path=configFolder),
-                                recreate=FALSE) 
-        } else {
-            if (nrow(samplesAnnotation) > 100) {
-                # tell the user they should install simpleCache 
-                message("You should install simpleCache so that you save time when loading your database next")
-        }
-            chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
-    }
-    regions = GRangesList(chromRanges)
-    return(list(configLocation = configLoc,
-                configYAML = configFile,
-                regionAnno = samplesAnnotation[, -c("genome")],
-                regionGRL = regions))
-    } else {
-        stop("could not find .yaml config file")
-    }
+	configLoc = file.path(path=paste0(configFolder, configName))
+	if (file.exists(configLoc)) {
+		# Use pepr to read in the PEP metadata
+		pepObject = pepr::Project(file = configLoc)
+		configFile = pepr::config(pepObject)
+		samplesAnnotation = pepr::samples(pepObject)
+		# Rename columns to make annotation LOLA compatible 
+		colnames(samplesAnnotation)[colnames(samplesAnnotation)=="file_name"] = "filename"
+		colnames(samplesAnnotation)[colnames(samplesAnnotation)=="cell_type"] = "cellType"
+		colnames(samplesAnnotation)[colnames(samplesAnnotation)=="exp_protocol"] = "collection"
+		colnames(samplesAnnotation)[colnames(samplesAnnotation)=="data_source"] = "dataSource"
+		# Output the samples annotation and make it a dataframe so that we can lapply through each file path
+		samplesdf = as.data.frame(samplesAnnotation)
+		if (useCache & requireNamespace("simpleCache", quietly=TRUE)){
+			simpleCache::simpleCache("chromRanges", { # need to make regions GRanges objects and cache the data
+				lapply(samplesdf$file_path, LOLA::readBed)}, 
+								cacheDir=file.path(path=configFolder),
+								recreate=FALSE) 
+		} else {
+			if (nrow(samplesAnnotation) > 100) {
+				# tell the user they should install simpleCache 
+				message("You should install simpleCache in order to save time when loading your database next")
+		}
+			chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
+	}
+	regions = GRangesList(chromRanges)
+	return(list(configLocation = configLoc,
+				configYAML = configFile,
+				regionAnno = samplesAnnotation[, -c("genome")],
+				regionGRL = regions))
+	} else {
+		stop("could not find .yaml config file")
+	}
 }
 
 
