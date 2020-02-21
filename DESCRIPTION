@@ -21,8 +21,7 @@ Imports:
     reshape2,
     utils,
     stats,
-    methods,
-    pepr
+    methods
 Suggests:
     parallel,
     testthat,
