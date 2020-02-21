@@ -1,7 +1,7 @@
 metadata:
         sample_table: samples_annotation.csv
 
-derived_attributes: [file_path]
+derived_attributes: [output_file_path]
 data_sources:
-        source1: LOLA/inst/extdata/hg19/regions/{sample_name}
+        source1: ../ucsc_example/regions/{file_name}
 

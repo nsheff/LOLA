@@ -1,6 +1,6 @@
-sample_name, genome,description, file_path 
-cpgIslandExt.bed, hg19, CpGislands from UCSC annotation, source1
-laminB1Lads.bed, hg19, laminB1 data from UCSC annotation, source1
-numtSAssembled.bed, hg19, numt data from UCSC annotation, source1
-vistaEnhancers.bed, hg19, enhancers data from UCSC annotation, source1
-vistaEnhancers_colNames.bed, hg19, enhancers col_names data, source1 
+sample_name,file_name,genome,exp_protocol,cell_type,description,data_source,output_file_path 
+region1,cpgIslandExt.bed,hg19,ChiPseq,NA,CpGislands from UCSC annotation,UCSC db,source1
+region2,laminB1Lads.bed,hg19,ChiPseq,NA,laminB1 data from UCSC annotation,UCSC db,source1
+region3,numtSAssembled.bed,ChiPseq,NA,hg19,numt data from UCSC annotation,UCSC db,source1
+region4,vistaEnhancers.bed,ChiPseq,NA,hg19,enhancers data from UCSC annotation,UCSC db,source1
+region5,vistaEnhancers_colNames.bed,ChiPseq,NA,hg19,enhancers col_names data,UCSC db,source1 
