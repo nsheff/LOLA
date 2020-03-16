@@ -4,13 +4,13 @@
 
 #' Enrichment Calculation
 #'
-#' Workhorse function that calculates overlaps between userSets,
+#' Workhorse function that uses iGD to calculate overlaps between userSets,
 #' and then uses a fisher's exact test rank them by significance
 #' of the overlap.
 #'
 #' @param userSets		Regions of interest (Can be GRanges objects or a list)
 #' @param userUniverse	Regions tested for inclusion in userSets (Can be a GRanges object)
-#' @param pepRegionDB	Region DB to check for overlap, from loadRegionDB()
+#' @param pepRegionDB	Region DB to check for overlap, from loadPEPdb()
 #' @param minOverlap (Default:1) Minimum bases required to count an overlap
 #' @param cores	Number of processors
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
@@ -37,13 +37,26 @@
 #' R/examples/example.R
 
 
+setA = LOLA::readBed("~/lola_vignette_data/setA_complete.bed")
+setB = LOLA::readBed("~/lola_vignette_data/setB_complete.bed")
+setC = LOLA::readBed("~/lola_vignette_data/setC_complete.bed")
+active_dhs = LOLA::readBed("~/lola_vignette_data/activeDHS_universe.bed")
+usersets = GRangesList(setA, setB, setC)
+pepregiondb = loadPEPdb("/project/shefflab/resources/regions/LOLAHema/hg38/test_bedset4/test_bedset4_PEP/test_bedset4_config.yaml")
+
+# Test runLOLA with iGD vs original function using countOverlaps
+newLOLA_res =  runLOLA2(setA, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=2.280 sec
+oldLOLA_res = runLOLA(setA, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.826 sec
+
+
+####### Define new runLOLA function
 runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
                    redefineUserSets=FALSE, direction="enrichment") {
   # Silence R CMD check Notes:
   support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkOR=NULL
   oddsRatio=maxRnk=meanRnk=dbSet=description=NULL
   annotationDT = pepRegionDB$regionAnno
-  testSetsGRL = pepRegionDB$regionGRL
+  #testSetsGRL = pepRegionDB$regionGRL
   IGDreferenceLoc = pepRegionDB$iGDRefDatabase
   
   if (direction == "depletion") {
@@ -57,19 +70,18 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   ### Data sanity checks ###
   #Confirm we received GRangesList objects, convert from list if possible.
-  #userSets = listToGRangesList(userSets)
-  #testSetsGRL = listToGRangesList(testSetsGRL)
+  userSets = GRangesList(userSets)
   #setLapplyAlias(cores)
   
-  if (any(is.null(names(testSetsGRL)))) {
-    names(testSetsGRL) = seq_along(testSetsGRL)
-  }
+  
+  #if (any(is.null(names(testSetsGRL)))) {
+    #names(testSetsGRL) = seq_along(testSetsGRL)
+  #}
   
   if (redefineUserSets) { #redefine user sets in terms of universe?
     userSets =	redefineUserSets(userSets, userUniverse, cores=cores)
     userSets = listToGRangesList(userSets)
   }
-  #userSetsLength = unlist(lapply((userSets), length))
   
   if (! any( isDisjoint( userSets) ) ) {
     message("You have non-disjoint userSets.")
@@ -82,8 +94,8 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   # Returns for each userSet, a vector of length length(testSetsGRL), with total
   # number of regions in that set overlapping anything in each testSetsGRL; this
   # is then lapplied across each userSet.
-  # Replace countoverlaps function with igd search, need to somehow make testSetsGRL into an igd database prior to this step 
-  # Where should the igdRef should be created? Currently created in loadPEPdb.R
+  # ----------------------
+  # Replace countoverlaps function with igd search
   # Need to convert refdatabase.igd into an IGDr object(open/load an igd database for search )
   
   #geneSetDatabaseOverlap =
@@ -91,18 +103,34 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   
   # Convert usersets GRanges obj to a data frame for overlaps calculation
-  usersetsData = as.data.frame(userSets)
-  userSetsLength = nrow(usersetsData)
-  chromNames = usersetsData$seqnames
-  chromStart = usersetsData$start
-  chromEnd = usersetsData$end
   
+  #userSetsData = as.data.frame(userSets)
+  #userSetsLength = nrow(userSetsData)
+  #chromNames = userSetsData$seqnames
+  #chromStart = userSetsData$start
+  #chromEnd = userSetsData$end
   # Get the number of queries to be searched
-  queriesN = nrow(usersetsData)
+  #queriesN = nrow(userSetsData)
+  
+  # Alternative approach  
+  userSetsLength = unlist(lapply((userSets), length))
+  userSetsData = lapply(userSets, as.data.frame)
+  IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
+  IGDoverlapList = list()
+  for (i in seq_along(userSetsData)) {
+    chroms = userSetsData[[i]]$seqnames
+    starts = userSetsData[[i]]$start
+    ends = userSetsData[[i]]$end
+    userSetLength = nrow(userSetsData[[i]])
+    IGDoverlapList[[i]] = IGDr::search_nr(IGDrefDB, userSetLength, chroms, starts, ends)
+  }
+  
   
   # Convert iGD db to an IGDr object and perform the overlap calculation
-  IGDrefObject = IGDr::IGDr(IGDreferenceLoc)
-  IGDrefDatabaseOverlap = IGDr::search_nr(IGDrefObject, queriesN, chromNames, chromStart, chromEnd)
+  #IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
+  
+  #IGDrefDatabaseOverlap = IGDr::search_nr(IGDrefDB, queriesN, 
+                                          #chromNames, chromStart, chromEnd)
 
   # This will become "support" -- the number of regions in the
   # userSet (which I implicitly assume is ALSO the number of regions
@@ -111,7 +139,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   # dbSets (rows) by userSets (columns), counting overlap.
   
   #overlapMatrix = do.call(cbind, IGDrefDatabaseOverlap)
-  igdOverlapMatrix = as.matrix(IGDrefDatabaseOverlap)
+  IGDoverlapMatrix = do.call(cbind, IGDoverlapList)
   
   message("Calculating universe set overlaps...")
   # Now for each test set, how many items *in the universe* does
@@ -123,23 +151,24 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   # Convert useruniverse into a df and perform overlap calculations with igd ref database
   
-  universeData = as.data.frame(userUniverse, row.names=seq_along(userUniverse))
+  universeData = as.data.frame(userUniverse, row.names=seq_along(userUniverse)) # universe names req below
   universeNames = universeData$seqnames
   universeStart = universeData$start
   universeEnd = universeData$end
   universeRegionN = nrow(universeData)
   
-  igdUniverseOverlap = IGDr::search_nr(IGDrefObject, universeRegionN, universeNames, universeStart, universeEnd)
-  names(igdUniverseOverlap) = seq_along(igdUniverseOverlap)
+  IGDuniverseOverlap = IGDr::search_nr(IGDrefDB, universeRegionN, 
+                                       universeNames, universeStart, universeEnd)
+  names(IGDuniverseOverlap) = seq_along(IGDuniverseOverlap)
   
   # Returns number of items in test set (not used:)
   #testSetsOverlapUniverse = countOverlapsAny(testSetsGRL, userUniverse)
-  # Total size of the universe
+  # Total size of the universe (could get size of either original GRanges or df since only 1 file)
   universeLength = length(userUniverse)
   
   # To build the fisher matrix, support is 'a'
   
-  scoreTable = data.table(reshape2::melt(t(igdOverlapMatrix), variable.factor=FALSE))
+  scoreTable = data.table(reshape2::melt(t(IGDoverlapMatrix), variable.factor=FALSE))
 
   setnames(scoreTable, c("Var1", "Var2", "value"), c("userSet", "dbSet", "support"))
   
@@ -151,7 +180,6 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
     scoreTable$userSet = as.character(scoreTable$userSet)
   }
   
-  # So far so good! ##########################################
   
   message("Calculating Fisher scores...")
   # b = the # of items *in the universe* (1 bed file) that overlap each dbSet (bed file),
@@ -161,7 +189,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   # Items in the userSet ONLY (not in the dbSet)
   
   scoreTable[,c("b", "c"):=list(
-    b=igdUniverseOverlap[match(dbSet, names(igdUniverseOverlap))]-support, c=userSetsLength-support)]
+    b=IGDuniverseOverlap[match(dbSet, names(IGDuniverseOverlap))]-support, c=userSetsLength-support)]
   
   
   # This is the regions in the universe, but not in dbSet nor userSet.
@@ -218,4 +246,12 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   scoreTable[order(pValueLog, -meanRnk, decreasing=TRUE),]
 }
+
+
+
+
+
+
+
+
 
