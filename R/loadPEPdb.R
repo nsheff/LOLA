@@ -18,6 +18,7 @@
 #' 
 
 
+
 loadPEPdb = function(configPath, useCache=TRUE){
 	configLoc = file.path(path=configPath)
 	if (!file.exists(configLoc)) {
@@ -47,13 +48,15 @@ loadPEPdb = function(configPath, useCache=TRUE){
 					to save time when you load the 
 					database next")
 			}
-			chromRanges = lapply(samplesdf$file_path, LOLA::readBed)    
+			chromRanges = lapply(samplesdf$output_file_path, LOLA::readBed)    
 		}
 		regions = GRangesList(chromRanges)
+		igdDBlocation = configFile$iGD_dir
 		return(list(configLocation = configLoc,
 				configYAML = configFile,
 				regionAnno = smpl[, -c("genome")],
-				regionGRL = regions))
+				regionGRL = regions,
+				iGDRefDatabase = igdDBlocation))
 	}
 }
 
