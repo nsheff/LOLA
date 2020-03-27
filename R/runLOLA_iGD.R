@@ -44,9 +44,28 @@ active_dhs = LOLA::readBed("~/lola_vignette_data/activeDHS_universe.bed")
 usersets = GRangesList(setA, setB, setC)
 pepregiondb = loadPEPdb("/project/shefflab/resources/regions/LOLAHema/hg38/test_bedset4/test_bedset4_PEP/test_bedset4_config.yaml")
 
+# Set igd db for testing purposes
+igd_obj = IGDr::IGDr(pepregiondb[[5]])
+setA_df = as.data.frame(setA)
+ch_names = setA_df$seqnames
+start = setA_df$start
+end = setA_df$end
+
+# Set universe vectors for testing
+universe_df = as.data.frame(active_dhs, row.names=seq_along(active_dhs))
+univ_names = universe_df$seqnames
+univ_start = universe_df$start
+univ_end = universe_df$end
+igd_univ = IGDr::search_nr(igd_obj, nrow(universe_df), univ_names, univ_start, univ_end)
+
+# Compare igd search_nr vs countOverlaps
+igd_ol = IGDr::search_nr(igd_obj, length(setA), ch_names, start, end)
+gr_ol = countOverlaps(pepregiondb[[4]], setA, type = c("any"), minoverlap = 0)
+gr_univ = countOverlaps(pepregiondb[[4]], active_dhs, )
+
 # Test runLOLA with iGD vs original function using countOverlaps
-newLOLA_res =  runLOLA2(setA, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=2.280 sec
-oldLOLA_res = runLOLA(setA, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.826 sec
+newLOLA_res =  runLOLA2(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=2.280 sec
+oldLOLA_res = runLOLA(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.826 sec
 
 
 ####### Define new runLOLA function
@@ -58,6 +77,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   annotationDT = pepRegionDB$regionAnno
   #testSetsGRL = pepRegionDB$regionGRL
   IGDreferenceLoc = pepRegionDB$iGDRefDatabase
+  IGDindex = pepRegionDB$iGDRefIndex
   
   if (direction == "depletion") {
     fisherAlternative = "less"
@@ -112,6 +132,12 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   # Get the number of queries to be searched
   #queriesN = nrow(userSetsData)
   
+  # Produce a vector to match order of overlaps with order of files in annotation
+  igdIndexFiles = IGDindex$File
+  annotation = pepRegionDB$regionAnno
+  AnnoFileNames = sapply(annotation$output_file_path, basename)
+  correctRefOrder = match(AnnoFileNames, igdIndexFiles)
+  
   # Alternative approach  
   userSetsLength = unlist(lapply((userSets), length))
   userSetsData = lapply(userSets, as.data.frame)
@@ -123,9 +149,11 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
     ends = userSetsData[[i]]$end
     userSetLength = nrow(userSetsData[[i]])
     IGDoverlapList[[i]] = IGDr::search_nr(IGDrefDB, userSetLength, chroms, starts, ends)
+    IGDoverlapList[[i]] = IGDoverlapList[[i]][correctRefOrder]
   }
-  
-  
+  IGDoverlapList
+}
+
   # Convert iGD db to an IGDr object and perform the overlap calculation
   #IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
   
@@ -159,6 +187,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   IGDuniverseOverlap = IGDr::search_nr(IGDrefDB, universeRegionN, 
                                        universeNames, universeStart, universeEnd)
+  IGDuniverseOverlap = IGDuniverseOverlap[correctRefOrder]
   names(IGDuniverseOverlap) = seq_along(IGDuniverseOverlap)
   
   # Returns number of items in test set (not used:)

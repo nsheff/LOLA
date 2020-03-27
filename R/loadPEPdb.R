@@ -51,12 +51,15 @@ loadPEPdb = function(configPath, useCache=TRUE){
 			chromRanges = lapply(samplesdf$output_file_path, LOLA::readBed)    
 		}
 		regions = GRangesList(chromRanges)
-		igdDBlocation = configFile$iGD_dir
+		igdDBlocation = configFile$iGD_db
+		igdIndex = fread(configFile$iGD_index)
+		igdIndexdf = as.data.frame(igdIndex)
 		return(list(configLocation = configLoc,
 				configYAML = configFile,
 				regionAnno = smpl[, -c("genome")],
 				regionGRL = regions,
-				iGDRefDatabase = igdDBlocation))
+				iGDRefDatabase = igdDBlocation,
+				iGDRefIndex = igdIndexdf))
 	}
 }
 
