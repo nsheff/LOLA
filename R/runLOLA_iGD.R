@@ -10,8 +10,7 @@
 #'
 #' @param userSets		Regions of interest (Can be GRanges objects or a list)
 #' @param userUniverse	Regions tested for inclusion in userSets (Can be a GRanges object)
-#' @param pepRegionDB	Region DB to check for overlap, from loadPEPdb()
-#' @param minOverlap (Default:1) Minimum bases required to count an overlap
+#' @param pepRegionDB	Region DB to check for overlap, output list object from loadPEPdb()
 #' @param cores	Number of processors
 #' @param redefineUserSets	run redefineUserSets() on your userSets?
 #' @param direction    Defaults to "enrichment", but may also accept
@@ -64,18 +63,26 @@ gr_ol = countOverlaps(pepregiondb[[4]], setA, type = c("any"), minoverlap = 0)
 gr_univ = countOverlaps(pepregiondb[[4]], active_dhs, )
 
 # Test runLOLA with iGD vs original function using countOverlaps
-newLOLA_res =  runLOLA2(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=2.280 sec
-oldLOLA_res = runLOLA(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.826 sec
+newLOLA_res =  runLOLA2(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=1.959 sec
+oldLOLA_res = runLOLA(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.885 sec
 
 
 ####### Define new runLOLA function
 runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
                    redefineUserSets=FALSE, direction="enrichment") {
+  
+  if(!(is(userSets, "GRanges") || is(userSets, "GRangesList"))) {
+    stop("userSets should be a GRanges object or GRanges list. Check object class")
+  }
+  if(!(is(userUniverse, "GRanges")) {
+    stop("userUniverse should be a GRanges object. Check object class")
+  }
+  
+  
   # Silence R CMD check Notes:
   support=d=b=userSet=pValueLog=rnkSup=rnkPV=rnkOR=NULL
   oddsRatio=maxRnk=meanRnk=dbSet=description=NULL
   annotationDT = pepRegionDB$regionAnno
-  #testSetsGRL = pepRegionDB$regionGRL
   IGDreferenceLoc = pepRegionDB$iGDRefDatabase
   IGDindex = pepRegionDB$iGDRefIndex
   
@@ -151,8 +158,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
     IGDoverlapList[[i]] = IGDr::search_nr(IGDrefDB, userSetLength, chroms, starts, ends)
     IGDoverlapList[[i]] = IGDoverlapList[[i]][correctRefOrder]
   }
-  IGDoverlapList
-}
+  
 
   # Convert iGD db to an IGDr object and perform the overlap calculation
   #IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
