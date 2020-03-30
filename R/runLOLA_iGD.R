@@ -36,43 +36,18 @@
 #' R/examples/example.R
 
 
-setA = LOLA::readBed("~/lola_vignette_data/setA_complete.bed")
-setB = LOLA::readBed("~/lola_vignette_data/setB_complete.bed")
-setC = LOLA::readBed("~/lola_vignette_data/setC_complete.bed")
-active_dhs = LOLA::readBed("~/lola_vignette_data/activeDHS_universe.bed")
-usersets = GRangesList(setA, setB, setC)
-pepregiondb = loadPEPdb("/project/shefflab/resources/regions/LOLAHema/hg38/test_bedset4/test_bedset4_PEP/test_bedset4_config.yaml")
-
-# Set igd db for testing purposes
-igd_obj = IGDr::IGDr(pepregiondb[[5]])
-setA_df = as.data.frame(setA)
-ch_names = setA_df$seqnames
-start = setA_df$start
-end = setA_df$end
-
-# Set universe vectors for testing
-universe_df = as.data.frame(active_dhs, row.names=seq_along(active_dhs))
-univ_names = universe_df$seqnames
-univ_start = universe_df$start
-univ_end = universe_df$end
-igd_univ = IGDr::search_nr(igd_obj, nrow(universe_df), univ_names, univ_start, univ_end)
-
-# Compare igd search_nr vs countOverlaps
-igd_ol = IGDr::search_nr(igd_obj, length(setA), ch_names, start, end)
-gr_ol = countOverlaps(pepregiondb[[4]], setA, type = c("any"), minoverlap = 0)
-gr_univ = countOverlaps(pepregiondb[[4]], active_dhs, )
-
-# Test runLOLA with iGD vs original function using countOverlaps
-newLOLA_res =  runLOLA2(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=1.959 sec
-oldLOLA_res = runLOLA(usersets, active_dhs, pepregiondb, cores = 1, direction = "enrichment") # time elapsed=4.885 sec
-
 
 ####### Define new runLOLA function
 runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
                    redefineUserSets=FALSE, direction="enrichment") {
   
+  ### Data sanity checks ###
+  #Confirm we received GRangesList objects, convert from GRanges obj if necessary.
+  
   if(!(is(userSets, "GRanges") || is(userSets, "GRangesList"))) {
     stop("userSets should be a GRanges object or GRanges list. Check object class")
+  } else if (is(userSets, "GRanges")) {
+    userSets = GRangesList(userSets)
   }
   if(!(is(userUniverse, "GRanges"))) {
     stop("userUniverse should be a GRanges object. Check object class")
@@ -95,9 +70,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   annotationDT[, dbSet := seq_len(nrow(annotationDT))]
   setkey(annotationDT, dbSet)
   
-  ### Data sanity checks ###
-  #Confirm we received GRangesList objects, convert from list if possible.
-  userSets = GRangesList(userSets)
+
   #setLapplyAlias(cores)
   
   
@@ -117,27 +90,13 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   ### Construct significance tests ###
   message("Calculating unit set overlaps...")
   
+
+  ##########################
+  # iGD OVERLAP CALCULATIONS
   
-  # Returns for each userSet, a vector of length length(testSetsGRL), with total
-  # number of regions in that set overlapping anything in each testSetsGRL; this
-  # is then lapplied across each userSet.
-  # ----------------------
-  # Replace countoverlaps function with igd search
-  # Need to convert refdatabase.igd into an IGDr object(open/load an igd database for search )
-  
-  #geneSetDatabaseOverlap =
+  # OLD WAY geneSetDatabaseOverlap =
   #lapplyAlias( (userSets), countOverlapsRev, testSetsGRL, minoverlap=minOverlap)
   
-  
-  # Convert usersets GRanges obj to a data frame for overlaps calculation
-  
-  #userSetsData = as.data.frame(userSets)
-  #userSetsLength = nrow(userSetsData)
-  #chromNames = userSetsData$seqnames
-  #chromStart = userSetsData$start
-  #chromEnd = userSetsData$end
-  # Get the number of queries to be searched
-  #queriesN = nrow(userSetsData)
   
   # Produce a vector to match order of overlaps with order of files in annotation
   igdIndexFiles = IGDindex$File
@@ -145,7 +104,12 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   AnnoFileNames = sapply(annotation$output_file_path, basename)
   correctRefOrder = match(AnnoFileNames, igdIndexFiles)
   
-  # Alternative approach  
+  # Iterate through userSets to convert each GRanges obj into a df.
+  # Convert iGD db to an IGDr object and perform the overlap calculation.
+  # For each user set, the following overlap calculation will return a vector 
+  # of length nrow(IGDindex) with the number of regions in each set overlapping 
+  # bins in the iGD database.
+  
   userSetsLength = unlist(lapply((userSets), length))
   userSetsData = lapply(userSets, as.data.frame)
   IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
@@ -159,13 +123,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
     IGDoverlapList[[i]] = IGDoverlapList[[i]][correctRefOrder]
   }
   
-
-  # Convert iGD db to an IGDr object and perform the overlap calculation
-  #IGDrefDB = IGDr::IGDr(IGDreferenceLoc)
-  
-  #IGDrefDatabaseOverlap = IGDr::search_nr(IGDrefDB, queriesN, 
-                                          #chromNames, chromStart, chromEnd)
-
+ 
   # This will become "support" -- the number of regions in the
   # userSet (which I implicitly assume is ALSO the number of regions
   # in the universe) that overlap anything in each database set.
@@ -181,9 +139,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   
   #faster. Returns number of items in userUniverse.
   
-  #testSetsOverlapUniverse = countOverlaps(testSetsGRL, userUniverse, minoverlap=minOverlap)
-  
-  # Convert useruniverse into a df and perform overlap calculations with igd ref database
+  # Convert useruniverse into a df and perform overlap calculations with igd ref database.
   
   universeData = as.data.frame(userUniverse, row.names=seq_along(userUniverse)) # universe names req below
   universeNames = universeData$seqnames
