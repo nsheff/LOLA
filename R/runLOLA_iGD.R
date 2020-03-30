@@ -74,7 +74,7 @@ runLOLA2 = function(userSets, userUniverse, pepRegionDB, cores=1,
   if(!(is(userSets, "GRanges") || is(userSets, "GRangesList"))) {
     stop("userSets should be a GRanges object or GRanges list. Check object class")
   }
-  if(!(is(userUniverse, "GRanges")) {
+  if(!(is(userUniverse, "GRanges"))) {
     stop("userUniverse should be a GRanges object. Check object class")
   }
   
