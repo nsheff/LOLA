@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file. Here we
 will document changes to major new releases only (not point releases).
 
 
-## [1.9.x] -- Unreleased
+## [1.18.1] -- 2020-08-31
+
+	- Fix bug with data.table date auto-recognition
+
+## [1.9.x] -- 2017
 
 	- allow loadRegionDB to accept a character vector or loaded regionDB object
 
