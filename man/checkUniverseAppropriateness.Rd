@@ -4,8 +4,7 @@
 \alias{checkUniverseAppropriateness}
 \title{Check universe appropriateness}
 \usage{
-checkUniverseAppropriateness(userSets, userUniverse, cores = 1,
-  fast = FALSE)
+checkUniverseAppropriateness(userSets, userUniverse, cores = 1, fast = FALSE)
 }
 \arguments{
 \item{userSets}{Regions of interest}

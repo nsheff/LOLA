@@ -6,8 +6,12 @@
 with a column grouping different sets of similar regions,
 and split it into separate files for use with the LOLA collection format.}
 \usage{
-splitFileIntoCollection(filename, splitCol, collectionFolder = NULL,
-  filenamePrepend = "")
+splitFileIntoCollection(
+  filename,
+  splitCol,
+  collectionFolder = NULL,
+  filenamePrepend = ""
+)
 }
 \arguments{
 \item{filename}{the file to split}

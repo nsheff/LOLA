@@ -8,8 +8,11 @@ Writes all enrichments to a single file, and also spits out the same data
 divided into groups based on userSets, and Databases, just for convenience.
 disable this with an option.}
 \usage{
-writeCombinedEnrichment(combinedResults, outFolder = NULL,
-  includeSplits = TRUE)
+writeCombinedEnrichment(
+  combinedResults,
+  outFolder = NULL,
+  includeSplits = TRUE
+)
 }
 \arguments{
 \item{combinedResults}{enrichment results object}

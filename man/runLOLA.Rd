@@ -4,8 +4,15 @@
 \alias{runLOLA}
 \title{Enrichment Calculation}
 \usage{
-runLOLA(userSets, userUniverse, regionDB, minOverlap = 1, cores = 1,
-  redefineUserSets = FALSE, direction = "enrichment")
+runLOLA(
+  userSets,
+  userUniverse,
+  regionDB,
+  minOverlap = 1,
+  cores = 1,
+  redefineUserSets = FALSE,
+  direction = "enrichment"
+)
 }
 \arguments{
 \item{userSets}{Regions of interest}

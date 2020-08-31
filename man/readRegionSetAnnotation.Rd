@@ -6,8 +6,13 @@
 will either read the annotation file if one exists, or create a generic
 annotation file.}
 \usage{
-readRegionSetAnnotation(dbLocation, collections = NULL,
-  refreshCaches = FALSE, refreshSizes = TRUE, useCache = TRUE)
+readRegionSetAnnotation(
+  dbLocation,
+  collections = NULL,
+  refreshCaches = FALSE,
+  refreshSizes = TRUE,
+  useCache = TRUE
+)
 }
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored.}

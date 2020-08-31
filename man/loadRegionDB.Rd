@@ -5,8 +5,7 @@
 \title{Helper function to annotate and load a regionDB, a folder with
 subfolder collections of regions.}
 \usage{
-loadRegionDB(dbLocation, useCache = TRUE, limit = NULL,
-  collections = NULL)
+loadRegionDB(dbLocation, useCache = TRUE, limit = NULL, collections = NULL)
 }
 \arguments{
 \item{dbLocation}{folder where your regionDB is stored, or list of such folders}
