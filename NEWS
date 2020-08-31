@@ -2,8 +2,11 @@
 All notable changes to this project will be documented in this file. Here we
 will document changes to major new releases only (not point releases).
 
+## [1.19.1] -- 2020-08-31
+	
+	- fix to accommodate breaking changes introduced in data.table package.
 
-## [1.9.x] -- Unreleased
+## [1.9.0] -- 2017
 
 	- allow loadRegionDB to accept a character vector or loaded regionDB object
 
