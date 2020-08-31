@@ -4,7 +4,9 @@
 \name{userUniverse}
 \alias{userUniverse}
 \title{A reduced GRanges object from the example regionDB database}
-\format{A GRanges object}
+\format{
+A GRanges object
+}
 \usage{
 data(sample_universe)
 }

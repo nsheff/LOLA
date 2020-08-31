@@ -3,7 +3,6 @@
 \docType{package}
 \name{LOLA}
 \alias{LOLA}
-\alias{LOLA-package}
 \title{Genome locus overlap analysis.}
 \description{
 Run, Lola!

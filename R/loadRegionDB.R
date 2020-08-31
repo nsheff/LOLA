@@ -87,6 +87,7 @@ enforceTrailingSlash(collection), "collection.txt")
 		}
 
 		collectionDT[,collectionname:=collection]
+		class(collectionDT$date) = "character"
 		collectionsDT = rbind(collectionsDT, collectionDT)
 	}
 	if (nrow(collectionsDT) < 1) {

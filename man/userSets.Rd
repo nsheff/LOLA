@@ -4,7 +4,9 @@
 \name{userSets}
 \alias{userSets}
 \title{An example set of regions, sampled from the example database.}
-\format{A GRangesList object}
+\format{
+A GRangesList object
+}
 \usage{
 data(sample_input)
 }
