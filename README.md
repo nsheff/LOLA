@@ -20,11 +20,15 @@ This README provides a package overview, motivation, and installation instructio
 The release version of LOLA can be installed directly from Bioconductor:
 
 ```{r}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 BiocManager::install("LOLA")
 ```
 
 To install the development version directly from github, make sure you have [GenomicRanges](http://www.bioconductor.org/packages/release/bioc/html/GenomicRanges.html) (bioconductor package) installed, then install LOLA with devtools:
 ```{r}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 BiocManager::install("GenomicRanges")
 
 devtools::install_github("nsheff/LOLA")
