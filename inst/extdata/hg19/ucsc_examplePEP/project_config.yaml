@@ -1,0 +1,7 @@
+metadata:
+        sample_table: samples_annotation.csv
+
+derived_attributes: [output_file_path]
+data_sources:
+        source1: ../ucsc_example/regions/{file_name}
+
